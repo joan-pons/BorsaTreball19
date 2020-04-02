@@ -1,0 +1,128 @@
+<h2>Dades de l'empresa</h2>
+<div class='well'>
+    <form id="formEmpresa" action="/altaEmpresa" method="POST">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="hidden" class="form-control" id="idEmpresa" name="idEmpresa"
+                               value="{{ objEmpresa.idEmpresa }}">
+                        <div class="form-group required">
+                            <label class='control-label' for="Nom">Nom:</label>
+                            <input type="text" required="required" class="form-control " id="nom" name="nom"
+                                   maxlength="45" value="{{ objEmpresa.nom }}">
+                        </div>
+                        <div class="form-group required">
+                            <label for="email" class='control-label'>Correu electrònic:</label>
+                            <input type="email" required="required" class="form-control" id="email" name="email"
+                                   maxlength="75" value="{{ objEmpresa.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="Telefon">Telèfon:</label>
+                            <input type="text" class="form-control" id="telefon" name="telefon" maxlength="9"
+                                   value="{{ objEmpresa.telefon }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="url" class='control-label'>url:</label>
+                            <input type="text" class="form-control" id="url" name="url" maxlength="150"
+                                   value="{{ objEmpresa.url }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="Actiu">Estat:</label>
+                            <div>
+                                <label class="radio-inline"><input type="radio" id="Actiu" name="actiu" value="true"
+                                                                   {% if objEmpresa.activa==true %}checked="checked"{% endif %}>
+                                    Activa</label>
+                                <label class="radio-inline"><input type="radio" id="Inactiu" name="actiu" value="false"
+                                                                   {% if objEmpresa.activa==false %}checked="checked"{% endif %}>
+                                    Inactiva</label>
+                            </div>
+                        </div>
+                    </div><!--col-->
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="adreca">Adreca:</label>
+                            <input type="text" class="form-control" id="adreca" name="adreca" maxlength="100"
+                                   value="{{ objEmpresa.adreca }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="codiPostal">Codi postal:</label>
+                            <input type="text" class="form-control" id="codiPostal" name="codiPostal" maxlength="5"
+                                   value="{{ objEmpresa.codiPostal }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="localitat">Localitat:</label>
+                            <input type="text" class="form-control" id="localitat" name="localitat" maxlength="45"
+                                   value="{{ objEmpresa.localitat }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="provincia">Provincia:</label>
+                            <input type="text" class="form-control" id="provincia" name="provincia" maxlength="45"
+                                   value="{{ objEmpresa.provincia }}">
+                        </div>
+                    </div><!--col-->
+                </div><!--row -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="textOferta">Descripció de l'empresa: </label>
+                            <div id="textDescripcio">{{ objEmpresa.descripcio | raw }}</div>
+                        </div>
+                    </div><!--col -->
+                </div> <!--Row -->
+                {% if alta %}
+                    <div class='row'>
+                        <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="sel1">Esculli la família professional més propera a la seva activitat.</label>
+                            <p> Un professor d'aquesta familia validarà la seva petició. Això no impedirà que pugui publicar ofertes relacionades amb altres famílies professional.</p>
+                            <select class="form-control" id="familia" name="familia">
+                                <option value="">Esculli la família professional</option>
+                                {% for familia in families %}
+                                    <option value="{{ familia.id }}">{{ familia.nom }} ({{ familia.id }} )</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+                        </div><!--col -->
+
+                    </div><!-- Row -->
+                {% endif %}
+                {% include 'auxiliars/obligatoris.html.twig' %}
+            </div> <!--Col8 -->
+            <div class="col-md-4">
+                {% if not objEmpresa is defined %}
+                    <div class="row well">
+                        <p>La petició d'alta ha de ser validada per els professors del centre. Per això és important
+                            omplir les dades de contacte.</p>
+                        <p>Una vegada validada, l'empresa podrà començar a publicar ofertes de treball.</p>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="form-group pull-right">
+                        <label for="bEnviar">&nbsp;</label>
+                        <div>
+                            <button type="submit" id="bEnviar" class="btn btn-success">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group pull-right">
+                        <label for="CodiPostal">&nbsp;</label>
+                        <div>
+                            <button type="reset" class="btn btn-default">Netejar</button>
+                        </div>
+                    </div>
+                </div>
+            </div><!--col-->
+        </div><!--row-->
+
+    </form>
+</div><!--well-->
+
+{{ include('auxiliars/modals.html.twig') }}
+
+
+<script src="../../js/dirtyForms.js"></script>

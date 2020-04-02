@@ -1,0 +1,25 @@
+{
+  "name": "PauCasesnoves/Borsa_Treball",
+  "description": "Borsa de treball per ex-alumnes del CIFP Pau Casesnoves",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Joan Pons Tugores",
+      "email": "ptj@paucasesnovescifp.cat"
+    }
+  ],
+  "require": {
+    "slim/slim": "3.8.1",
+    "monolog/monolog": "1.22.1",
+    "slim/twig-view": "2.2.0",
+    "illuminate/database": "v5.4.17",
+    "phpmailer/phpmailer": "v6.1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Borsa\\": "model/",
+      "Correu\\": "mail/"
+    }
+  }
+}

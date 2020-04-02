@@ -1,0 +1,25 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Ofertes</title>
+{% endblock %}
+{% block navegacio %}
+    <a class="navbar-brand" href="dashBoard">{{empresa.nom}}</a>                    
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav">
+        <li><a href="ofertes"><span class="glyphicon glyphicon-list"></span> Llista d'ofertes</a></li>
+        <li><a href="modificarOferta?idOferta={{identificador}}">Actualitzar dades</a></li>
+        <li class="active"><a href="#">Estudis</a></li>
+        <li><a href="idiomes?idOferta={{identificador}}">Idiomes</a></li>
+        <li><a href="estatLaboral?idOferta={{identificador}}">Situació laboral</a></li>
+        <li><a href="contactesOferta?idOferta={{identificador}}">Persones de contacte</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
+    </ul>
+{% endblock %}
+{% block contingut %}
+    <h2><small><label>Codi oferta:</label> {{identificador}} <label>Títol:</label> {{entitat.titol}}</small></h2>
+    {{include('auxiliars/formEstudis.html.twig')}}
+{% endblock %}

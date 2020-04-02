@@ -1,0 +1,144 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Validació d'empreses</title>
+    <script>
+
+       $(document).ready(function () {
+           //bValidar
+           $(".btn-success").click(function (event) {
+
+               var id = $(event.target).closest('form').attr('id').replace('f', '');
+               var dades={idEmpresa:id, validada:true, rebuig:null};
+               $('#mdEspera').on('shown.bs.modal', function (e) {
+                   $.ajax({
+                       method: 'PUT',
+                       url: "empreses/" + id,
+                       data: dades
+                   }).done(function () {
+                       $('#mrTitol').html('Validació correcte');
+                       $('#mrText').html("<p>L'empresa s'ha validat correctament.</p><p>S'ha enviat un correu a l'empresa amb instruccions sobre com començar.</p>");
+                       $('#bmDacord').on('click', function () {
+                           window.location.href = "empresesPendents";
+                       });
+                   }).fail(function (jqXHR, textStatus, errorThrown) {
+                       $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb la validació');
+                       $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                       $('#bmDacord').on('click', function () {
+                           $('#mdResultat').modal('hide');
+                       });
+                   }).always(function () {
+                       $('#mdEspera').modal('hide');
+                       $('#mdResultat').modal('show');
+                   });
+               });
+               $('#mcTitol').html("Confirmi la validació.");
+               $('#mcText').html("<p>Si valida l'empresa, immediatament se li enviarà un correu electrònic amb les instruccions per començar a treballar amb l'aplicació.</p>");
+
+               $('#bcDacord').on('click', function () {
+                   $('#mdConfirm').modal('hide');
+                   $('#mEsperaTitol').html("Validant l'empresa.");
+                   $('#mdEspera').modal('show');
+               });
+               $('#mdConfirm').modal('show');
+           });
+
+           $('#bcCancelar').on('click', function () {
+               $('#mdConfirm').modal('hide');
+           });
+
+           //bRebutjar
+           $(".btn-danger").click(function (event) {
+
+               var id = $(event.target).closest('form').attr('id').replace('f', '');
+               var dades={idEmpresa:id, validada:false, rebuig:null};
+               $('#mdEspera').on('shown.bs.modal', function (e) {
+                   dades['rebuig']=$("#motius").val();
+                   $.ajax({
+                       method: 'PUT',
+                       url: "empreses/" + id,
+                       data: dades
+                   }).done(function () {
+                       $('#mrTitol').html('Rebuig correcte')
+                       $('#mrText').html("<p>L'empresa s'ha rebutjat correctament.</p><p>S'ha enviat un correu a l'empresa amb els motius del rebuig.</p>");
+                       $('#bmDacord').on('click', function () {
+                           window.location.href = "empresesPendents";
+                       });
+                   }).fail(function (jqXHR, textStatus, errorThrown) {
+                       $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb el rebuig');
+                       $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                       $('#bmDacord').on('click', function () {
+                           $('#mdResultat').modal('hide');
+                       });
+                   }).always(function () {
+                       $('#mdEspera').modal('hide');
+                       $('#mdResultat').modal('show');
+                   });
+               });
+               $('#mcTitol').html("Confirmi el rebuig.");
+               $('#mcText').html('<p>Si confirma el rebuig s\'enviarà un correu a l\'empresa que inclourà els motius de rebuig que posi a continuació.</p><p>Motius del rebuig:</p><p><textarea style="width:100%" id="motius" maxlength="250"></textarea></p>');
+
+               $('#bcDacord').on('click', function () {
+                   $('#mdConfirm').modal('hide');
+                   $('#mEsperaTitol').html("Rebutjant l'oferta.");
+                   $('#mdEspera').modal('show');
+               });
+               $('#mdConfirm').modal('show');
+           });
+
+           $('#bcCancelar').on('click', function () {
+               $('#mdConfirm').modal('hide');
+           });
+
+       });
+
+    </script>
+{% endblock %}
+
+{% block navegacio %}
+    <a class="navbar-brand" href="/professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Validar empreses pendents</a></li>
+        {% if usuari.teRol(40) %}
+        <li><a href="empreses">Activar / validar empresa</a></li>
+        {% endif %}
+    </ul>
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
+    </ul>
+
+{% endblock %}                     
+
+{% block contingut %}
+    <h2>Validar empreses pendents</h2>
+    {% for empresa in empreses %}
+        <form id='f{{ empresa.idEmpresa }}'>
+            <input type="hidden" name="idEmpresa" id="idE{{ empresa.idEmpresa }}" value="{{ empresa.idEmpresa }}">
+            <div class="well" id='emp{{ empresa.idEmpresa}}'>
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <p><label>Nom: &nbsp;</label> {{ empresa.nom }}</p>
+                        <p><label>Correu electrònic: &nbsp;</label>{{ empresa.email }}</p>
+                        <p><label>Telèfon: &nbsp;</label>{{ empresatTelefon }}</p>
+                        <p><label>url: &nbsp;</label>{{ empresa.url }}</p>
+                        <p><label>Adreça: &nbsp;</label>{{ empresa.adreca }}</p>
+                        <p><label>Codi postal: &nbsp;</label>{{ empresa.codiPostal }}</p>
+                        <p><label>Localitat: &nbsp;</label>{{ empresa.localitat }}</p>
+                        <p><label>Província: &nbsp;</label>{{ empresa.provincia }}</p>
+                        <p><label>Data d'alta: &nbsp;</label>{{ empresa.dataAlta }}</p>
+                    </div>
+                    <div class='col-md-6'>
+                        <p><label>Descripció: &nbsp;</label></p>
+                        <div id='descripcio' class='well'>{{ empresa.descripcio | raw }}</div>
+
+                        <button class="btn btn-success" type="button" >Validar</button>
+                        <button class="btn btn-danger"  type="button">Rebutjar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endfor %}
+    {{include('auxiliars/modals.html.twig')}}
+{% endblock %}  

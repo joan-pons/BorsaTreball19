@@ -1,0 +1,341 @@
+<h2>Estudis <small>{{ etiquetes.subtitol }}</small></h2>
+<h3>Estudis oficials disponibles:</h3>
+<div class="well">
+    <div class="row">
+        <div class="col-md-8">
+            <div class='row'>
+                <div class="form-group">
+                    <label for="sel1">Família professional</label>
+
+                    <select class="form-control" id="familia" name="familia">
+                        <option value="">Escull una família professional</option>
+                        {% for familia in families %}
+                            <option value="{{ familia.id }}">{{ familia.nom }} ({{ familia.id }} )</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+            </div>
+            <div class='row'>
+                <div class="form-group">
+                    <label for="sel1">Cicles de la família</label>
+                    <div class="input-group">
+                        <select class="form-control" id="graus" name="graus">
+                            <option value="">Escull uns estudis</option>
+                            {% for grau in estudis %}
+                                <option value="{{ grau.codi }}">{{ grau.codi }} - {{ grau.nom }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-btn"><button type="button" class="btn btn-default btn-success" id="bAfegir">Afegir</button></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="dNou">
+                <form id="nouEstudi">
+                    <input type="hidden" name="idAlumne" id="idAlumne" value="{{identificador}}">
+                    <input type="hidden" name="idGrau" id="idGrau">
+
+                    <div class='col-md-4'>
+                        <div class="form-group required">
+                            <label class="control-label">Any de finalització:</label>
+                            <input type="number" min="2000"  id="anyNou" name="any" required="required">
+                        </div>
+                        <div class="form-group required">
+                            <label class="control-label">Nota final:</label>
+                            <input type="number" min="5" max="10" id="notaNou" name="nota" value='5' required="required">
+                        </div>
+                    </div>
+
+                    <div class='col-md-4'>
+                        <button class="btn btn-success" type="submit" id="bGuardarNou">Guardar</button>
+                        <button class="btn btn-default" type="reset" id="bCancelarNou">Cancelar</button>
+                    </div>
+                </form>
+            </div>                    
+        </div>
+        <div class="col-md-4">
+            <div class="well">
+                <p>El sistema filtrarà els candidats a la oferta que:</p>
+                <ul>
+                    <li>Hagin acabat alguns dels estudis especificats a l'oferta.</li>
+                    <li>Hagin acabats els estudis en una data igual o posterior a l'any especificat.</li>
+                    <li>Tenguin una nota igual o superior a l'especificada</li>
+                </ul>
+            </div>
+        </div>
+    </div><!--row-->
+
+</div>
+
+<h3>Estudis {{ etiquetes.labelLlista }}:</h3>
+{%if entitat.estudis is empty %}
+    <div class="well">
+        <p>Encara no hi ha cap estudis registrats.</p>
+    </div>
+{% else %}
+    {% for grau in entitat.estudis %}
+
+        <div class="well">
+            <h4>{{ grau.nom }}</h4>
+            <form id="f{{grau.codi}}">
+                <input type="hidden" name="idAlumne" id="idAlumne" value="{{identificador}}">
+                <input type="hidden" name="idGrau" id="idGrau" value='{{grau.codi}}'>
+                <input type="hidden" name="nomGrau" id="nomGrau" value='{{grau.nom}}'>
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <div class="form-group required">
+                            <label class="control-label">Any de finalització:</label>
+                            <input type="number" min="1970" max='{{ "now"|date("Y") }}' id="any" name="any" disabled='disabled' value='{{grau.pivot.any}}' required="required">
+                        </div>
+                        <div class="form-group required">
+                            <label class="control-label">Nota final:</label>
+                            <input type="number" min="5" max="10" id="nota" name="nota" value='{{grau.pivot.nota}}' disabled='disabled' required="required">
+                        </div>
+                    </div>
+
+                    <div class='col-md-6'>
+                        <button class="btn btn-primary" type="button" name="bEditar" id="bEd{{grau.codi}}">Editar</button>
+                        <button class="btn btn-danger" type="button" name="bSuprimir" id="bSup{{grau.codi}}">Suprimir</button>
+                        <button class="btn btn-success" type="submit" name="bGuardar" id="bGuar{{grau.codi}}">Guardar</button>
+                        <button class="btn btn-default" type="reset"  name="bCancel" id="bCan{{grau.codi}}">Cancel·lar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{{include('auxiliars/modals.html.twig')}}
+
+<script>
+    $(document).ready(function () {
+        var idAlumne
+        ={{identificador }} ;
+                var estudisElegits;
+
+        $('#dNou').hide();
+        $('#anyNou').attr('max', new Date().getFullYear());
+        $('#anyNou').attr('value', new Date().getFullYear());
+
+        $('form [name="bGuardar"]').hide();
+        $('form [name="bCancel"]').hide();
+
+        $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
+        $('#bmDacord').on('click', function () {
+            $('#mdResultat').modal('hide');
+        });
+        $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
+
+        $('#bAfegir').on('click', function () {
+            if ($('#graus').val() !== "") {
+                $('#dNou').show("fast");
+                $('#bAfegir').prop('disabled', 'disabled');
+                $('#nouEstudi #idGrau').val($('#graus').val());
+
+                $('form [name="bEditar"]').prop('disabled', 'disabled');
+                $('form [name="bSuprimir"]').prop('disabled', 'disabled');
+            }
+        });
+
+        $('#nouEstudi').on('reset', function () {
+            $('#bAfegir').prop('disabled', false);
+            $('#dNou').hide("fast");
+            $('form [name="bEditar"]').prop('disabled', false);
+            $('form [name="bSuprimir"]').prop('disabled', false);
+        });
+
+        $('#nouEstudi').on('submit', function (event) {
+            event.preventDefault();
+            $('#mEsperaTitol').html('Afegint els estudis');
+            var val = $('#graus').val();
+            if (val != "") {
+                $('#mdEspera').on('shown.bs.modal', function (e) {
+
+                    estudisElegits = {codiEstudis: val, identificador: idAlumne, any: $('#anyNou').val(), nota: $('#notaNou').val()};
+                    $.ajax({
+                        method: 'POST',
+                        url: "estudis",
+                        data: estudisElegits
+                    }).done(function (dades) {
+                        $('#mrTitol').html('Actualització correcte');
+                        if (dades.quantitat >= 0) {
+                            $('#mrText').html("<p>{{etiquetes.correcte}}</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
+                        } else {
+                            $('#mrText').html("<p>{{etiquetes.correcte}}</p>");
+                        }
+                        $('#bmDacord').on('click', function () {
+                            window.location.href = "estudis?idOferta=" + idAlumne;
+                        });
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
+                        $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
+                        $('#bmDacord').on('click', function () {
+                            $('#mdResultat').modal('hide');
+                        });
+                    }).always(function () {
+                        $('#mdEspera').modal('hide');
+                        $('#mdResultat').modal('show');
+                    });
+                });
+                $('#mdEspera').modal('show');
+            }
+
+        });
+
+        //Suprimir
+        $('form [name="bSuprimir"]').on('click', function (event) {
+            var ident = event.currentTarget.id.replace('bSup', '');
+            var form = 'f' + ident;
+            estudisElegits = {codiEstudis: $('#' + form + ' [name="idGrau"]').val(), idAlumne: $('#' + form + ' [name="idAlumne"]').val(), nomEstudis: $('#' + form + ' [name="nomGrau"]').val()};
+            $('#mcTitol').html("Confirmi l'eliminació.");
+            $('#mcText').html("<p>Els estudis <em>" + $('#' + form + ' [name="nomGrau"]').val() + "</em> s'eliminaran de la seva llista.</p>");
+
+            $('#bcDacord').on('click', function () {
+                $('#mdConfirm').modal('hide');
+                $('#mdEspera').modal('show');
+                $('#mEsperaTitol').html("Realitzant l'eliminació.");
+                $('#mdEspera').modal('show');
+            });
+
+            $('#mdEspera').on('shown.bs.modal', function (e) {
+                $.ajax({
+                    method: 'DELETE',
+                    url: "estudis/" + estudisElegits.idAlumne + "/" + estudisElegits.codiEstudis,
+                    data: estudisElegits
+                }).done(function (dades) {
+                    $('#mrTitol').html('Eliminació correcta')
+                    if (dades.quantitat >= 0) {
+                        $('#mrText').html("<p>Els estudis <em>" + estudisElegits.nomEstudis + "</em> s'han esborrat correctament.</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
+                    } else {
+                        $('#mrText').html("<p>Els estudis <em>" + estudisElegits.nomEstudis + "</em> s'han esborrat correctament.</p>");
+                    }
+                    $('#bmDacord').on('click', function () {
+                        /* $("#bGuar" + contacte.idContacte).hide('fast');
+                         $("#bCan" + contacte.idContacte).hide('fast');
+                         $(".btn-primary").show('fast');
+                         $(".btn-danger").show('fast');
+                         */
+                        $('#mdResultat').modal('hide');
+                        location.reload();
+                    });
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'eliminació');
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
+                    $('#bmDacord').on('click', function () {
+                        $('#mdResultat').modal('hide');
+                    });
+                }).always(function () {
+                    $('#mdEspera').modal('hide');
+                    $('#mdResultat').modal('show');
+                });
+            });
+
+            $('#mdConfirm').modal('show');
+
+        });
+        //bCancel
+        $('#bcCancelar').on('click', function () {
+            $('#mdConfirm').modal('hide');
+        });
+
+        //bEditar
+        $('form [name="bEditar"]').on('click', function (event) {
+            var ident = event.currentTarget.id.replace('bEd', '');
+            var form = 'f' + ident;
+            $("#" + form + " input").prop('disabled', false);
+            $("form .btn-primary").hide('fast');
+            $("form .btn-danger").hide('fast');
+            $("#bGuar" + ident).show('fast');
+            $("#bCan" + ident).show('fast');
+            $("#bAfegir").prop('disabled', 'disabled');
+        });
+
+        //Cancel·lar
+        $('form [name="bCancel"]').on('click', function (event) {
+            var ident = event.currentTarget.id.replace('bCan', '');
+            var form = 'f' + ident;
+            $("#" + form + " input").prop('disabled', 'disabled');
+            $("form .btn-primary").show('fast');
+            $("form .btn-danger").show('fast');
+            $("#bGuar" + ident).hide('fast');
+            $("#bCan" + ident).hide('fast');
+            $("#bAfegir").prop('disabled', false);
+        });
+
+        //Modificar
+        $('form').not('#nouEstudi').submit(function (event) {
+            event.preventDefault();
+            estudisElegits = {};
+            $.each($('#' + event.target.id + ' [name]'), function (i, obj) {
+                estudisElegits[obj.name] = obj.value;
+            });
+
+            $('#' + event.target.id + ' [name]').prop('disabled', 'disabled');
+            $('#mEsperaTitol').html("Realitzant la modificació.");
+            $('#mdEspera').on('shown.bs.modal', function (e) {
+                $.ajax({
+                    method: 'PUT',
+                    url: "estudis/" + estudisElegits.idAlumne + "/" + estudisElegits.idGrau,
+                    data: estudisElegits
+                }).done(function (dades) {
+                    $('#mrTitol').html('Modificació correcta');
+                    if (dades.quantitat >= 0) {
+                        $('#mrText').html("<p>Les dades dels estudis <em>" + estudisElegits.nomEstudis + "</em> s'han modificat correctament.</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
+                    } else {
+                        $('#mrText').html("<p>Les dades dels estudis s'han modificat correctament.</p>");
+                    }
+                    $('#bmDacord').on('click', function () {
+                        $("#bGuar" + estudisElegits.idGrau).hide('fast');
+                        $("#bCan" + estudisElegits.idGrau).hide('fast');
+                        $(".btn-primary").show('fast');
+                        $(".btn-danger").show('fast');
+                        $("#bAfegir").prop('disabled', false);
+                        $('#mdResultat').modal('hide');
+
+                    });
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb la modificació')
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
+                    $('#bmDacord').on('click', function () {
+                        $('#mdResultat').modal('hide');
+                    });
+                }).always(function () {
+                    $('#mdEspera').modal('hide');
+                    $('#mdResultat').modal('show');
+                });
+            });
+
+            $('#mdEspera').modal('show');
+        });
+
+             $("#familia").on("change", function () {
+                $.ajax({
+                 method: 'GET',
+                  url: "/cicles/" + $('#familia').val()
+                 }).done(function (dades) {
+                     var opcions = '<option value="">Escull uns estudis</option>';
+                     var xifra='';
+                    for (var index in dades) {
+                        if(xifra!=dades[index].codi.charAt(3)){
+                            if(xifra!==''){
+                                opcions=opcions+'</optgroup>';
+                            }
+                            xifra=dades[index].codi.charAt(3);
+                            var indicador='';
+                            if(xifra==='1'){
+                                indicador='FP bàsica';
+                            }else if(xifra==='2'){
+                                indicador='Grau mitjà';
+                            }else{
+                                indicador='Grau superior';
+                            } 
+                            opcions=opcions+'<optgroup label="'+indicador+'">';
+                        }
+                        opcions=opcions+'</optgroup>';
+                        opcions = opcions + '<option value="' + dades[index].codi + '"> ' + dades[index].codi + ' - ' + dades[index].nom + '</option>';
+                    }
+                    $("#graus").html(opcions);
+                });
+            }); 
+    });
+</script>

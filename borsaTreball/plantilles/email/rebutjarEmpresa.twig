@@ -1,0 +1,11 @@
+{% extends "/email/baseEmail.twig" %}
+
+{% block contingut %}
+    <h1>Petició rebutjada.</h1>
+    <p>La seva sol·licitud d'alta a la borsa de treball del CIFP Pau Casesnoves s'ha rebutjat.</p>
+    <h2>L'empresa no s'ha pogut validar</h2>
+    <p>Els responsables de validar les empreses per els estudis als que va dirigida han rebutjat la seva sol·licitud per els següents motius:</p>
+    <p><strong>{{motius}}.</strong></p>
+    <p></p>
+    <p>L'equip de la borsa de treball</p>
+{%endblock%}

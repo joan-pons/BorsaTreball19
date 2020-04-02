@@ -1,0 +1,9 @@
+{% extends "/email/baseEmail.twig" %}
+
+{% block contingut %}
+    <p>Des de la borsa de treball del CIFP Pau Casesnoves et feim arribar aquesta oferta de treball.</p>
+    <p>Si t'interessa envia un correu electrònic amb les teves dades a l'adreça que apareix a l'apartat <em>Contacte amb l'empresa</em><p>
+    <p>Si no vols rebre més correus electrònics de la borsa de treball, per favor entra a l'aplicació web i marca el teu estat com a inactiu.</p>
+    <hr>
+        {{include('auxiliars/ofertaCompleta.html.twig')}}
+{% endblock %}

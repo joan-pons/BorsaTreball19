@@ -1,0 +1,120 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Validació d'usuaris</title>
+    <script>
+        $(document).ready(function () {
+            var dades;
+
+            $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#bmDacord').on('click', function () {
+                $('#mdResultat').modal('hide');
+            });
+            $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#mEsperaTitol').html('Realitzant les modificacions');
+            $('#mdEspera').on('shown.bs.modal', function (e) {
+
+                $.ajax({
+                    method: 'PUT',
+                    url: "/administrador/usuaris/" + dades.idProfessor,
+                    data: dades
+                }).done(function () {
+                    $('#mrTitol').html('Actualització correcte')
+                    $('#mrText').html("<p>Les dades s'han modificat correctament. El professor rebrà un correu amb el resultat de la validació.</p>");
+                    $('#bmDacord').on('click', function () {
+                        window.location.href = "usuarisPendents";
+                    });
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                    $('#bmDacord').on('click', function () {
+                        $('#mdResultat').modal('hide');
+                    });
+                }).always(function () {
+                    $('#mdEspera').modal('hide');
+                    $('#mdResultat').modal('show');
+                });
+            });
+
+            $(".btn-default").on('click', function () {
+                $(this).closest('form')[0].reset();
+                var id = event.target.id.replace("bCan", "");
+                if ($("#val" + id).is(':checked')) {
+                    $("#act" + id).prop('disabled', false);
+                } else {
+                    $("#act" + id).prop('disabled', 'disabled');
+                }
+            });
+
+            $("form").on('submit', function (event) {
+                event.preventDefault();
+                var f = event.target.id.replace('f', '');
+                dades = {};
+                dades['idProfessor'] = $('#idP' + f).val();
+                dades['actiu'] = $('#act' + f).is(':checked');
+                dades['validat'] = $('#val' + f).is(':checked');
+                $('#mdEspera').modal('show');
+            });
+
+            $('[name="validat"').on('change', function (event) {
+                var id = event.target.id.replace("val", "");
+                if ($("#" + event.target.id).is(':checked')) {
+                    $("#act" + id).prop('checked', true);
+                   // $("#act" + id).prop('disabled', false);
+                } else {
+                    $("#act" + id).prop('disabled', 'disabled');
+                    $("#act" + id).prop('checked', false);
+                }
+            });
+        });
+    </script>
+    <script src="../../js/dirtyForms.js"></script>
+{% endblock %}
+
+{% block navegacio %}
+    <a class="navbar-brand" href="/professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Validar usuaris pendents</a></li>
+        <li><a href="usuaris">Activar / validar usuari</a></li>
+        <li><a href="administrador">Rol administrador</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
+    </ul>
+
+{% endblock %}                     
+
+{% block contingut %}
+    <h2>Validar usuaris pendents</h2>
+    {% if companys is empty %}
+        <div class='well'>
+            <p> No hi ha companys pendents de validació.</p>                 
+        </div>
+    {% else %}
+        {% for company in companys %}
+            <form id="f{{ company.idProfessor }}">
+                <input type="hidden" name="idProfessor" id="idP{{ company.idProfessor }}" value="{{ company.idProfessor }}">
+                <div class="well click"  id="prof{{ company.idProfessor }}">
+                    <div class='row'>
+                        <div class='col-md-6'>
+                            <p><label>Nom: &nbsp;</label>{{ company.llinatges }}, {{ company.nom }} </p>
+                            <p><label>Correu electrònic: &nbsp;</label>{{ company.email }}</p>
+                            <p><label>Telèfon: &nbsp;</label>{{ company.telefon }}</p>
+                            <p><label>Validat: &nbsp;<input id="val{{ company.idProfessor }}" name="validat" type="checkbox" {%if company.validat %} checked {% endif %}></label></p>
+                            <p><label data-toggle="tooltip" title="No es pot activar si no està validat">Actiu: &nbsp;<input id="act{{ company.idProfessor }}" name="actiu" type="checkbox" disabled="disabled"></label></p>
+                        </div>
+                        <div class='col-md-6'>
+                            <p>En validar el professor ja es marcarà com a <em>actiu</em>.</p>
+                            <p>Si no vol validar el professor deixi la casella <em>Validat</em> sense marcar i pitgi <em>Guardar</em></p>
+                            <button class="btn btn-success" type="submit" id="bGuar{{company.idProfessor}}">Guardar</button>
+                            <button class="btn btn-default" type="button" id="bCan{{ company.idProfessor }}">Netejar formulari</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% endfor %}
+    {% endif %}
+    {{include('auxiliars/modals.html.twig')}}
+{% endblock %}  

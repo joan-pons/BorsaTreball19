@@ -1,0 +1,33 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Estudis {{ actor.nom }} {{actor.llinatges }}</title>
+{% endblock %}
+
+{% block navegacio %}
+    <a class="navbar-brand" href="dashBoard">{{ actor.nom }} {{actor.llinatges }}</a>
+</div>
+
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav">
+        <li><a href="modificarDades">Actualitzar dades</a></li>
+        <li><a href="canviarContrasenya">Canviar contrasenya</a></li>
+        <li><a href="estudis">Estudis acabats</a></li>
+        <li class="active"><a href="#">Idiomes</a></li>
+        <li><a href="estatLaboral" id="mEstats">Situació laboral</a></li>
+        <!--<li><a href="formacio">Altra formació</a></li>-->
+    </ul>
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
+    </ul>
+{% endblock %}                     
+
+{% block contingut %}
+
+    {{include('auxiliars/formIdiomes.html.twig')}}
+
+{% endblock %}  
+
+
+
+

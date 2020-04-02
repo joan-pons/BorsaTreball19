@@ -1,0 +1,14 @@
+{% extends "/email/baseEmail.twig" %}
+
+{% block contingut %}
+    <h1>Rol administrador.</h1>
+    {% if (administrador) %}
+        <p>A partir d'ara té activat el rol d'administrador. Amb ell pot validar i activar els usuaris dels altres
+            professors, i assignar o llevar el rol d'administrador a d'altres usuaris.</p>
+    {% else %}
+        <p>A partir d'ara té desactivat el rol d'administrador. Ja no pot validar i activar els usuaris dels altres
+            professors, ni assignar o llevar el rol d'administrador a d'altres usuaris.</p>
+    {% endif %}
+    <p></p>
+    <p>L'equip de la borsa de treball</p>
+{% endblock %}

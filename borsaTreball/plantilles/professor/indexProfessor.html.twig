@@ -1,0 +1,33 @@
+{% extends "auxiliars/base.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Professors</title>
+
+{% endblock %}
+
+{% block navegacio %}
+    <a class="navbar-brand" href="#">Professor</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="altaProfessor"><span class="glyphicon glyphicon-plus"></span> Sol·licitar l'alta</a></li>
+        <!--<li id="ajuda"><a href="#"><span class="glyphicon glyphicon-question-sign"></span> Ajuda</a></li>-->
+    </ul>
+{% endblock %}                     
+
+{% block contingut %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Professorat</h3>
+            <p>La tasca principal del professorat és validar les ofertes que les empreses volen publicar abans de fer-les arribar als alumnes graduats, més que res per evitar que s’enviïn ofertes inadequades en nom del Pau.</p>
+            <p>Per això els professors que hi vulguin treballar s’hauran de donar d’alta i assignar-se els estudis dels quals vulguin validar les ofertes. Una vegada una empresa publiqui una oferta relacionada amb algun d’aquests cicles formatius rebrà un correu electrònic demanant-li que la validi. Si ho fa, els candidats rebran l’oferta de treball per correu electrònic. Si la rebutja, s’avisarà a l’empresa del motiu del rebuig.</p>
+            <p>Si encara no ho ha fet, cliqui l'opció <em>Sol·licitar alta</em> per a començar.</p>
+        </div><!--col-->
+        <div class="col-md-4">
+            {{include('auxiliars/login.html.twig')}}
+        </div><!--col-->
+
+    </div><!--row-->
+
+{% endblock %}                     

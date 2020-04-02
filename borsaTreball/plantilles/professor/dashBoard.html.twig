@@ -1,0 +1,155 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Professor</title>
+
+    <script>
+        $(document).ready(function () {
+            $("#dProfessor").click(function () {
+                $("#mActualitza")[0].click();
+            });
+            $("#dEstudis").click(function () {
+                $("#mEstudis")[0].click();
+            });
+            $('#ofertes > .click').on('click', function (event) {
+                var id = event.currentTarget.id;
+                window.location.href = "ofertes#" + id;
+            });
+            {% if professor.usuari.teRol(40) %}
+            $('#professors > .click').on('click', function (event) {
+                var id = event.currentTarget.id;
+                window.location.href = "/administrador/usuarisPendents#" + id;
+            });
+            {% endif %}
+            $('#empreses > .click').on('click', function (event) {
+                var id = event.currentTarget.id;
+                window.location.href = "/professor/empresesPendents#" + id;
+            });
+
+        });
+    </script>
+{% endblock %}
+
+{% block navegacio %}
+<a class="navbar-brand" href="#l">{{ professor.nom }} {{ professor.llinatges }}</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav">
+        <li><a href="modificarDades" id="mActualitza">Actualitzar dades</a></li>
+        <li><a href="canviarContrasenya" id="mContrasenya">Canviar contrasenya</a></li>
+        {% if professor.actiu %}
+            <li><a href="estudis" id="mEstudis">Estudis</a></li>
+            {% if not professor.estudis is empty %}
+                <li><a href="ofertes">Ofertes</a></li>
+            {% endif %}
+            {% if usuari.teRol(40) %}
+                <li><a href="/administrador/usuaris">Usuaris</a></li>
+            {% endif %}
+            <li><a href="empresesPendents">Empreses</a></li>
+        {% endif %}
+    </ul>
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
+    </ul>
+    {% endblock %}
+
+    {% block contingut %}
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Dades personals</h3>
+                <div class="well click" id="dProfessor">
+                    <p><label>Nom: &nbsp;</label>{{ professor.nom }}</p>
+                    <p><label>Llinatges: &nbsp;</label>{{ professor.llinatges }}</p>
+                    <p><label>Correu electrònic: &nbsp;</label>{{ professor.email }}</p>
+                    <p><label>Telèfon: &nbsp;</label>{{ professor.telefon }}</p>
+                    <p><label>Actiu: &nbsp;</label><span
+                                class="glyphicon {% if professor.actiu %}glyphicon-ok{% else %}glyphicon-remove{% endif %}"></span>
+                    </p>
+                </div>
+                {% if not professor.estudis is empty or not usuari.teRol(40) %}
+                    {% if professor.actiu %}
+                        <h3>Estudis dels que es responsable</h3>
+                        {% if professor.estudis is empty %}
+                            <div class='well'>
+                                <p> Encara no és responsable de cap estudis.</p>
+                            </div>
+                        {% else %}
+                            <div class="well click" id="dEstudis">
+                                <ul>
+                                    {% for estudis in professor.estudis %}
+                                        <li><p>{{ estudis.nom }}</p></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div><!--col-->
+            {% if professor.actiu %}
+                <div class="col-md-4">
+                    {% if usuari.teRol(40) %}
+                        <div id="professors">
+                            <h3>Professors/res per validar</h3>
+                            {% if companys is empty %}
+                                <div class='well'>
+                                    <p> No hi ha companys pendents de validació.</p>
+                                </div>
+                            {% else %}
+                                {% for company in companys %}
+                                    <div class="well click" id="prof{{ company.idProfessor }}">
+                                        <p><label>Nom: &nbsp;</label>{{ company.llinatges }}, {{ company.nom }} </p>
+                                        <p><label>Correu electrònic: &nbsp;</label>{{ company.email }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {#                    {% if usuari.teRol(40) %}#}
+                    <div id='empreses'>
+                        <h3>Empreses pendents de validar</h3>
+                        {% if empreses is empty %}
+                            <div class="well">
+                                <p>No hi ha cap empresa pendent de validació.</p>
+                            </div>
+                        {% else %}
+                            {% for empresa in empreses %}
+                                <div class="well click" id='emp{{ empresa.idEmpresa }}'>
+                                    <p><label>Empresa: &nbsp;</label>{{ empresa.nom }}</p>
+                                    <p><label>Data de la sol·licitud:
+                                            &nbsp;</label>{{ empresa.dataAlta | date('d/m/Y') }}</p>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    {#                    {% endif %}#}
+
+                </div><!--col-->
+
+                <div class="col-md-4">
+
+                    {% if not  ofertes is empty  or not usuari.teRol(40) %}
+                        <h3>Ofertes pendents de validar</h3>
+                        {% if ofertes is empty %}
+                            <div class="well">
+                                <p>No hi ha cap oferta pendent de validació.</p>
+                            </div>
+                        {% else %}
+                            <div id="ofertes">
+                                {% for oferta in ofertes %}
+                                    <div class="well click" id="of{{ oferta.idOferta }}">
+                                        <p><label>Oferta: &nbsp;</label>{{ oferta.titol }}</p>
+                                        <p><label>Data de la sol·licitud:
+                                                &nbsp;</label>{{ oferta.dataPublicacio | date('d / m / Y') }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div><!--col-->
+            {% endif %}
+        </div><!--row-->
+        {{ include('auxiliars/modals.html.twig') }}
+
+    {% endblock %}
+
+

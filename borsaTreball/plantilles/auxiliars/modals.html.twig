@@ -1,0 +1,62 @@
+<!--modal espera -->
+<div id="mdEspera" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" id="mEsperaTitol">Realitzant l'alta</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar"
+                         style="width:100%">
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!--modal resultat -->
+<div id="mdResultat" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="mrTitol">Realitzant l'alta</h4>
+            </div>
+            <div class="modal-body">
+                <div id="mrText"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="bmDacord" type="button" class="btn btn-primary">D'acord</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--modal confirm -->
+<div id="mdConfirm" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="mcTitol">Realitzant l'alta</h4>
+            </div>
+            <div class="modal-body">
+                <div id="mcText">&nbsp;</div>
+            </div>
+            <div class="modal-footer">
+                <button id="bcDacord" type="button" class="btn btn-primary">D'acord</button>
+                <button id="bcCancelar" class="btn btn-default" type="button">Cancel·lar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+$(document).ready(function(){
+    $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
+    $('#mdConfirm').modal({backdrop: 'static', keyboard: false, show: false});
+    $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});    
+});
+</script>
