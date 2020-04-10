@@ -2,22 +2,57 @@
 
 namespace Borsa;
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
 use Borsa\Alumne as Alumne;
+use Correu\Bustia;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Description of DaoProfessor
  *
  * @author joan
  */
-class DaoAlumne extends Dao {
+class DaoAlumne extends Dao
+{
 
-    public function modificarDades(Request $request, Response $response, $args, \Slim\Container $container) {
+    public function altaAlumne(Request $request, Response $response, \Slim\Container $container)
+    {
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
-            $alumne = Alumne::find($args['idAlumne']);
+            $alumne = new Alumne;
+            $alumne->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $alumne->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $alumne->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+            $alumne->estudisAlta = filter_var($data['cicle'], FILTER_SANITIZE_EMAIL);
+            $alumne->actiu = 0;
+            $alumne->save();
+            $estudis = Estudis::find($alumne->estudisAlta);
+            Bustia::enviar($estudis->professors, "Validació d'alumnes pendent", 'email/validarUsuari.html.twig', [], $container);
+            $missatge = array("missatge" => 'Alta correcta.');
+            return $response->withJson($missatge);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades de l'alumne no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public function modificarDades(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $alumne = Alumne::find(filter_var($args['idAlumne'], FILTER_SANITIZE_NUMBER_INT));
             if ($alumne != null) {
                 $alumne->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $alumne->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
@@ -39,20 +74,21 @@ class DaoAlumne extends Dao {
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
-                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 default:
-                    $missatge = array("missatge" => "Les dades de l'alumne no s'han pogut modificar correctament.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Les dades de l'alumne no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
             }
             return $response->withJson($missatge, 422);
         }
     }
 
-    public function afegirEstudis(Request $request, Response $response, \Slim\Container $container) {
+    public function afegirEstudis(Request $request, Response $response, \Slim\Container $container)
+    {
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
@@ -69,20 +105,21 @@ class DaoAlumne extends Dao {
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
-                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 default:
-                    $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la teva llista.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la teva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
             }
             return $response->withJson($missatge, 422);
         }
     }
 
-    public function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container) {
+    public function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    {
         try {
             $container->dbEloquent;
 
@@ -97,20 +134,21 @@ class DaoAlumne extends Dao {
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
-                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 default:
-                    $missatge = array("missatge" => "No s'ha pogut dur a terme l'eliminació.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "No s'ha pogut dur a terme l'eliminació.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
             }
             return $response->withJson($missatge, 422);
         }
     }
 
-    public function modificarEstudis(Request $request, Response $response, $args, \Slim\Container $container) {
+    public function modificarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    {
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
@@ -126,20 +164,21 @@ class DaoAlumne extends Dao {
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
-                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 default:
-                    $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la teva llista.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la teva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
             }
             return $response->withJson($missatge, 422);
         }
     }
 
-    public function modificarIdiomes(Request $request, Response $response, $args, \Slim\Container $container) {
+    public function modificarIdiomes(Request $request, Response $response, $args, \Slim\Container $container)
+    {
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
@@ -162,20 +201,21 @@ class DaoAlumne extends Dao {
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info'=>$ex->getCode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getCode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
-                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info'=>$ex->getCode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getCode() . ' ' . $ex->getMessage());
                     break;
                 default:
-                    $missatge = array("missatge" => "Els idiomes no s'han pogut modificar correctament a la teva llista.", 'info'=>$ex->getCode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Els idiomes no s'han pogut modificar correctament a la teva llista.", 'info' => $ex->getCode() . ' ' . $ex->getMessage());
                     break;
             }
             return $response->withJson($missatge, 422);
         }
     }
 
-    public function modificarEstatLaboral(Request $request, Response $response, $args, \Slim\Container $container) {
+    public function modificarEstatLaboral(Request $request, Response $response, $args, \Slim\Container $container)
+    {
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
@@ -198,13 +238,48 @@ class DaoAlumne extends Dao {
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
-                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 default:
-                    $missatge = array("missatge" => "Els estats laborals no s'han pogut afegir correctament a la teva llista.", 'info'=>$ex->getcode().' '.$ex->getMessage());
+                    $missatge = array("missatge" => "Els estats laborals no s'han pogut afegir correctament a la teva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public function validarAlumnes(Request $request, Response $response, $args, \Slim\Container $container, $professor)
+    {
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $resultats=array();
+            foreach ($data as $alu) {
+                $nou = filter_var($alu['validat'], FILTER_SANITIZE_NUMBER_INT);
+                if ($nou != 0) {
+                    $alumne = Alumne::find(filter_var($alu['idAlumne'], FILTER_SANITIZE_NUMBER_INT));
+                    $alumne->validat = $nou;
+                    $alumne->profValidat = $professor->idProfessor;
+                    $alumne->save();
+                    $resultat = Bustia::enviarUnic($alumne->email, 'Validació a la borsa de treball del Pau Casesnoves', "/email/resultatValidacioAlumne.html.twig", ['alumne' => $alumne, 'contrasenya'=>$alumne->getUsuari()->contrasenya], $container);
+                    $resultats[]=array("email"=>$alumne->email, "resultat"=>$resultat);
+                }
+            }
+            $missatge=array("missatge"=>"OK");
+            return $response->withJson($resultats);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Els estats laborals no s'han pogut afegir correctament a la teva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
             }
             return $response->withJson($missatge, 422);

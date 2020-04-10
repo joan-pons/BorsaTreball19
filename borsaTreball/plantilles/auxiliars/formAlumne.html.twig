@@ -21,62 +21,42 @@
                             <label for="email" class='control-label'>Correu electrònic:</label>
                             <input type="email" required="required" class="form-control" id="email" name="email"
                                    maxlength="75" value="{{ alumne.email }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="Telefon">Teléfon:</label>
-                            <input type="text" class="form-control" id="telefon" name="telefon" maxlength="9"
-                                   value="{{ alumne.telefon }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="url" class='control-label'>url:</label>
-                            <input type="text" class="form-control" id="url" name="url" maxlength="150"
-                                   value="{{ alumne.url }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="Actiu">Estat a la borsa:</label>
-                            <div>
-                                <label class="radio-inline"><input type="radio" id="Actiu" name="actiu" value="true"
-                                                                   {% if alumne.actiu==true %}checked="checked"{% endif %}>
-                                    Actiu</label>
-                                <label class="radio-inline"><input type="radio" id="Inactiu" name="actiu" value="false"
-                                                                   {% if alumne.actiu==false %}checked="checked"{% endif %}>
-                                    Inactiu</label>
-                            </div>
+                            <p class="notes">El correu electrònic serà el vostre nom d'usuari i el mitjà de comunicació
+                                de la borsa de treball amb tu.</p>
+                            <p class="notes">No pot ser una adreça del pau.</p>
                         </div>
                     </div><!--col-->
 
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="adreca">Adreca:</label>
-                            <input type="text" class="form-control" id="adreca" name="adreca" maxlength="100"
-                                   value="{{ alumne.adreca }}">
+                        <div class='row'>
+                            <div class="form-group">
+                                <label for="familia">Família professional</label>
+
+                                <select class="form-control" id="familia">
+                                    <option value="">Escull una família professional</option>
+                                    {% for familia in families %}
+                                        <option value="{{ familia.id }}">{{ familia.nom }} ({{ familia.id }} )</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="codiPostal">Codi postal:</label>
-                            <input type="text" class="form-control" id="codiPostal" name="codiPostal" maxlength="5"
-                                   value="{{ alumne.codiPostal }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="localitat">Localitat:</label>
-                            <input type="text" class="form-control" id="localitat" name="localitat" maxlength="45"
-                                   value="{{ alumne.localitat }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="provincia">Provincia:</label>
-                            <input type="text" class="form-control" id="provincia" name="provincia" maxlength="45"
-                                   value="{{ alumne.provincia }}">
-                        </div>
+                        <div class="row">
+                            <div class="form-group required">
+                                <label for="cicles" class="control-label">Estudis disponibles:</label>
+                                <select class="form-control" id="cicles" name="cicle" required="required">
+                                    <option value="">Escull uns estudis</option>
+                                    {% for grau in estudis %}
+                                        <option value="{{ grau.codi }}">{{ grau.codi }} - {{ grau.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p class="notes">Has de seleccionar els estudis que has acabat ara.</p>
+                            </div>
+                        </div><!--row-->
+
                     </div><!--col-->
                 </div><!--row -->
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="textOferta">Descripció de l'alumne: </label>
-                            <div id="textDescripcio">{{ alumne.descripcio | raw }}</div>
-                        </div>
-                    </div><!--col -->
-                </div> <!--Row -->
             </div> <!--Col8 -->
             <div class="col-md-4">
 
@@ -102,5 +82,33 @@
 
     </form>
 </div><!--well-->
+<script src="../js/dirtyForms.js"></script>
+<script>
+    $('#formAlumne').submit(function (event) {
+        event.preventDefault();
+
+        var errors = "";
+        if ($("#nom").val().trim().length < 1) {
+            errors += "<p>El camp nom no pot ser buid.</p>";
+        }
+        if ($("#llinatges").val().trim().length < 1) {
+            errors += "<p>El camp Llinatges no pot ser buid.</p>";
+        }
+        if ($("#email").val().trim().length < 1) {
+            errors += "<p>El camp correu electrònic no pot ser buid.</p>";
+        }
+        if ($("#email").val().indexOf('@paucasesnovescifp.cat') >= 0) {
+            errors += "<p>El correu electrònic no pot ser del domini <em>@paucasesnovescifp.cat</em></p>";
+        }
+
+        if (errors === "") {
+            $('#mdEspera').modal('show');
+        } else {
+            $('#mrTitol').html("Atenció!")
+            $('#mrText').html(errors);
+            $('#mdResultat').modal('show');
+        }
+    });
+</script>
 
 {{ include('auxiliars/modals.html.twig') }}

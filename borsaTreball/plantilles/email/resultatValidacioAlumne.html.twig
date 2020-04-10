@@ -1,0 +1,36 @@
+{% extends "/email/baseEmail.twig" %}
+
+{% block contingut %}
+    {% if alumne.validat == 1 %}
+        <h1>Validació correcta.</h1>
+        <p>La teva sol·licitud d'alta a la borsa de treball del CIFP Pau Casesnoves s'ha valorat positivament.</p>
+        <p>A partir d'ara podràs començar a utilitzar-la.</p>
+        <h2>Instruccions d'accés</h2>
+        <p>Per entrar a l'aplicació, al formulari d'entrada has de posar les següents dades:</p>
+        <ul>
+            <li><p><label>Nom d'usuari:</label> {{ alumne.email }}</p></li>
+            <li><p><label>Contrasenya:</label> {{ contrasenya }}</p></li>
+        </ul>
+        <h2>Començar</h2>
+        <ul>
+            <li> Una vegada hagis entrat a la barra de navegació trobaràs una opció per canviar la contrasenya. Es
+                recomanable que
+                ho facis com més aviat millor.
+            </li>
+            <li> Per poder començar a rebre ofertes has d'entrar a l'apartat <em>Actualitzar dades</em> i canviar
+                l'estat a
+                <em>Actiu</em>.
+            </li>
+            <li>Completa les dades del teu perfil, sobre tot els teus estudis acabats. Només rebràs ofertes dels estudis
+                que
+                tenguis guardats a l'aplicació. Si no tens cap cicle guardat no rebràs cap oferta.
+            </li>
+            <li>Falsificar les dades pot comportar l'eliminació del teu perfil de l'aplcició-</li>
+        </ul>
+    {% elseif alumne.validat==2 %}
+        <h1>Petició rebutjada</h1>
+        <p>La seva petició per formar part de la borsa de treball del Pau Casesnoves ha estat rebutjada.</p>
+    {% endif %}
+    <p></p>
+    <p>L'equip de la borsa de treball</p>
+{% endblock %}

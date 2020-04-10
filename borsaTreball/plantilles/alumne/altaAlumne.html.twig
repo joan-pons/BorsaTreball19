@@ -1,0 +1,87 @@
+ {% extends "auxiliars/base.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Alta Alumne</title>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#bmDacord').on('click', function () {
+                $('#mdResultat').modal('hide');
+            });
+            $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#mdEspera').on('shown.bs.modal', function (e) {
+                var alumne = {};
+                $.each($('#formAlumne [name]'), function (i, obj) {
+                    alumne[obj.name] = obj.value;
+                });
+                $.post("/altaAlumne", alumne, function () {
+                    $('#mrTitol').html('Alta realitzada correctament')
+                    $('#mrText').html("<p>En uns dies rebrà un correu electrònic amb la confirmació de l'alta i les instruccions per començar.</p>");
+                    $('#bmDacord').on('click', function () {
+                        window.location.href = "professorLogin";
+                    });
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                    $('#bmDacord').on('click', function () {
+                        $('#mdResultat').modal('hide');
+                    });
+                }).always(function () {
+                    $('#mdEspera').modal('hide');
+                    $('#mdResultat').modal('show');
+                });
+            });
+
+            $("#familia").on("change", function () {
+                $.ajax({
+                    method: 'GET',
+                    url: "/cicles/" + $('#familia').val()
+                }).done(function (dades) {
+                    var opcions = '<option value="">Escull uns estudis</option>';
+                    var xifra='';
+                    for (var index in dades) {
+                        if(xifra!=dades[index].codi.charAt(3)){
+                            if(xifra!==''){
+                                opcions=opcions+'</optgroup>';
+                            }
+                            xifra=dades[index].codi.charAt(3);
+                            var indicador='';
+                            if(xifra==='1'){
+                                indicador='FP bàsica';
+                            }else if(xifra==='2'){
+                                indicador='Grau mitjà';
+                            }else{
+                                indicador='Grau superior';
+                            }
+                            opcions=opcions+'<optgroup label="'+indicador+'">';
+                        }
+                        opcions=opcions+'</optgroup>';
+                        opcions = opcions + '<option value="' + dades[index].codi + '"> ' + dades[index].codi + ' - ' + dades[index].nom + '</option>';
+                    }
+                    $("#cicles").html(opcions);
+                });
+            });
+
+        });
+    </script>
+{% endblock %}
+
+{% block navegacio %}
+
+    <a class="navbar-brand" href="alumneLogin">Alumne</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="alumneLogin"><span class="glyphicon glyphicon-log-out"></span> Tornar</a></li>
+    </ul>
+
+{% endblock %}                     
+
+{% block contingut %}
+
+    {{include('auxiliars/formAlumne.html.twig')}}
+
+{% endblock %}          

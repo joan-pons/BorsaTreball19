@@ -124,7 +124,7 @@ $app->get('/ajuda/{idAjuda}', function ($request, $response, $args) {
 $app->get('/cicles/{idFamilia}', function ($request, $response, $args) {
     return Dao::ciclesFamilia($request, $response, $args, $this);
 });
-
+/*
 $app->get('/mailing', function ($request, $response, $args) {
     $this->dbEloquent;
     $oferta = Oferta::find(1);
@@ -156,7 +156,7 @@ $app->get('/provaMailOferta/{idOferta}', function (Request $request, Response $r
         return $response->withJSON('Errada: ' . $_SESSION);
     }
 });
-
+*/
 
 //  //////////////////////////////////////////////////////////
 // //////////////////                       /////////////////
@@ -441,6 +441,21 @@ $app->get('/alumneLogin', function ($request, $response, $args) {
     return $this->view->render($response, 'alumne/indexAlumne.html.twig', ['tipus' => 30]);
 });
 
+//Alta Alumne
+$app->get('/altaAlumne', function ($request, $response, $args) {
+    $this->dbEloquent;
+    $families = Familia::orderBy('nom', 'ASC')->get();
+    $estudis = Estudis::orderBy('nom', 'ASC')->get();
+
+    return $this->view->render($response, 'alumne/altaAlumne.html.twig', ['families' => $families, 'estudis' => $estudis]);
+});
+
+$app->post('/altaAlumne', function ($request, $response) {
+    return DaoAlumne::altaAlumne($request, $response, $this);
+
+});
+
+
 $app->group('/alumne', function () {
     $this->get('/dashBoard', function ($request, $response, $args) {
         $this->dbEloquent;
@@ -628,8 +643,11 @@ $app->group('/professor', function () {
             $professor = $usuari->getEntitat();
             $ofertes = array();
             $empreses = array();
+            $alumnes = array();
 
+            $alumnesPendents = Alumne::where('validat', 0)->get();
             $empresesPendents = Empresa::where('Validada', 0)->where('rebuig', null)->orderBy('DataAlta', 'ASC')->orderBy('Nom', 'ASC')->get();
+
             foreach ($professor->estudis as $estudis) {
                 foreach ($estudis->ofertes as $oferta) {
                     if ($oferta->dataPublicacio != null && $oferta->validada == 0) {
@@ -641,19 +659,23 @@ $app->group('/professor', function () {
                         $empreses[] = $empresa;
                     }
                 }
+                foreach ($alumnesPendents as $alumne) {
+                    if ($alumne->estudisAlta == $estudis->codi) {
+                        $alumnes[] = $alumne;
+                    }
+                }
 
             }
 
             $companys = null;
             if ($usuari->teRol(40)) {
-                $companys = Professor::orderBy('llinatges', 'ASC')->orderBy('nom','ASC')->get();
+                $companys = Professor::orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             }
-            return $this->view->render($response, 'professor/dashBoard.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes]);
+            return $this->view->render($response, 'professor/dashBoard.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes'=>$alumnes]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
     });
-
 
     $this->get('/modificarDades', function ($request, $response, $args) {
         $this->dbEloquent;
@@ -752,20 +774,20 @@ $app->group('/professor', function () {
     $this->get('/empresesPendents', function ($request, $response, $args) {
         $this->dbEloquent;
         $usuari = Usuari::find($_SESSION['idUsuari']);
-        $estudis=null;
-        $families=null;
+        $estudis = null;
+        $families = null;
         if ($usuari != null) {
             $prof = $usuari->getEntitat();
             $empreses = null;
-            if($usuari->teRol(40)) {
+            if ($usuari->teRol(40)) {
                 $empreses = Empresa::where('validada', 0)->where('rebuig', null)->orderBy('dataAlta', 'ASC')->orderBy('nom', 'ASC')->get();
-            }else{
-                $estudis=$prof->estudis;
-                $families=[];
-                foreach ($estudis as $e){
-                    $families[]=$e->familia;
+            } else {
+                $estudis = $prof->estudis;
+                $families = [];
+                foreach ($estudis as $e) {
+                    $families[] = $e->familia;
                 }
-                $families=array_unique($families, SORT_STRING);
+                $families = array_unique($families, SORT_STRING);
                 $empreses = Empresa::whereIn('familia', $families)->where('validada', 0)->where('rebuig', null)->orderBy('dataAlta', 'ASC')->orderBy('nom', 'ASC')->get();
             }
             return $this->view->render($response, 'professor/empresesPendents.html.twig', ['professor' => $prof, 'usuari' => $usuari, 'empreses' => $empreses, 'families' => $families, 'estudis' => $estudis]);
@@ -778,7 +800,42 @@ $app->group('/professor', function () {
         return DaoEmpresa::validar($request, $response, $args, $this);
     });
 
-})->add(function ($request, $response, $next) {
+    $this->get("/alumnesPendents", function($request, $response, $args){
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION["idUsuari"]);
+        if ($usuari != null) {
+            $professor = $usuari->getEntitat();
+            $alumnes = array();
+
+            $alumnesPendents = Alumne::where('validat', 0)->get();
+
+            foreach ($professor->estudis as $estudis) {
+                foreach ($alumnesPendents as $alumne) {
+                    if ($alumne->estudisAlta == $estudis->codi) {
+                        $alumnes[] = $alumne;
+                    }
+                }
+
+            }
+
+            return $this->view->render($response, 'professor/alumnesPendents.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'alumnes'=>$alumnes]);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
+
+    $this->put("/alumnesPendents", function($request, $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION["idUsuari"]);
+        if ($usuari != null) {
+            $professor = $usuari->getEntitat();
+            return DaoAlumne::validarAlumnes($request, $response, $args, $this, $professor);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
+
+    })->add(function ($request, $response, $next) {
     if (in_array(10, $_SESSION['rols']) || in_array(40, $_SESSION['rols'])) {
         return $response = $next($request, $response);
     } else {
@@ -799,7 +856,7 @@ $app->group('/administrador', function () {
             $prof = $usuari->getEntitat();
             $companys = null;
             if ($usuari->teRol(40)) {
-                $companys = Professor::where('validat', 0)->orderBy('llinatges', 'ASC')->orderBy('nom','ASC')->get();
+                $companys = Professor::where('validat', 0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             }
             return $this->view->render($response, 'professor/usuarisPendents.html.twig', ['professor' => $prof, 'companys' => $companys]);
         } else {
@@ -821,7 +878,7 @@ $app->group('/administrador', function () {
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
             $prof = $usuari->getEntitat();
-            $companys = Professor::orderBy('llinatges', 'ASC')->orderBy('nom','ASC')->get();
+            $companys = Professor::orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             return $this->view->render($response, 'professor/usuaris.html.twig', ['professor' => $prof, 'companys' => $companys]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
@@ -833,7 +890,7 @@ $app->group('/administrador', function () {
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
             $prof = $usuari->getEntitat();
-            $companys = Professor::where('validat',1)->where('actiu',1)->orderBy('llinatges', 'ASC')->orderBy('nom','ASC')->get();
+            $companys = Professor::where('validat', 1)->where('actiu', 1)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             return $this->view->render($response, 'professor/administrador.html.twig', ['professor' => $prof, 'companys' => $companys]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);

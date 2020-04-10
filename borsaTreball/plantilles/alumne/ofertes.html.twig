@@ -16,12 +16,11 @@
     </ul>
 {% endblock %}
 {% block contingut %}
-    <h2>Ofertes</h2>
+    <h2>Ofertes que t'han arribat</h2>
     {% for oferta in actor.ofertes %}
         <div class="well" id="of{{oferta.idOferta}}">
             {{include('auxiliars/ofertaCompleta.html.twig')}}
         </div>
     {% endfor %}
-
     {{include('auxiliars/modals.html.twig')}}
 {% endblock %}
