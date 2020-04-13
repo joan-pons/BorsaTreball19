@@ -30,8 +30,9 @@ $config['addContentLengthHeader'] = false;
 
 $config['db']['driver'] = "mysql";
 $config['db']['host'] = "localhost";
-$config['db']['username'] = "usuariWeb";
-$config['db']['password'] = "seCret_16";
+
+require("incloure/login.php");
+
 $config['db']['database'] = "borsa";
 $config['db']['charset'] = "utf8";
 $config['db']['collation'] = "utf8_unicode_ci";
@@ -88,7 +89,7 @@ $container['mailer'] = function ($container) {
 //    $mailer->Username = 'modem.colonia@gmail.com';    // I set sender email in my mailer call
     $mailer->Username = 'borsa.treball@paucasesnovescifp.cat';    // I set sender email in my mailer call
 
-    require("mail/password.php");
+    require("incloure/password.php");
 
     $mailer->isHTML(true);
     $mailer->SMTPDebug = 0; //4; //SMTP::DEBUG_SERVER;

@@ -6,7 +6,7 @@
     {% set action='alumne/dashBoard' %}
 {% endif %}
 <div class="well">
-    <form id="fLogin" action="{{ action }}" method="GET">
+    <form id="fLogin" action="{{ action }}" method="POST">
         <input type="hidden" id="tipus" name="tipus" value="{{tipus}}">
         <div class="form-group">
             <label for="email">Email:</label>
@@ -24,8 +24,6 @@
 <script>
     $(document).ready(function () {
 
-
-
         $("#fLogin").on('submit', function (event) {
             event.preventDefault();
             var dadesLogin;
@@ -33,7 +31,7 @@
             $('#mEsperaTitol').html('Validant l\'usuari');
             $('#mdEspera').on('shown.bs.modal', function (e) {
                 $.ajax({
-                    method: 'GET',
+                    method: 'POST',
                     url: "/login",
                     data: dadesLogin
                 }).done(function () {
