@@ -141,6 +141,14 @@ $app->get('/restablirContrasenya', function ($request, $response, $args) {
 $app->put('/restablirContrasenya/{token}', function ($request, $response, $args) {
     return Dao::restablirContrasenya($request, $response, $args, $this);
 });
+$app->get('/sha', function ($request, $response, $args) {
+    $this->dbEloquent;
+    $usuaris=Usuari::all();
+    foreach ($usuaris as $usuari){
+        $usuari->contrasenya=password_hash('123456789',PASSWORD_DEFAULT);
+        $usuari->save();
+    }
+});
 /*
 $app->get('/mailing', function ($request, $response, $args) {
     $this->dbEloquent;

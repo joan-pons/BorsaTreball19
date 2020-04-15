@@ -29,8 +29,8 @@ class Dao
         $container->dbEloquent;
         $data = $request->getParsedBody();
 
-        $usuari = Usuari::where('nomUsuari', filter_var($data['nomUsuari'], FILTER_SANITIZE_EMAIL))->first();
-        if ($usuari == null || $usuari->contrasenya != filter_var($data['password'], FILTER_SANITIZE_STRING) || $usuari->tipusUsuari != filter_var($data['tipus'], FILTER_SANITIZE_NUMBER_INT)) {
+        $usuari = Usuari::where('nomUsuari', filter_var($data['nomUsuari'], FILTER_SANITIZE_EMAIL))->where('tipusUsuari',filter_var($data['tipus'], FILTER_SANITIZE_NUMBER_INT))->first();
+        if ($usuari == null || !password_verify(filter_var($data['password'], FILTER_SANITIZE_STRING), $usuari->contrasenya )) {
             $missatge = array("missatge" => "L'usuari i/o la contrasenya estan equivocats.");
             return $response->withJson($missatge, 401);
         } else {
@@ -56,8 +56,8 @@ class Dao
             // $usuari = Usuari::where('nomUsuari', $args['nomUsuari'])->first();
             $usuari = Usuari::find(filter_var($args['idusuari'], FILTER_SANITIZE_NUMBER_INT));
             if ($usuari != null) {
-                if ($usuari->contrasenya == filter_var($data['antic'], FILTER_SANITIZE_STRING)) {
-                    $usuari->contrasenya = filter_var($data['nou'], FILTER_SANITIZE_STRING);
+                if (password_verify(filter_var($data['antic'], FILTER_SANITIZE_STRING),$usuari->contrasenya)) {
+                    $usuari->contrasenya = password_hash(filter_var($data['nou'], FILTER_SANITIZE_STRING),PASSWORD_DEFAULT);
                     $usuari->save();
                     return $response->withStatus(200);
                 } else {
@@ -93,7 +93,7 @@ class Dao
             $usuari= Usuari::find(filter_var($data['idUsuari'], FILTER_SANITIZE_NUMBER_INT));
             $ara = strtotime('now');
             if ($token != null && $usuari!=null && $ara <= strtotime($token->data)) {
-                    $usuari->contrasenya = filter_var($data['nou'], FILTER_SANITIZE_STRING);
+                    $usuari->contrasenya = password_hash(filter_var($data['nou'], FILTER_SANITIZE_STRING),PASSWORD_DEFAULT);
                     $usuari->save();
                     $token->destroy($token->token);
                     return $response->withStatus(200);
