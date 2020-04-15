@@ -78,7 +78,7 @@
                         <div class="form-group">
                             <label for="sel1">Esculli la família professional més propera a la seva activitat.</label>
                             <p> Un professor d'aquesta familia validarà la seva petició. Això no impedirà que pugui publicar ofertes relacionades amb altres famílies professional.</p>
-                            <select class="form-control" id="familia" name="familia">
+                            <select class="form-control" id="familia" name="familia" required="required">
                                 <option value="">Esculli la família professional</option>
                                 {% for familia in families %}
                                     <option value="{{ familia.id }}">{{ familia.nom }} ({{ familia.id }} )</option>

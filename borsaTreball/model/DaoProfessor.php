@@ -154,10 +154,16 @@ class DaoProfessor extends Dao
                 $data = $request->getParsedBody();
                 $validat = filter_var($data['validat'], FILTER_SANITIZE_STRING) == 'true';
                 $activat = filter_var($data['actiu'], FILTER_SANITIZE_STRING) == 'true' && $validat;
-                $correu=$professor->email;
                 //TODO: Eliminar el meu correu
                 if ($validat and $professor->validat!=1) {
-                    $resultat = Bustia::enviarUnic($professor->email, 'Validació correcta', "/email/instruccionsValidat.html.twig", ['usuari' => $professor->email, 'contrasenya' => $professor->getUsuari()->contrasenya, 'professor' => true], $container);
+                    $longitud=20;
+                    $token=bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
+                    $r=new Token();
+                    $r->idUsuari=$professor->getUsuari()->idUsuari;
+                    $r->token=$token;
+                    $r->data= date('Y-m-d H:i:s', strtotime('+1 week'));
+                    $r->save();
+                    $resultat = Bustia::enviarUnic($professor->email, 'Validació correcta', "/email/instruccionsValidat.html.twig", ['usuari' => $professor->email, 'contrasenya' => $professor->getUsuari()->contrasenya, 'professor' => true, 'token'=>$token], $container);
                 } else if (!$validat) {
                     $resultat = Bustia::enviarUnic($professor->email, 'Validació incorrecta', "/email/rebutjarProfessor.twig", [], $container);
                 } else {

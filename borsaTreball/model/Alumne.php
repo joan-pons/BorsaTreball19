@@ -22,9 +22,10 @@ class Alumne extends Model {
     protected $primaryKey = "idAlumne";
     public $timestamps = false;
 
+
     public function getUsuari() {
-        $nomUsuari = $this->attributes['email'];
-        $entitat = Usuari::where('nomUsuari', $nomUsuari)->first();
+        $idEntitat = $this->attributes['idAlumne'];
+        $entitat = Usuari::where('idEntitat', $idEntitat)->where('tipusUsuari', 30)->first();
         return $entitat;
     }
 

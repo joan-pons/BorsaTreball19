@@ -29,4 +29,9 @@ class Empresa extends Model {
         return $this->hasMany('Borsa\Oferta', 'Empreses_idEmpresa', 'idEmpresa')->orderBy('dataPublicacio','ASC')->orderby('dataFinal','ASC');
     }
 
+    public function getUsuari() {
+        $idEntitat = $this->attributes['idEmpresa'];
+        $entitat = Usuari::where('idEntitat', $idEntitat)->where('tipusUsuari', 20)->first();
+        return $entitat;
+    }
 }

@@ -264,7 +264,16 @@ class DaoAlumne extends Dao
                     $alumne->validat = $nou;
                     $alumne->profValidat = $professor->idProfessor;
                     $alumne->save();
-                    $resultat = Bustia::enviarUnic($alumne->email, 'Validació a la borsa de treball del Pau Casesnoves', "/email/resultatValidacioAlumne.html.twig", ['alumne' => $alumne, 'contrasenya'=>$alumne->getUsuari()->contrasenya], $container);
+
+                    $longitud=20;
+                    $token=bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
+                    $r=new Token();
+                    $r->idUsuari=$alumne->getUsuari()->idUsuari;
+                    $r->token=$token;
+                    $r->data= date('Y-m-d H:i:s', strtotime('+1 week'));
+                    $r->save();
+
+                    $resultat = Bustia::enviarUnic($alumne->email, 'Validació a la borsa de treball del Pau Casesnoves', "/email/resultatValidacioAlumne.html.twig", ['alumne' => $alumne, 'contrasenya'=>$alumne->getUsuari()->contrasenya, 'token'=>$token], $container);
                     $resultats[]=array("email"=>$alumne->email, "resultat"=>$resultat);
                 }
             }

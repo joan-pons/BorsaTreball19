@@ -205,14 +205,20 @@ class DaoEmpresa extends Dao
                 $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->rebuig = filter_var($data['rebuig'], FILTER_SANITIZE_STRING);
                 $empresa->save();
-                $mails=[];
-                $mails[]=(object) array('email'=>$empresa->email);
+
+                $longitud=20;
+                $token=bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
+                $r=new Token();
+                $r->idUsuari=$empresa->getUsuari()->idUsuari;
+                $r->token=$token;
+                $r->data= date('Y-m-d H:i:s', strtotime('+1 week'));
+                $r->save();
 
                 $usuari=Usuari::where('idEntitat',$empresa->idEmpresa)->where('tipusUsuari',20)->get();
                 if($empresa->rebuig==null) { //Acceptada
-                    Bustia::enviar($mails, 'Sol·licitud aprovada', '/email/instruccionsValidat.html.twig', ['usuari'=>$empresa->email, 'contrasenya'=>$usuari[0]->contrasenya], $container);
+                    Bustia::enviarUnic($empresa->email, 'Sol·licitud aprovada', '/email/instruccionsValidat.html.twig', ['usuari'=>$empresa->email, 'contrasenya'=>$usuari[0]->contrasenya, 'token'=>$token], $container);
                 }else{ //Rebutjada
-                    Bustia::enviar($mails, 'Sol·licitud rebutjada', '/email/rebutjarEmpresa.twig', ['motius'=>$empresa->rebuig, 'usuari'=>$empresa->email], $container);
+                    Bustia::enviarUnic($empresa->email, 'Sol·licitud rebutjada', '/email/rebutjarEmpresa.twig', ['motius'=>$empresa->rebuig, 'usuari'=>$empresa->email], $container);
                 }
                 return $response->withJson($empresa);
             } else {

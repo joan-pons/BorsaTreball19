@@ -1,0 +1,63 @@
+{% extends "auxiliars/base.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Restablir contrasenya</title>
+    <script>
+        $(document).ready(function () {
+
+            $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#bmDacord').on('click', function () {
+                $('#mdResultat').modal('hide');
+            });
+            $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#mEsperaTitol').html('Realitzant les modificacions');
+            $('#mdEspera').on('shown.bs.modal', function (e) {
+                var contrasenya = {};
+                $.each($('#fCanvi [name]'), function (i, obj) {
+                    contrasenya[obj.name] = obj.value;
+                });
+
+                $.ajax({
+                    method: 'PUT',
+                    url: "restablirContrasenya/" + contrasenya.token,
+                    data: contrasenya
+                }).done(function () {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-check"></span>&nbsp; Actualització correcte');
+                    $('#mrText').html("<p>La contrasenya s'ha modificat correctament.</p>");
+                    $('#bmDacord').on('click', function () {
+                        window.location.href = "/";
+                    });
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                    $('#bmDacord').on('click', function () {
+                        $('#mdResultat').modal('hide');
+                    });
+                }).always(function () {
+                    $('#mdEspera').modal('hide');
+                    $('#mdResultat').modal('show');
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block navegacio %}
+
+{% endblock %}                     
+
+{% block contingut %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Restablir contrasenya</h2>
+{#            <p>La tasca principal del professorat és validar les ofertes que les empreses volen publicar abans de fer-les arribar als alumnes graduats, més que res per evitar que s’enviïn ofertes inadequades en nom del Pau.</p>#}
+{#            <p>Per això els professors que hi vulguin treballar s’hauran de donar d’alta i assignar-se els estudis dels quals vulguin validar les ofertes. Una vegada una empresa publiqui una oferta relacionada amb algun d’aquests cicles formatius rebrà un correu electrònic demanant-li que la validi. Si ho fa, els candidats rebran l’oferta de treball per correu electrònic. Si la rebutja, s’avisarà a l’empresa del motiu del rebuig.</p>#}
+{#            <p>Si encara no ho ha fet, cliqui l'opció <em>Sol·licitar alta</em> per a començar.</p>#}
+
+            {{include('auxiliars/formContrasenya.html.twig')}}
+        </div><!--col-->
+
+    </div><!--row-->
+    {{include('auxiliars/modals.html.twig')}}
+{% endblock %}                     

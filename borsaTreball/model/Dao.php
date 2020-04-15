@@ -8,13 +8,13 @@
 
 namespace Borsa;
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
-use Borsa\Usuari as Usuari;
 use Borsa\Ajuda as Ajuda;
 use Borsa\Familia as Familia;
-
+use Borsa\Usuari as Usuari;
+use Borsa\Token as Token;
 use Illuminate\Database\Capsule\Manager as DB;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Description of Dao
@@ -27,9 +27,10 @@ class Dao
     public function entrada(Request $request, Response $response, $args, \Slim\Container $container)
     {
         $container->dbEloquent;
-        $data = $request->getQueryParams();
+        $data = $request->getParsedBody();
+
         $usuari = Usuari::where('nomUsuari', filter_var($data['nomUsuari'], FILTER_SANITIZE_EMAIL))->first();
-        if ($usuari == null || $usuari->contrasenya != filter_var($data['password'],FILTER_SANITIZE_STRING) || $usuari->tipusUsuari != filter_var($data['tipus'],FILTER_SANITIZE_NUMBER_INT)) {
+        if ($usuari == null || $usuari->contrasenya != filter_var($data['password'], FILTER_SANITIZE_STRING) || $usuari->tipusUsuari != filter_var($data['tipus'], FILTER_SANITIZE_NUMBER_INT)) {
             $missatge = array("missatge" => "L'usuari i/o la contrasenya estan equivocats.");
             return $response->withJson($missatge, 401);
         } else {
@@ -53,10 +54,10 @@ class Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             // $usuari = Usuari::where('nomUsuari', $args['nomUsuari'])->first();
-            $usuari = Usuari::find(filter_var($args['idusuari'],FILTER_SANITIZE_NUMBER_INT));
+            $usuari = Usuari::find(filter_var($args['idusuari'], FILTER_SANITIZE_NUMBER_INT));
             if ($usuari != null) {
-                if ($usuari->contrasenya == filter_var($data['antic'],FILTER_SANITIZE_STRING)) {
-                    $usuari->contrasenya = filter_var($data['nou'],FILTER_SANITIZE_STRING);
+                if ($usuari->contrasenya == filter_var($data['antic'], FILTER_SANITIZE_STRING)) {
+                    $usuari->contrasenya = filter_var($data['nou'], FILTER_SANITIZE_STRING);
                     $usuari->save();
                     return $response->withStatus(200);
                 } else {
@@ -64,6 +65,40 @@ class Dao
                 }
             } else {
                 return $response->withJson(array("missatge" => "No es troba cap usuari amb el nom d'usuari donat."), 422);
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            switch ($ex->getCode()) {
+                case 23000:
+                {
+                    $missatge = array("missatge" => "La contrasenya no pot ser nula");
+                    break;
+                }
+                default:
+                {
+                    $missatge = array("missatge" => "La contrasenya no s'ha pogut canviar correctament.");
+                    break;
+                }
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public function restablirContrasenya(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            // $token = Usuari::where('nomUsuari', $args['nomUsuari'])->first();
+            $token = Token::find(filter_var($data['token'], FILTER_SANITIZE_STRING));
+            $usuari= Usuari::find(filter_var($data['idUsuari'], FILTER_SANITIZE_NUMBER_INT));
+            $ara = strtotime('now');
+            if ($token != null && $usuari!=null && $ara <= strtotime($token->data)) {
+                    $usuari->contrasenya = filter_var($data['nou'], FILTER_SANITIZE_STRING);
+                    $usuari->save();
+                    $token->destroy($token->token);
+                    return $response->withStatus(200);
+            } else {
+                return $response->withJson(array("missatge" => "El token no és vàlid."), 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {

@@ -1,24 +1,25 @@
 <?php
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
-use Borsa\Professor as Professor;
-use Borsa\Estudis as Estudis;
-use Borsa\Empresa as Empresa;
-use Borsa\DaoEmpresa as DaoEmpresa;
-use Borsa\Usuari as Usuari;
-use Borsa\DaoProfessor as DaoProfessor;
+use Borsa\Alumne as Alumne;
 use Borsa\Dao as Dao;
 use Borsa\DaoAlumne as DaoAlumne;
+use Borsa\DaoEmpresa as DaoEmpresa;
+use Borsa\DaoProfessor as DaoProfessor;
+use Borsa\Empresa as Empresa;
+use Borsa\EstatLaboral as EstatLaboral;
+use Borsa\Estudis as Estudis;
+use Borsa\Familia as Familia;
 use Borsa\Idioma as Idioma;
 use Borsa\NivellIdioma as NivellIdioma;
-use Borsa\Alumne as Alumne;
-use Borsa\EstatLaboral as EstatLaboral;
 use Borsa\Oferta as Oferta;
-use Borsa\Familia as Familia;
+use Borsa\Professor as Professor;
+use Borsa\Token as Token;
+use Borsa\Usuari as Usuari;
 use Illuminate\Database\Capsule\Manager as DB;
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 require 'vendor/autoload.php';
 
@@ -115,7 +116,7 @@ $app->get('/sortir', function ($request, $response, $args) {
     return $response->withRedirect("/");
 });
 
-$app->get('/login', function ($request, $response, $args) {
+$app->post('/login', function ($request, $response, $args) {
     return Dao::entrada($request, $response, $args, $this);
 });
 
@@ -124,6 +125,21 @@ $app->get('/ajuda/{idAjuda}', function ($request, $response, $args) {
 });
 $app->get('/cicles/{idFamilia}', function ($request, $response, $args) {
     return Dao::ciclesFamilia($request, $response, $args, $this);
+});
+
+$app->get('/restablirContrasenya', function ($request, $response, $args) {
+    $this->dbEloquent;
+    $t = filter_var($request->getQueryParam('t'), FILTER_SANITIZE_STRING);
+    $token = Token::find($t);
+    $ara = strtotime('now');
+    if ($token != null && $ara <= strtotime($token->data)) {
+        return $this->view->render($response, 'restablirContrasenya.twig', ['restablir' => true, 'usuari' => $token, 'dtoken'=>strtotime($token->data),'ara' => $ara]);
+    } else {
+        return $this->view->render($response, 'auxiliars/noAutoritzat.html.twig', []);
+    }
+});
+$app->put('/restablirContrasenya/{token}', function ($request, $response, $args) {
+    return Dao::restablirContrasenya($request, $response, $args, $this);
 });
 /*
 $app->get('/mailing', function ($request, $response, $args) {
@@ -672,7 +688,7 @@ $app->group('/professor', function () {
             if ($usuari->teRol(40)) {
                 $companys = Professor::orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             }
-            return $this->view->render($response, 'professor/dashBoard.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes'=>$alumnes]);
+            return $this->view->render($response, 'professor/dashBoard.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes' => $alumnes]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
@@ -801,7 +817,7 @@ $app->group('/professor', function () {
         return DaoEmpresa::validar($request, $response, $args, $this);
     });
 
-    $this->get("/alumnesPendents", function($request, $response, $args){
+    $this->get("/alumnesPendents", function ($request, $response, $args) {
         $this->dbEloquent;
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
@@ -819,13 +835,13 @@ $app->group('/professor', function () {
 
             }
 
-            return $this->view->render($response, 'professor/alumnesPendents.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'alumnes'=>$alumnes]);
+            return $this->view->render($response, 'professor/alumnesPendents.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'alumnes' => $alumnes]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
     });
 
-    $this->put("/alumnesPendents", function($request, $response, $args) {
+    $this->put("/alumnesPendents", function ($request, $response, $args) {
         $this->dbEloquent;
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
@@ -836,7 +852,7 @@ $app->group('/professor', function () {
         }
     });
 
-    })->add(function ($request, $response, $next) {
+})->add(function ($request, $response, $next) {
     if (in_array(10, $_SESSION['rols']) || in_array(40, $_SESSION['rols'])) {
         return $response = $next($request, $response);
     } else {

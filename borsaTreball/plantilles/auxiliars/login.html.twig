@@ -32,7 +32,7 @@
             $('#mdEspera').on('shown.bs.modal', function (e) {
                 $.ajax({
                     method: 'POST',
-                    url: "/login",
+                    url: "login",
                     data: dadesLogin
                 }).done(function () {
                     $('#mdEspera').modal('hide');
@@ -53,14 +53,14 @@
         });
 //TODO: Eliminar dades per defecte
         //TODO: Encriptar contrasenyes.
-        if ($('#tipus').val() == '10') {
-            $('#email').val('ptj@paucasesnovescifp.cat');
-        } else if ($('#tipus').val() == '20') {
-            $('#email').val('info@intel.es');
-        } else if ($('#tipus').val() == '30') {
-            $('#email').val('rafel@iespaucasesnoves.cat');
-        }
-        $('#password').val('12345678');
+        // if ($('#tipus').val() == '10') {
+        //     $('#email').val('ptj@paucasesnovescifp.cat');
+        // } else if ($('#tipus').val() == '20') {
+        //     $('#email').val('info@intel.es');
+        // } else if ($('#tipus').val() == '30') {
+        //     $('#email').val('rafel@iespaucasesnoves.cat');
+        // }
+        // $('#password').val('12345678');
     });
 </script>
 
