@@ -28,7 +28,19 @@ class DaoAlumne extends Dao
             $alumne->actiu = 0;
             $alumne->save();
             $estudis = Estudis::find($alumne->estudisAlta);
-            Bustia::enviar($estudis->professors, "Validació d'alumnes pendent", 'email/validarUsuari.html.twig', [], $container);
+            if (count($estudis->professors) > 0) {
+                Bustia::enviar($estudis->professors, "Validació d'alumnes pendent", 'email/validarAlumne.html.twig', [], $container);
+            }else{
+                $professors=Usuari::where('tipusUsuari',10)->get();
+                $admins=array();
+                foreach($professors as $p){
+                    if($p->teRol(40)){
+                       $admins[]=$p->getEntitat();
+                    }
+                }
+                $cicle=Estudis::find($alumne->estudisAlta);
+                Bustia::enviar($admins, "Validació d'alumnes pendents sense professor responsable", 'email/validarAlumne.html.twig', ['alumne'=>$alumne, 'cicle'=>$cicle], $container);
+            }
             $missatge = array("missatge" => 'Alta correcta.');
             return $response->withJson($missatge);
         } catch (\Illuminate\Database\QueryException $ex) {
@@ -126,7 +138,7 @@ class DaoAlumne extends Dao
             $alumne = Alumne::find($args['idAlumne']);
             $estudis = $args['codiEstudis'];
             if ($alumne != null) {
-                $alumne->estudis()->detach($estudis);
+                $alumne->estudis()->detach([$estudis]);
                 return $response->withJson($alumne);
             } else {
                 return $response->withJson("No es troba cap contacte amb l'identificador demanat.", 422);
@@ -256,7 +268,7 @@ class DaoAlumne extends Dao
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
-            $resultats=array();
+            $resultats = array();
             foreach ($data as $alu) {
                 $nou = filter_var($alu['validat'], FILTER_SANITIZE_NUMBER_INT);
                 if ($nou != 0) {
@@ -265,19 +277,19 @@ class DaoAlumne extends Dao
                     $alumne->profValidat = $professor->idProfessor;
                     $alumne->save();
 
-                    $longitud=20;
-                    $token=bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
-                    $r=new Token();
-                    $r->idUsuari=$alumne->getUsuari()->idUsuari;
-                    $r->token=$token;
-                    $r->data= date('Y-m-d H:i:s', strtotime('+1 week'));
+                    $longitud = 20;
+                    $token = bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
+                    $r = new Token();
+                    $r->idUsuari = $alumne->getUsuari()->idUsuari;
+                    $r->token = $token;
+                    $r->data = date('Y-m-d H:i:s', strtotime('+1 week'));
                     $r->save();
 
-                    $resultat = Bustia::enviarUnic($alumne->email, 'Validació a la borsa de treball del Pau Casesnoves', "/email/resultatValidacioAlumne.html.twig", ['alumne' => $alumne, 'contrasenya'=>$alumne->getUsuari()->contrasenya, 'token'=>$token], $container);
-                    $resultats[]=array("email"=>$alumne->email, "resultat"=>$resultat);
+                    $resultat = Bustia::enviarUnic($alumne->email, 'Validació a la borsa de treball del Pau Casesnoves', "/email/resultatValidacioAlumne.html.twig", ['alumne' => $alumne, 'contrasenya' => $alumne->getUsuari()->contrasenya, 'token' => $token], $container);
+                    $resultats[] = array("email" => $alumne->email, "resultat" => $resultat);
                 }
             }
-            $missatge=array("missatge"=>"OK");
+            $missatge = array("missatge" => "OK");
             return $response->withJson($resultats);
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {

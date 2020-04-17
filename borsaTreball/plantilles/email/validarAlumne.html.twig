@@ -2,8 +2,13 @@
 
 {% block contingut %}
     <h1>Validacions d'alumnes pendents</h1>
+    {% if alumne %}
+        <p>Hi ha una petició de validació d'algun alumne del centre d'uns estudis que no tenen cap professor assignat.</p>
+        <p>El cicle és {{ alumne.estudisAlta }} - {{ cicle.nom }}</p>
+    {% else %}
     <p>Té una nova petició de validació d'algun alumne del centre.</p>
     <p>Per favor, entri a l'aplicació i comprovi-ho el més aviat possible.</p>
+    {% endif %}
         <p>Moltes gràcies!</p>
 
 {%endblock%}

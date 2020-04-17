@@ -121,7 +121,7 @@ class DaoProfessor extends Dao
             $professor = Professor::find(filter_var($args['idProfessor'], FILTER_SANITIZE_NUMBER_INT));
             $estudis = filter_var($args['codiEstudis'], FILTER_SANITIZE_STRING);
             if ($professor != null) {
-                $professor->estudis()->detach($estudis);
+                $professor->estudis()->detach([$estudis]);
                 $missatge = array("missatge" => "Estudis eliminats.");
                 return $response->withJSON($missatge);
             } else {

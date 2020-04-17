@@ -96,18 +96,16 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="/professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
+    <a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Validar empreses pendents</a></li>
         {% if usuari.teRol(40) %}
-        <li><a href="empreses">Activar / validar empresa</a></li>
+        <li><a href="../administrador/empreses">Activar / validar empresa</a></li>
         {% endif %}
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 
 {% endblock %}                     
 

@@ -17,11 +17,11 @@
                 $.each($('#formAlumne [name]'), function (i, obj) {
                     alumne[obj.name] = obj.value;
                 });
-                $.post("/altaAlumne", alumne, function () {
+                $.post("altaAlumne", alumne, function () {
                     $('#mrTitol').html('Alta realitzada correctament')
                     $('#mrText').html("<p>En uns dies rebrà un correu electrònic amb la confirmació de l'alta i les instruccions per començar.</p>");
                     $('#bmDacord').on('click', function () {
-                        window.location.href = "professorLogin";
+                        window.location.href = "alumneLogin";
                     });
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');
@@ -38,7 +38,7 @@
             $("#familia").on("change", function () {
                 $.ajax({
                     method: 'GET',
-                    url: "/cicles/" + $('#familia').val()
+                    url: "cicles/" + $('#familia').val()
                 }).done(function (dades) {
                     var opcions = '<option value="">Escull uns estudis</option>';
                     var xifra='';

@@ -84,7 +84,7 @@
 
 {{include('auxiliars/modals.html.twig')}}
 
-<script src="../../js/dirtyForms.js"></script>
+<script src="../js/dirtyForms.js"></script>
 <script>
     $(document).ready(function () {
 
@@ -161,13 +161,13 @@
     {%else%}
                 $.ajax({
                     method: 'PUT',
-                    url: "../modificarOferta/" + oferta.idOferta,
+                    url: "modificarOferta/" + oferta.idOferta,
                     data: oferta
                 }).done(function (ofertaRebuda) {
                     $('#mrTitol').html('Modificació correcta')
                     $('#mrText').html("<p>L'oferta s'ha modificat correctament.</p>");
                     $('#bmDacord').on('click', function () {
-                        window.location.href = "../modificarOferta/" + ofertaRebuda.idOferta;
+                        window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
                     });
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');

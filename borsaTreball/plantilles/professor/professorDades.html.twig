@@ -19,7 +19,7 @@
                 });
                 $.ajax({
                     method:'PUT',
-                    url:"/professor/modificarDades/"+professor.idProfessor,
+                    url:"modificarDades/"+professor.idProfessor,
                     data:professor
                 }).done(function () {
                     $('#mrTitol').html('Actualització correcte')
@@ -50,9 +50,6 @@
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Actualitzar dades</a></li>
         <li><a href="canviarContrasenya">Canviar contrasenya</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
     </ul>
 
 {% endblock %}                     

@@ -18,7 +18,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: "/empresa/afegirContacte",
+                    url: "afegirContacte",
                     data: contacte
                 }).done(function () {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-check"></span>&nbsp; Alta correcta')
@@ -28,7 +28,7 @@
                     });
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta')
-                    $('#mrText').html("<p>"+(typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge)+"</p>");
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
                     $('#bmDacord').on('click', function () {
                         $('#mdResultat').modal('hide');
                     });
@@ -46,73 +46,69 @@
             });
         });
     </script>
-<script src="../js/dirtyForms.js"></script>
+    <script src="../js/dirtyForms.js"></script>
 {% endblock %}
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{objEmpresa.nom}}</a>
+<a class="navbar-brand" href="dashBoard">{{ objEmpresa.nom }}</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
         <li><a href="contactes"><span class="glyphicon glyphicon-list"></span> Llista</a></li>
         <li class="active"><a href="#"><span class="glyphicon glyphicon-plus"></span> Afegir</a></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
-
-{% endblock %}
-{% block contingut %}
-    <h2>Afegir contacte</h2>
-    <div class='well'>
-        <form id="formContacte"> 
-            <input type="hidden" name="idEmpresa" value="{{ objEmpresa.idEmpresa }}">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group required">
-                        <label for="nom" class='control-label' >Nom:</label>
-                        <input type="text" class="form-control" required="required" id="nom" name="nom" >
-                    </div>
-                </div><!--col-->
-                <div class="col-md-4">
-                    <div class="form-group required">
-                        <label for="llinatges" class='control-label' >Llinatges:</label>
-                        <input type="text" class="form-control" id="llinatges" name="llinatges" required="required">
-                    </div>
-                </div><!--col-->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="carrec" class='control-label' >Càrrec dins l'empresa:</label>
-                        <input type="text" class="form-control" id="carrec" name="carrec">
-                    </div>
-                </div><!--col-->
-            </div><!--row-->
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group required">
-                        <label for="email" class='control-label' >Correu electrònic:</label>
-                        <input type="email" class="form-control" id="email" name="email" required="required">
-                    </div>
-                </div><!--col-->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="telefon" class='control-label' >Telèfon:</label>
-                        <input type="tel" class="form-control" id="telefon" name="telefon">
-                    </div>
-                </div><!--col-->
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>&nbsp;</label>
-                        <div>
-                            <button class="btn btn-success" type="submit" id="bEditar">Afegir</button>
-                            <button class="btn btn-default" type="reset" id="bSuprimir">Cancel·lar</button>
+    {% endblock %}
+    {% block contingut %}
+        <h2>Afegir contacte</h2>
+        <div class='well'>
+            <form id="formContacte">
+                <input type="hidden" name="idEmpresa" value="{{ objEmpresa.idEmpresa }}">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group required">
+                            <label for="nom" class='control-label'>Nom:</label>
+                            <input type="text" class="form-control" required="required" id="nom" name="nom">
                         </div>
-                    </div>
-                </div><!--col-->
-            </div><!--row-->
-            {% include 'auxiliars/obligatoris.html.twig' %}
-        </form>
-    </div><!--well-->
-    {{include('auxiliars/modals.html.twig')}}
-{% endblock %}
+                    </div><!--col-->
+                    <div class="col-md-4">
+                        <div class="form-group required">
+                            <label for="llinatges" class='control-label'>Llinatges:</label>
+                            <input type="text" class="form-control" id="llinatges" name="llinatges" required="required">
+                        </div>
+                    </div><!--col-->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="carrec" class='control-label'>Càrrec dins l'empresa:</label>
+                            <input type="text" class="form-control" id="carrec" name="carrec">
+                        </div>
+                    </div><!--col-->
+                </div><!--row-->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group required">
+                            <label for="email" class='control-label'>Correu electrònic:</label>
+                            <input type="email" class="form-control" id="email" name="email" required="required">
+                        </div>
+                    </div><!--col-->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="telefon" class='control-label'>Telèfon:</label>
+                            <input type="tel" class="form-control" id="telefon" name="telefon">
+                        </div>
+                    </div><!--col-->
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div>
+                                <button class="btn btn-success" type="submit" id="bEditar">Afegir</button>
+                                <button class="btn btn-default" type="reset" id="bSuprimir">Cancel·lar</button>
+                            </div>
+                        </div>
+                    </div><!--col-->
+                </div><!--row-->
+                {% include 'auxiliars/obligatoris.html.twig' %}
+            </form>
+        </div><!--well-->
+        {{ include('auxiliars/modals.html.twig') }}
+    {% endblock %}
 

@@ -4,6 +4,7 @@
     <title>Borsa de treball: Modificar Empresa</title>
     <link href="../js/summernote/summernote.css" rel="stylesheet">
     <script src="../js/summernote/summernote.min.js"></script>
+    <script src="../js/dirtyForms.js"></script>
     <script>
         $(document).ready(function () {
             $('#textDescripcio').summernote({
@@ -26,7 +27,7 @@
                 empresa.descripcio = $('#textDescripcio').summernote('code');
                 $.ajax({
                     method: 'PUT',
-                    url: "/empresa/modificarDades/" + empresa.idEmpresa,
+                    url: "modificarDades/" + empresa.idEmpresa,
                     data: empresa
                 }).done(function () {
                     $('#mrTitol').html('Actualització correcte')
@@ -66,14 +67,11 @@
         <li><a href="canviarContrasenya" id="mActualitza">Canviar contrasenya</a></li>
 
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 
 {% endblock %}                     
 
 {% block contingut %}
 
     {{include('auxiliars/formEmpresa.html.twig')}}
-
-{% endblock %}  
+{% endblock %}

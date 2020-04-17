@@ -2,8 +2,8 @@
 
 {% block head %}
     <title>Borsa de treball: Oferta</title>
-    <link href="../../js/summernote/summernote.css" rel="stylesheet">
-    <script src="../../js/summernote/summernote.min.js"></script>
+    <link href="../js/summernote/summernote.css" rel="stylesheet">
+    <script src="../js/summernote/summernote.min.js"></script>
 
 {% endblock %}
 {% block navegacio %}
@@ -18,9 +18,7 @@
         <li><a href="estatLaboral?idOferta={{oferta.idOferta}}">Situació laboral</a></li>
         <li><a href="contactesOferta?idOferta={{oferta.idOferta}}">Persones de contacte</a></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 {% endblock %}
 {% block contingut %}
     <!--<h4>Dades oferta: Codi: {{oferta.idOferta}} Titol: {{oferta.titol}}</h4>-->

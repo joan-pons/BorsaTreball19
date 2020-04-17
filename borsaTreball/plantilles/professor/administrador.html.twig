@@ -17,7 +17,7 @@
                 if (dades.admin) {
                     $.ajax({
                         method: 'PUT',
-                        url: "/administrador/rols/" + dades.idProfessor,
+                        url: "rols/" + dades.idProfessor,
                         data: {idRol: 40}
                     }).done(function () {
                         $('#mrTitol').html('Actualització correcte')
@@ -38,7 +38,7 @@
                 } else {
                     $.ajax({
                         method: 'DELETE',
-                        url: "/administrador/rols/" + dades.idProfessor,
+                        url: "rols/" + dades.idProfessor,
                         data: {idRol: 40}
                     }).done(function () {
                         $('#mrTitol').html('Actualització correcte')
@@ -78,7 +78,7 @@
                     $('#idProfessor').val(professor.idProfessor);
                     $.ajax({
                         method: 'GET',
-                        url: "/administrador/rols/" + $("#llista").val()
+                        url: "rols/" + $("#llista").val()
                     }).done(function (rols) {
                         for (var rol in rols) {
                             if (rols[rol].idRol === 40) {
@@ -134,16 +134,13 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="/professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
+    <a class="navbar-brand" href="../professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
         <li><a href="usuarisPendents">Validar usuaris pendents</a></li>
         <li><a href="usuaris">Activar / validar usuari</a></li>
         <li  class="active"><a href="#">Rol administrador</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
     </ul>
 
 {% endblock %}                     

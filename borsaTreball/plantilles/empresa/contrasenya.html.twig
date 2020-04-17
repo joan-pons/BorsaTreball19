@@ -19,7 +19,7 @@
 
                 $.ajax({
                     method: 'PUT',
-                    url: "/empresa/canviarContrasenya/" + contrasenya.idUsuari,
+                    url: "canviarContrasenya/" + contrasenya.idUsuari,
                     data: contrasenya
                 }).done(function () {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-check"></span>&nbsp; Actualització correcte');

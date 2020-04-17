@@ -71,12 +71,10 @@
 {% endblock %}
 
 {% block navegacio %}
-<a class="navbar-brand" href="/Alumne/dashBoard">{{ Alumne.nom }} {{ Alumne.llinatges }}</a>
+<a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 
     {% endblock %}
 
@@ -122,6 +120,7 @@
                     </div>
                 </div>
             </form>
+            <div><p></p></div>
         {% endif %}
         {{ include('auxiliars/modals.html.twig') }}
     {% endblock %}

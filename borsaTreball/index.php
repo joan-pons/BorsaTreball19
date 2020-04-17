@@ -113,7 +113,7 @@ $app->get('/', function ($request, $response, $args) {
 $app->get('/sortir', function ($request, $response, $args) {
     session_unset();
     session_destroy();
-    return $response->withRedirect("/");
+    return $response->withRedirect("/borsaTreball");
 });
 
 $app->post('/login', function ($request, $response, $args) {
@@ -619,13 +619,16 @@ $app->group('/alumne', function () {
     });
 
 
-    $this->get('/empreses[/{codiEstudis}]', function ($request, $response, $args) {
+    $this->get('/empreses', function ($request, $response, $args) {
         $this->dbEloquent;
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
             $alumne = $usuari->getEntitat();
-            if ($args['codiEstudis'] != null) {
-                $empreses = DB::select('SELECT distinct em.* from Ofertes_has_Estudis oe inner join Ofertes on oe.Ofertes_idOferta=idOferta inner join Empreses em on em.idEmpresa=Ofertes.Empreses_idEmpresa where  em.activa=1 and Ofertes.validada=1 and oe.Estudis_codi=\'' . $args['codiEstudis'] . '\'');
+            $dades=$request->getQueryParams();
+            if (array_key_exists('codiEstudis',$dades)) {
+                $empreses = DB::select('SELECT distinct em.* from Ofertes_has_Estudis oe inner join Ofertes on oe.Ofertes_idOferta=idOferta inner join Empreses em on em.idEmpresa=Ofertes.Empreses_idEmpresa where  em.activa=1 and Ofertes.validada=1 and oe.Estudis_codi=\'' . filter_var($dades['codiEstudis'],FILTER_SANITIZE_STRING) . '\'');
+            }else{
+                $empreses = null;
             }
             return $this->view->render($response, 'alumne/empreses.html.twig', ['actor' => $alumne, 'codiEstudis' => $args['codiEstudis'], 'empreses' => $empreses]);
         } else {
@@ -692,9 +695,10 @@ $app->group('/professor', function () {
 
             }
 
+
             $companys = null;
             if ($usuari->teRol(40)) {
-                $companys = Professor::orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
+                $companys = Professor::where('validat',0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             }
             return $this->view->render($response, 'professor/dashBoard.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes' => $alumnes]);
         } else {
@@ -859,6 +863,7 @@ $app->group('/professor', function () {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
     });
+
 
 })->add(function ($request, $response, $next) {
     if (in_array(10, $_SESSION['rols']) || in_array(40, $_SESSION['rols'])) {

@@ -39,7 +39,7 @@
 <script>
     var resultat = [];
     $('#llengues').on('submit', function (event) {
-        resultat = {};
+        var resultat = {};
         resultat.nivells = []
         event.preventDefault();
     {% for idioma in idiomes %}
@@ -84,4 +84,4 @@
         });
 </script>
 
-<script src="../../js/dirtyForms.js"></script>
+<script src="../js/dirtyForms.js"></script>

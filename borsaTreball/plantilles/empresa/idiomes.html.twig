@@ -18,13 +18,11 @@
         <li><a href="contactesOferta?idOferta={{identificador}}">Persones de contacte</a></li>
         <!--<li><a href="formacio">Altra formació</a></li>-->
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 {% endblock %}                     
 
 {% block contingut %}
-    <h2><small><label>Codi oferta:</label> {{identificador}} <label>Títol:</label> {{actor.titol}}</small></h2>
+    <h1><small><label>Codi oferta:</label> {{identificador}} <label>Títol:</label> {{actor.titol}}</small></h1>
 
     {{include('auxiliars/formIdiomes.html.twig')}}
 

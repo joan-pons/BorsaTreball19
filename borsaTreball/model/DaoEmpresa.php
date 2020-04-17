@@ -359,7 +359,7 @@ class DaoEmpresa extends Dao
             $oferta = Oferta::find(filter_var($args['idOferta'],FILTER_SANITIZE_NUMBER_INT));
             $estudis = filter_var($args['codiEstudis'],FILTER_SANITIZE_STRING);
             if ($oferta != null) {
-                $oferta->estudis()->detach($estudis);
+                $oferta->estudis()->detach([$estudis]);
                 return $response->withJson(array('quantitat' => Dao::comptarCandidats($oferta, $container)));
             } else {
                 return $response->withJson("No es troba cap estudis amb l'identificador demanat.", 422);
@@ -417,13 +417,13 @@ class DaoEmpresa extends Dao
             $data = $request->getParsedBody();
             $oferta = Oferta::find(filter_var($args['idOferta'],FILTER_SANITIZE_NUMBER_INT));
             if ($oferta != null) {
-//                $codiEstudis = filter_var($args['codiEstudis'], FILTER_SANITIZE_STRING);
-//                $alumne->estudis()->sync(array($codiEstudis => array('any' => $data['any'], 'nota' => $data['nota'])), false);
                 $rebudes = $data['nivells'];
                 $dades = array();
-                //TODO: SANITIZE
-                foreach ($rebudes as $nivell) {
-                    $dades[$nivell['idIdioma']] = array('NivellsIdioma_idNivellIdioma' => $nivell['NivellsIdioma_idNivellIdioma']);
+                if($rebudes!=null) {
+                    //TODO: SANITIZE
+                    foreach ($rebudes as $nivell) {
+                        $dades[$nivell['idIdioma']] = array('NivellsIdioma_idNivellIdioma' => $nivell['NivellsIdioma_idNivellIdioma']);
+                    }
                 }
                 $oferta->idiomes()->sync($dades);
                 return $response->withJson(array('quantitat' => Dao::comptarCandidats($oferta, $container)));
@@ -454,12 +454,12 @@ class DaoEmpresa extends Dao
             $data = $request->getParsedBody();
             $oferta = Oferta::find($args['idOferta']);
             if ($oferta != null) {
-//                $codiEstudis = filter_var($args['codiEstudis'], FILTER_SANITIZE_STRING);
-//                $alumne->estudis()->sync(array($codiEstudis => array('any' => $data['any'], 'nota' => $data['nota'])), false);
-                $rebudes = $data['estats'];
+              $rebudes = $data['estats'];
                 $dades = array();
-                foreach ($rebudes as $estat) {
-                    array_push($dades, filter_var($estat,FILTER_SANITIZE_NUMBER_INT));
+                if($rebudes!=null) {
+                    foreach ($rebudes as $estat) {
+                        array_push($dades, filter_var($estat, FILTER_SANITIZE_NUMBER_INT));
+                    }
                 }
                 $oferta->estatsLaborals()->sync($dades);
                 return $response->withJson(array('quantitat' => Dao::comptarCandidats($oferta, $container)));
@@ -523,9 +523,10 @@ class DaoEmpresa extends Dao
             $oferta = Oferta::find(filter_var($data['idOferta'], FILTER_SANITIZE_NUMBER_INT));
             if ($oferta != null) {
                 $idContacte = filter_var($data['idContacte'], FILTER_SANITIZE_NUMBER_INT);
-                $oferta->contactes()->detach($idContacte);
-                curl_multi_select();
-                return $response->withJson($oferta);
+                $oferta->contactes()->detach([$idContacte]);
+//                curl_multi_select();
+                $missatge=array("missatge", "OK");
+                return $response->withJson($missatge);
             } else {
                 return $response->withJson("No es troba cap oferta amb l'identificador demanat.", 422);
             }

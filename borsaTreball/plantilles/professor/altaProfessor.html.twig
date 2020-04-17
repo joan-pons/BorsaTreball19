@@ -17,7 +17,7 @@
                 $.each($('#formProfessor [name]'), function (i, obj) {
                     professor[obj.name] = obj.value;
                 });
-                $.post("/altaProfessor", professor, function () {
+                $.post("altaProfessor", professor, function () {
                     $('#mrTitol').html('Alta realitzada correctament')
                     $('#mrText').html("<p>En uns dies rebrà un correu electrònic amb la confirmació de l'alta i les instruccions per començar.</p>");
                     $('#bmDacord').on('click', function () {

@@ -1,9 +1,9 @@
-{% extends "auxiliars/baseDins.html.twig" %}
+{% extends "auxiliars/base.html.twig" %}
 
 {% block head %}
     <title>Borsa de treball: Alta Empresa</title>
-    <link href="../js/summernote/summernote.css" rel="stylesheet">
-    <script src="../js/summernote/summernote.min.js"></script>
+    <link href="js/summernote/summernote.css" rel="stylesheet">
+    <script src="js/summernote/summernote.min.js"></script>
 
 
     <script>
@@ -24,7 +24,7 @@
                     empresa[obj.name] = obj.value;
                 });
                 empresa.descripcio = $('#textDescripcio').summernote('code');
-                $.post("/altaEmpresa", empresa, function () {
+                $.post("altaEmpresa", empresa, function () {
                     $('#mrTitol').html('Alta realitzada correctament')
                     $('#mrText').html("<p>En uns dies rebrà un correu electrònic amb la confirmació de l'alta i les instruccions per començar.</p>");
                     $('#bmDacord').on('click', function () {
@@ -68,5 +68,5 @@
 
         {% set alta = 1%}
         {{ include('auxiliars/formEmpresa.html.twig') }}
-
+        <script src="js/dirtyForms.js"></script>
     {% endblock %}

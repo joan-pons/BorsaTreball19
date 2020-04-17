@@ -1,11 +1,6 @@
 {%extends "auxiliars/baseDins.html.twig" %}
 {% block head %}
     <title>Borsa de treball: Ofertes</title>
-    <link rel="shortcut icon" type="image/ico" href="{%if not codiEstudis is empty%}../{%endif%}../imatges/logo-cifp.ico"/>
-    <link rel="stylesheet" href="{%if not codiEstudis is empty%}../{%endif%}../css/bootstrap.min.css">
-    <link rel="stylesheet" href="{%if not codiEstudis is empty%}../{%endif%}../css/borsa.css">
-    <script src="{%if not codiEstudis is empty%}../{%endif%}../js/jquery.min.js"></script>
-    <script src="{%if not codiEstudis is empty%}../{%endif%}../js/bootstrap.min.js"></script>
 
 
 {% endblock %}
@@ -17,9 +12,7 @@
         <!--<li><a href="formacio">Altra formació</a></li>-->
         <li class='active'><a href="#">Empreses</a></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 {% endblock %}
 {% block contingut %}
     <h2>Empreses</h2>
@@ -74,7 +67,7 @@
     <script>
         $(document).ready(function () {
             $('#bVeure').on('click',function(){
-                window.location='{%if not codiEstudis is empty%}../{%endif%}empreses/'+$('#graus').val();
+                window.location='empreses?codiEstudis='+$('#graus').val();
             });
         });
     </script>

@@ -4,6 +4,7 @@
     <title>Borsa de treball: Alumnes</title>
     <link href="../js/summernote/summernote.css" rel="stylesheet">
     <script src="../js/summernote/summernote.min.js"></script>
+    <script src="../js/dirtyForms.js"></script>
     <script>
         $(document).ready(function () {
             $('#textDescripcio').summernote({
@@ -25,7 +26,7 @@
                 alumne.actiu = $('#Actiu').is(':checked');
                 $.ajax({
                     method: 'PUT',
-                    url: "/alumne/modificarDades/" + alumne.idAlumne,
+                    url: "modificarDades/" + alumne.idAlumne,
                     data: alumne
                 }).done(function () {
                     $('#mrTitol').html('Actualització correcte')
@@ -78,7 +79,7 @@
             });
         });
     </script>
-    <script src="../../js/dirtyForms.js"></script>
+
 {% endblock %}
 
 {% block navegacio %}
@@ -93,13 +94,11 @@
         <li><a href="estatLaboral" id="mEstats">Situació laboral</a></li>
         <!--<li><a href="formacio">Altra formació</a></li>-->
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 {% endblock %}                     
 
 {% block contingut %}
 
-    {{include('auxiliars/formAlumne.html.twig')}}
+    {{include('auxiliars/formAlumneComplet.html.twig')}}
 
 {% endblock %}  

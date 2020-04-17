@@ -94,16 +94,16 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="/professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
+    <a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
         <li class="active"><a href="#">Validar ofertes pendents</a></li>
         <!--<li><a href="empreses">Activar / validar empresa</a></li>-->
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+{#    <ul class="nav navbar-nav navbar-right ">#}
+{#        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>#}
+{#    </ul>#}
 
 {% endblock %}                     
 
@@ -120,5 +120,8 @@
             </div>
         </div>
     {% endfor %}
+    <div class="well">
+        <p>No hi ha cap oferta pendent de validar.</p>
+    </div>
     {{include('auxiliars/modals.html.twig')}}
 {% endblock %}  

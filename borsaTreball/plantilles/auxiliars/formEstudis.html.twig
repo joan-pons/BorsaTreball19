@@ -26,23 +26,25 @@
                                 <option value="{{ grau.codi }}">{{ grau.codi }} - {{ grau.nom }}</option>
                             {% endfor %}
                         </select>
-                        <span class="input-group-btn"><button type="button" class="btn btn-default btn-success" id="bAfegir">Afegir</button></span>
+                        <span class="input-group-btn"><button type="button" class="btn btn-default btn-success"
+                                                              id="bAfegir">Afegir</button></span>
                     </div>
                 </div>
             </div>
             <div class="row" id="dNou">
                 <form id="nouEstudi">
-                    <input type="hidden" name="idAlumne" id="idAlumne" value="{{identificador}}">
+                    <input type="hidden" name="idAlumne" id="idAlumne" value="{{ identificador }}">
                     <input type="hidden" name="idGrau" id="idGrau">
 
                     <div class='col-md-4'>
                         <div class="form-group required">
                             <label class="control-label">Any de finalització:</label>
-                            <input type="number" min="2000"  id="anyNou" name="any" required="required">
+                            <input type="number" min="2000" id="anyNou" name="any" required="required">
                         </div>
                         <div class="form-group required">
                             <label class="control-label">Nota final:</label>
-                            <input type="number" min="5" max="10" id="notaNou" name="nota" value='5' required="required">
+                            <input type="number" min="5" max="10" id="notaNou" name="nota" value='5'
+                                   required="required">
                         </div>
                     </div>
 
@@ -51,7 +53,7 @@
                         <button class="btn btn-default" type="reset" id="bCancelarNou">Cancelar</button>
                     </div>
                 </form>
-            </div>                    
+            </div>
         </div>
         <div class="col-md-4">
             <div class="well">
@@ -68,7 +70,7 @@
 </div>
 
 <h3>Estudis {{ etiquetes.labelLlista }}:</h3>
-{%if entitat.estudis is empty %}
+{% if entitat.estudis is empty %}
     <div class="well">
         <p>Encara no hi ha cap estudis registrats.</p>
     </div>
@@ -77,27 +79,36 @@
 
         <div class="well">
             <h4>{{ grau.nom }}</h4>
-            <form id="f{{grau.codi}}">
-                <input type="hidden" name="idAlumne" id="idAlumne" value="{{identificador}}">
-                <input type="hidden" name="idGrau" id="idGrau" value='{{grau.codi}}'>
-                <input type="hidden" name="nomGrau" id="nomGrau" value='{{grau.nom}}'>
+            <form id="f{{ grau.codi }}">
+                <input type="hidden" name="idAlumne" id="idAlumne" value="{{ identificador }}">
+                <input type="hidden" name="idGrau" id="idGrau" value='{{ grau.codi }}'>
+                <input type="hidden" name="nomGrau" id="nomGrau" value='{{ grau.nom }}'>
                 <div class='row'>
                     <div class='col-md-6'>
                         <div class="form-group required">
                             <label class="control-label">Any de finalització:</label>
-                            <input type="number" min="1970" max='{{ "now"|date("Y") }}' id="any" name="any" disabled='disabled' value='{{grau.pivot.any}}' required="required">
+                            <input type="number" min="1970" max='{{ "now"|date("Y") }}' id="any" name="any"
+                                   disabled='disabled' value='{{ grau.pivot.any }}' required="required">
                         </div>
                         <div class="form-group required">
                             <label class="control-label">Nota final:</label>
-                            <input type="number" min="5" max="10" id="nota" name="nota" value='{{grau.pivot.nota}}' disabled='disabled' required="required">
+                            <input type="number" min="5" max="10" id="nota" name="nota" value='{{ grau.pivot.nota }}'
+                                   disabled='disabled' required="required">
                         </div>
                     </div>
 
                     <div class='col-md-6'>
-                        <button class="btn btn-primary" type="button" name="bEditar" id="bEd{{grau.codi}}">Editar</button>
-                        <button class="btn btn-danger" type="button" name="bSuprimir" id="bSup{{grau.codi}}">Suprimir</button>
-                        <button class="btn btn-success" type="submit" name="bGuardar" id="bGuar{{grau.codi}}">Guardar</button>
-                        <button class="btn btn-default" type="reset"  name="bCancel" id="bCan{{grau.codi}}">Cancel·lar</button>
+                        <button class="btn btn-primary" type="button" name="bEditar" id="bEd{{ grau.codi }}">Editar
+                        </button>
+                        <button class="btn btn-danger" type="button" name="bSuprimir" id="bSup{{ grau.codi }}">
+                            Suprimir
+                        </button>
+                        <button class="btn btn-success" type="submit" name="bGuardar" id="bGuar{{ grau.codi }}">
+                            Guardar
+                        </button>
+                        <button class="btn btn-default" type="reset" name="bCancel" id="bCan{{ grau.codi }}">
+                            Cancel·lar
+                        </button>
                     </div>
                 </div>
             </form>
@@ -105,13 +116,12 @@
     {% endfor %}
 {% endif %}
 
-{{include('auxiliars/modals.html.twig')}}
+{{ include('auxiliars/modals.html.twig') }}
 
 <script>
     $(document).ready(function () {
-        var idAlumne
-        ={{identificador }} ;
-                var estudisElegits;
+        var idAlumne ={{ identificador }} ;
+        var estudisElegits;
 
         $('#dNou').hide();
         $('#anyNou').attr('max', new Date().getFullYear());
@@ -151,7 +161,12 @@
             if (val != "") {
                 $('#mdEspera').on('shown.bs.modal', function (e) {
 
-                    estudisElegits = {codiEstudis: val, identificador: idAlumne, any: $('#anyNou').val(), nota: $('#notaNou').val()};
+                    estudisElegits = {
+                        codiEstudis: val,
+                        identificador: idAlumne,
+                        any: $('#anyNou').val(),
+                        nota: $('#notaNou').val()
+                    };
                     $.ajax({
                         method: 'POST',
                         url: "estudis",
@@ -159,9 +174,9 @@
                     }).done(function (dades) {
                         $('#mrTitol').html('Actualització correcte');
                         if (dades.quantitat >= 0) {
-                            $('#mrText').html("<p>{{etiquetes.correcte}}</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
+                            $('#mrText').html("<p>{{ etiquetes.correcte }}</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
                         } else {
-                            $('#mrText').html("<p>{{etiquetes.correcte}}</p>");
+                            $('#mrText').html("<p>{{ etiquetes.correcte }}</p>");
                         }
                         $('#bmDacord').on('click', function () {
                             window.location.href = "estudis?idOferta=" + idAlumne;
@@ -186,7 +201,11 @@
         $('form [name="bSuprimir"]').on('click', function (event) {
             var ident = event.currentTarget.id.replace('bSup', '');
             var form = 'f' + ident;
-            estudisElegits = {codiEstudis: $('#' + form + ' [name="idGrau"]').val(), idAlumne: $('#' + form + ' [name="idAlumne"]').val(), nomEstudis: $('#' + form + ' [name="nomGrau"]').val()};
+            estudisElegits = {
+                codiEstudis: $('#' + form + ' [name="idGrau"]').val(),
+                idAlumne: $('#' + form + ' [name="idAlumne"]').val(),
+                nomEstudis: $('#' + form + ' [name="nomGrau"]').val()
+            };
             $('#mcTitol').html("Confirmi l'eliminació.");
             $('#mcText').html("<p>Els estudis <em>" + $('#' + form + ' [name="nomGrau"]').val() + "</em> s'eliminaran de la seva llista.</p>");
 
@@ -308,34 +327,34 @@
             $('#mdEspera').modal('show');
         });
 
-             $("#familia").on("change", function () {
-                $.ajax({
-                 method: 'GET',
-                  url: "/cicles/" + $('#familia').val()
-                 }).done(function (dades) {
-                     var opcions = '<option value="">Escull uns estudis</option>';
-                     var xifra='';
-                    for (var index in dades) {
-                        if(xifra!=dades[index].codi.charAt(3)){
-                            if(xifra!==''){
-                                opcions=opcions+'</optgroup>';
-                            }
-                            xifra=dades[index].codi.charAt(3);
-                            var indicador='';
-                            if(xifra==='1'){
-                                indicador='FP bàsica';
-                            }else if(xifra==='2'){
-                                indicador='Grau mitjà';
-                            }else{
-                                indicador='Grau superior';
-                            } 
-                            opcions=opcions+'<optgroup label="'+indicador+'">';
+        $("#familia").on("change", function () {
+            $.ajax({
+                method: 'GET',
+                url: "../cicles/" + $('#familia').val()
+            }).done(function (dades) {
+                var opcions = '<option value="">Escull uns estudis</option>';
+                var xifra = '';
+                for (var index in dades) {
+                    if (xifra != dades[index].codi.charAt(3)) {
+                        if (xifra !== '') {
+                            opcions = opcions + '</optgroup>';
                         }
-                        opcions=opcions+'</optgroup>';
-                        opcions = opcions + '<option value="' + dades[index].codi + '"> ' + dades[index].codi + ' - ' + dades[index].nom + '</option>';
+                        xifra = dades[index].codi.charAt(3);
+                        var indicador = '';
+                        if (xifra === '1') {
+                            indicador = 'FP bàsica';
+                        } else if (xifra === '2') {
+                            indicador = 'Grau mitjà';
+                        } else {
+                            indicador = 'Grau superior';
+                        }
+                        opcions = opcions + '<optgroup label="' + indicador + '">';
                     }
-                    $("#graus").html(opcions);
-                });
-            }); 
+                    opcions = opcions + '</optgroup>';
+                    opcions = opcions + '<option value="' + dades[index].codi + '"> ' + dades[index].codi + ' - ' + dades[index].nom + '</option>';
+                }
+                $("#graus").html(opcions);
+            });
+        });
     });
 </script>

@@ -14,10 +14,10 @@
             $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
             $('#mEsperaTitol').html('Realitzant les modificacions');
             $('#mdEspera').on('shown.bs.modal', function (e) {
-
+                dades.rebuig=null;
                 $.ajax({
                     method: 'PUT',
-                    url: "/administrador/empreses/" + dades.idEmpresa,
+                    url: "../professor/empreses/" + dades.idEmpresa,
                     data: dades
                 }).done(function () {
                     $('#mrTitol').html('Actualització correcte')
@@ -146,12 +146,10 @@
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
-        <li><a href="empresesPendents">Validar empreses pendents</a></li>
+        <li><a href="../professor/empresesPendents">Validar empreses pendents</a></li>
         <li  class="active"><a href="#">Activar / validar empresa</a></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 
 {% endblock %}                     
 

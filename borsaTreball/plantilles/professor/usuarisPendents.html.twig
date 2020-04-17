@@ -16,7 +16,7 @@
 
                 $.ajax({
                     method: 'PUT',
-                    url: "/administrador/usuaris/" + dades.idProfessor,
+                    url: "usuaris/" + dades.idProfessor,
                     data: dades
                 }).done(function () {
                     $('#mrTitol').html('Actualització correcte')
@@ -68,7 +68,7 @@
             });
         });
     </script>
-    <script src="../../js/dirtyForms.js"></script>
+    <script src="../js/dirtyForms.js"></script>
 {% endblock %}
 
 {% block navegacio %}
@@ -80,9 +80,7 @@
         <li><a href="usuaris">Activar / validar usuari</a></li>
         <li><a href="administrador">Rol administrador</a></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 
 {% endblock %}                     
 

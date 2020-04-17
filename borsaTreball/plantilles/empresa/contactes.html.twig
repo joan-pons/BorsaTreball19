@@ -69,7 +69,7 @@
                 $('#mdEspera').on('shown.bs.modal', function (e) {
                     $.ajax({
                         method: 'DELETE',
-                        url: "/empresa/esborrarContacte/" + contacte.idContacte,
+                        url: "esborrarContacte/" + contacte.idContacte,
                         data: contacte
                     }).done(function () {
                         $('#mrTitol').html('Eliminació correcta')
@@ -110,7 +110,7 @@
                 $('#mdEspera').on('shown.bs.modal', function (e) {
                     $.ajax({
                         method: 'PUT',
-                        url: "/empresa/modificarContacte/" + contacte.idContacte,
+                        url: "modificarContacte/" + contacte.idContacte,
                         data: contacte
                     }).done(function () {
                         $('#mrTitol').html('Modificació correcta')
@@ -152,9 +152,7 @@
         <li class="active"><a href="#"><span class="glyphicon glyphicon-list"></span> Llista</a></li>
         <li><a href="afegirContacte"><span class="glyphicon glyphicon-plus"></span> Afegir</a></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right ">
-        <li><a href="/sortir"><span class="glyphicon glyphicon-log-out"></span> Sortir</a></li>
-    </ul>
+
 {% endblock %}          
 {% block contingut %}
 
