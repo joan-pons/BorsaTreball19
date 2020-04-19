@@ -1,6 +1,7 @@
 <?php
 
 use Borsa\Alumne as Alumne;
+use Borsa\Configuracio as Configuracio;
 use Borsa\Dao as Dao;
 use Borsa\DaoAlumne as DaoAlumne;
 use Borsa\DaoEmpresa as DaoEmpresa;
@@ -127,25 +128,37 @@ $app->get('/cicles/{idFamilia}', function ($request, $response, $args) {
     return Dao::ciclesFamilia($request, $response, $args, $this);
 });
 
+$app->get('/contrasenyaOblidada', function ($request, $response, $args) {
+    $this->dbEloquent;
+    $tipus = filter_var($request->getQueryParam('t'), FILTER_SANITIZE_STRING);
+    return $this->view->render($response, 'contrasenyaOblidada.twig', ['tipus' => $tipus]);
+});
+
+$app->put('/contrasenyaOblidada', function ($request, $response, $args) {
+    return Dao::contrasenyaOblidada($request, $response, $args, $this);
+});
+
 $app->get('/restablirContrasenya', function ($request, $response, $args) {
     $this->dbEloquent;
     $t = filter_var($request->getQueryParam('t'), FILTER_SANITIZE_STRING);
     $token = Token::find($t);
     $ara = strtotime('now');
     if ($token != null && $ara <= strtotime($token->data)) {
-        return $this->view->render($response, 'restablirContrasenya.twig', ['restablir' => true, 'usuari' => $token, 'dtoken'=>strtotime($token->data),'ara' => $ara]);
+        $usuari = Usuari::find($token->idUsuari);
+        return $this->view->render($response, 'restablirContrasenya.twig', ['restablir' => true, 'usuari' => $token, 'tipus' => $usuari->tipusUsuari, 'dtoken' => strtotime($token->data), 'ara' => $ara]);
     } else {
-        return $this->view->render($response, 'auxiliars/noAutoritzat.html.twig', []);
+        return $this->view->render($response, 'auxiliars/tokenNoValid.html.twig', []);
     }
 });
+
 $app->put('/restablirContrasenya/{token}', function ($request, $response, $args) {
     return Dao::restablirContrasenya($request, $response, $args, $this);
 });
 $app->get('/sha', function ($request, $response, $args) {
     $this->dbEloquent;
-    $usuaris=Usuari::all();
-    foreach ($usuaris as $usuari){
-        $usuari->contrasenya=password_hash('123456789',PASSWORD_DEFAULT);
+    $usuaris = Usuari::all();
+    foreach ($usuaris as $usuari) {
+        $usuari->contrasenya = password_hash('123456789', PASSWORD_DEFAULT);
         $usuari->save();
     }
 });
@@ -469,10 +482,20 @@ $app->get('/alumneLogin', function ($request, $response, $args) {
 //Alta Alumne
 $app->get('/altaAlumne', function ($request, $response, $args) {
     $this->dbEloquent;
-    $families = Familia::orderBy('nom', 'ASC')->get();
-    $estudis = Estudis::orderBy('nom', 'ASC')->get();
+    $config = Configuracio::find(1);
+    $avui = strtotime("now");
+    if ($avui >= strtotime($config->inici) && $avui <= strtotime($config->final)) {
+        $families = Familia::orderBy('nom', 'ASC')->get();
+        $estudis = Estudis::orderBy('nom', 'ASC')->get();
 
-    return $this->view->render($response, 'alumne/altaAlumne.html.twig', ['families' => $families, 'estudis' => $estudis]);
+        return $this->view->render($response, 'alumne/altaAlumne.html.twig', ['families' => $families, 'estudis' => $estudis]);
+    } else {
+        if ($avui < strtotime($config->inici)) {
+            return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', ['config' => $config]);
+        }else{
+            return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', []);
+        }
+    }
 });
 
 $app->post('/altaAlumne', function ($request, $response) {
@@ -624,10 +647,10 @@ $app->group('/alumne', function () {
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
             $alumne = $usuari->getEntitat();
-            $dades=$request->getQueryParams();
-            if (array_key_exists('codiEstudis',$dades)) {
-                $empreses = DB::select('SELECT distinct em.* from Ofertes_has_Estudis oe inner join Ofertes on oe.Ofertes_idOferta=idOferta inner join Empreses em on em.idEmpresa=Ofertes.Empreses_idEmpresa where  em.activa=1 and Ofertes.validada=1 and oe.Estudis_codi=\'' . filter_var($dades['codiEstudis'],FILTER_SANITIZE_STRING) . '\'');
-            }else{
+            $dades = $request->getQueryParams();
+            if (array_key_exists('codiEstudis', $dades)) {
+                $empreses = DB::select('SELECT distinct em.* from Ofertes_has_Estudis oe inner join Ofertes on oe.Ofertes_idOferta=idOferta inner join Empreses em on em.idEmpresa=Ofertes.Empreses_idEmpresa where  em.activa=1 and Ofertes.validada=1 and oe.Estudis_codi=\'' . filter_var($dades['codiEstudis'], FILTER_SANITIZE_STRING) . '\'');
+            } else {
                 $empreses = null;
             }
             return $this->view->render($response, 'alumne/empreses.html.twig', ['actor' => $alumne, 'codiEstudis' => $args['codiEstudis'], 'empreses' => $empreses]);
@@ -682,11 +705,6 @@ $app->group('/professor', function () {
                         $ofertes[$oferta->idOferta] = $oferta;
                     }
                 }
-                foreach ($empresesPendents as $empresa) {
-                    if ($empresa->familia == $estudis->familia) {
-                        $empreses[] = $empresa;
-                    }
-                }
                 foreach ($alumnesPendents as $alumne) {
                     if ($alumne->estudisAlta == $estudis->codi) {
                         $alumnes[] = $alumne;
@@ -695,10 +713,15 @@ $app->group('/professor', function () {
 
             }
 
+            foreach ($empresesPendents as $empresa) {
+                if ($empresa->familia == $estudis->familia) {
+                    $empreses[] = $empresa;
+                }
+            }
 
             $companys = null;
             if ($usuari->teRol(40)) {
-                $companys = Professor::where('validat',0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
+                $companys = Professor::where('validat', 0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             }
             return $this->view->render($response, 'professor/dashBoard.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes' => $alumnes]);
         } else {
@@ -786,7 +809,8 @@ $app->group('/professor', function () {
                     }
                 }
             }
-            return $this->view->render($response, 'professor/ofertesPendents.html.twig', ['professor' => $professor, "etiquetes" => $etiquetes, 'ofertes' => $ofertes]);
+            $nivells=NivellIdioma::all();
+            return $this->view->render($response, 'professor/ofertesPendents.html.twig', ['professor' => $professor, "etiquetes" => $etiquetes, 'ofertes' => $ofertes, 'nivells'=>$nivells]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
@@ -960,6 +984,22 @@ $app->group('/administrador', function () {
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
+    });
+
+    $this->get("/obrirAlumnes", function ($request, $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION['idUsuari']);
+        if ($usuari != null) {
+            $prof = $usuari->getEntitat();
+            $config = Configuracio::find(1);
+            return $this->view->render($response, 'professor/obrirAlumnes.html.twig', ['config' => $config, 'professor' => $prof]);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
+
+    $this->put("/obrirAlumnes/{idConfig}", function ($request, $response, $args) {
+        return DaoProfessor::obrirAlumnes($request, $response, $args, $this);
     });
 
 })->add(function ($request, $response, $next) {

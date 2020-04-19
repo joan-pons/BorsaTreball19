@@ -2,11 +2,11 @@
 
 namespace Borsa;
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
 use Borsa\Professor as Professor;
-use Illuminate\Database\Capsule\Manager as DB;
 use Correu\Bustia as Bustia;
+use Illuminate\Database\Capsule\Manager as DB;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 
 /**
@@ -17,6 +17,7 @@ use Correu\Bustia as Bustia;
 class DaoProfessor extends Dao
 {
 //TODO: Revisar Sanitize i actiu
+
     public function altaProfessor(Request $request, Response $response, \Slim\Container $container)
     {
 
@@ -87,7 +88,7 @@ class DaoProfessor extends Dao
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
-            $professor = Professor::find(filter_var($data['idProfessor'],FILTER_SANITIZE_NUMBER_INT));
+            $professor = Professor::find(filter_var($data['idProfessor'], FILTER_SANITIZE_NUMBER_INT));
             if ($professor != null) {
                 $codiEstudis = filter_var($data['codiEstudis'], FILTER_SANITIZE_STRING);
                 $professor->estudis()->sync([$codiEstudis], false);
@@ -154,31 +155,31 @@ class DaoProfessor extends Dao
                 $data = $request->getParsedBody();
                 $validat = filter_var($data['validat'], FILTER_SANITIZE_STRING) == 'true';
                 $activat = filter_var($data['actiu'], FILTER_SANITIZE_STRING) == 'true' && $validat;
-                //TODO: Eliminar el meu correu
-                if ($validat and $professor->validat!=1) {
-                    $longitud=20;
-                    $token=bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
-                    $r=new Token();
-                    $r->idUsuari=$professor->getUsuari()->idUsuari;
-                    $r->token=$token;
-                    $r->data= date('Y-m-d H:i:s', strtotime('+1 week'));
+
+                if ($validat and $professor->validat != 1) {
+                    $longitud = 20;
+                    $token = bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
+                    $r = new Token();
+                    $r->idUsuari = $professor->getUsuari()->idUsuari;
+                    $r->token = $token;
+                    $r->data = date('Y-m-d H:i:s', strtotime('+1 week'));
                     $r->save();
-                    $resultat = Bustia::enviarUnic($professor->email, 'Validació correcta', "/email/instruccionsValidat.html.twig", ['usuari' => $professor->email, 'contrasenya' => $professor->getUsuari()->contrasenya, 'professor' => true, 'token'=>$token], $container);
+                    $resultat = Bustia::enviarUnic($professor->email, 'Validació correcta', "/email/instruccionsValidat.html.twig", ['usuari' => $professor->email, 'contrasenya' => $professor->getUsuari()->contrasenya, 'professor' => true, 'token' => $token], $container);
                 } else if (!$validat) {
                     $resultat = Bustia::enviarUnic($professor->email, 'Validació incorrecta', "/email/rebutjarProfessor.twig", [], $container);
                 } else {
                     $resultat = Bustia::enviarUnic($professor->email, 'Canvi d\'estat Actiu / Inactiu', "/email/activarProfessor.twig", [], $container);
                 }
                 if ($resultat == true) {
-                    if($validat==false){
-                        $validat=2;
+                    if ($validat == false) {
+                        $validat = 2;
                     }
                     $professor->validat = $validat;
                     $professor->actiu = $activat;
                     $professor->save();
                     $missatge = array("missatge" => "Professor validat.");
                     return $response->withJSON($missatge); //array('professor' => $professor, 'validat' => $validat, 'Activat' => $activat, 'Primera' => $validat and !$professor->validat, 'Segona' => !$validat, 'Resultat' => $resultat));
-                }else{
+                } else {
                     $missatge = array("missatge" => "<p>No s'ha pogut enviar el missatge de confirmació. L'adreça de correu deu estar malament.</p> <p>Els canvis no s'han guardat a la base de dades.</p>");
                     return $response->withJSON($missatge, 422);
 
@@ -207,7 +208,7 @@ class DaoProfessor extends Dao
         try {
             $container->dbEloquent;
 
-            $professor = Professor::find(filter_var($args['idProfessor'],FILTER_SANITIZE_NUMBER_INT));
+            $professor = Professor::find(filter_var($args['idProfessor'], FILTER_SANITIZE_NUMBER_INT));
             if ($professor != null) {
                 $usuari = $professor->getUsuari();
                 return $response->withJSON($usuari->rols);
@@ -303,7 +304,7 @@ class DaoProfessor extends Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             $oferta = Oferta::find(filter_var($args['idOferta'], FILTER_SANITIZE_NUMBER_INT));
-            $professor = Professor::find(filter_var($data['idProfessor'],FILTER_SANITIZE_NUMBER_INT));
+            $professor = Professor::find(filter_var($data['idProfessor'], FILTER_SANITIZE_NUMBER_INT));
             if ($professor != null && $oferta != null) {
                 $oferta->validada = filter_var($data['validada'], FILTER_SANITIZE_NUMBER_INT);
                 $oferta->professorValidada = $professor->idProfessor;
@@ -316,13 +317,18 @@ class DaoProfessor extends Dao
                 }
 
 
-                $oferta->alumnes()->sync($alumnesId);
-                $oferta->save();
+                if (count($alumnesDefinitiu) > 0) {
+                    $oferta->alumnes()->sync($alumnesId);
+                    $oferta->save();
 
-                Bustia::enviar($alumnesDefinitiu, 'Oferta de feina', '/email/oferta.twig', ['oferta' => $oferta], $container);
-                Bustia::enviarUnic($oferta->empresa->email, 'Resultat de la validació de l\'oferta', '/email/ofertaResultat.html.twig', ['oferta' => $oferta], $container);
-                $missatge = array("missatge" => "Oferta validada i emails enviats");
-                return $response->withJSON($missatge);
+                    Bustia::enviar($alumnesDefinitiu, 'Oferta de feina', '/email/oferta.twig', ['oferta' => $oferta], $container);
+                    Bustia::enviarUnic($oferta->empresa->email, 'Resultat de la validació de l\'oferta', '/email/ofertaResultat.html.twig', ['oferta' => $oferta], $container);
+                    $missatge = array("missatge" => "Oferta validada i emails enviats");
+                    return $response->withJSON($missatge);
+                } else {
+                    $missatge = array("missatge" => "No hi ha cap alumne per aquesta oferta");
+                    return $response->withJSON($missatge, 422);
+                }
             } else {
                 $missatge = array("missatge" => "No s'ha trobat el professor o l'oferta que es vol validar.");
                 return $response->withJson($missatge, 422);
@@ -339,11 +345,13 @@ class DaoProfessor extends Dao
                     $missatge = array("missatge" => "L'oferta no s'ha pogut publicar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
             }
+
             return $response->withJson($missatge, 422);
         }
     }
 
-    public function rebutjarOferta(Request $request, Response $response, $args, \Slim\Container $container)
+    public
+    function rebutjarOferta(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -380,4 +388,37 @@ class DaoProfessor extends Dao
         }
     }
 
+    public
+    static function obrirAlumnes(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $config = Configuracio::find(1);
+
+            if ($config != null) {
+
+                $data = $request->getParsedBody();
+                $config->inici = filter_var($data['inici'], FILTER_SANITIZE_STRING);
+                $config->final = filter_var($data['final'], FILTER_SANITIZE_STRING);
+                $config->save();
+                return $response->withJSON("Ok");
+            } else {
+                $missatge = array("missatge" => "No s'ha trobat la configuració que es vol modificar.");
+                return $response->withJson($missatge, 422);
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja és administrador", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la seva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
 }

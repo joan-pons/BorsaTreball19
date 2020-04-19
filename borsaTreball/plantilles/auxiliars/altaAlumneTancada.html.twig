@@ -1,0 +1,40 @@
+{% extends "auxiliars/base.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Empreses</title>
+    <link rel="shortcut icon" type="image/ico" href="../imatges/logo-cifp.ico"/>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/borsa.css">
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+{% endblock %}
+
+{% block navegacio %}
+
+    <a class="navbar-brand" href="sortir">Borsa de treball</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="sortir"><span class="glyphicon glyphicon--log-out"></span> Tornar a la pàgina principal</a></li>
+    </ul>
+
+{% endblock %}                     
+
+{% block contingut %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>El termini d'alta per a nous alumnes està tancat.</h1>
+            {% if config %}
+                <p>Vos podreu donar d'alta des del dia {{ config.inici | date("d/m/Y") }} fins al {{ config.final | date("d/m/Y") }} inclosos.</p>
+            {% else %}
+            <p>El vostre tutor vos avisarà de les dates en les que aquest tràmit estarà disponible.</p>
+            {% endif %}
+        </div><!--col-->
+    </div><!--row-->
+    <div class="row">
+        <div class="col-md-8">
+        <div><p></p></div>
+        </div><!--col-->
+
+    </div><!--row-->
+{% endblock %}                     

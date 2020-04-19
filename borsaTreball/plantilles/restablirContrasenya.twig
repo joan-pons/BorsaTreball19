@@ -1,4 +1,14 @@
 {% extends "auxiliars/base.html.twig" %}
+{% if tipus == 10 %}
+    {% set brand="Professor" %}
+    {% set accio="professorLogin" %}
+{% elseif tipus==20 %}
+    {% set brand="Empresa" %}
+    {% set accio="empresaLogin" %}
+{% elseif tipus==30 %}
+    {% set brand="Alumne" %}
+    {% set accio="alumneLogin" %}
+{% endif %}
 
 {% block head %}
     <title>Borsa de treball: Restablir contrasenya</title>
@@ -25,7 +35,7 @@
                     $('#mrTitol').html('<span class="glyphicon glyphicon-check"></span>&nbsp; Actualització correcte');
                     $('#mrText').html("<p>La contrasenya s'ha modificat correctament.</p>");
                     $('#bmDacord').on('click', function () {
-                        window.location.href = "/";
+                        window.location.href = "../";
                     });
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
@@ -43,7 +53,12 @@
 {% endblock %}
 
 {% block navegacio %}
-
+<a class="navbar-brand" href="{{ accio }}">{{ brand }}</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="nav navbar-nav navbar-right ">
+        <li><a href="{{ accio }}"><span class="glyphicon glyphicon-log-out"></span> Tornar</a></li>
+    </ul>
 {% endblock %}                     
 
 {% block contingut %}

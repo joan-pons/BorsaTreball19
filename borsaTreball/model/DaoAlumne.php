@@ -34,7 +34,7 @@ class DaoAlumne extends Dao
                 $professors=Usuari::where('tipusUsuari',10)->get();
                 $admins=array();
                 foreach($professors as $p){
-                    if($p->teRol(40)){
+                    if($p->teRol(40) && $p->getEntitat()->actiu==1){
                        $admins[]=$p->getEntitat();
                     }
                 }

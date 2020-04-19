@@ -1,0 +1,115 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Modificar el termini d'alta d'alumnes</title>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#bmDacord').on('click', function () {
+                $('#mdResultat').modal('hide');
+            });
+            $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#mEsperaTitol').html('Realitzant les modificacions');
+            $('#mdEspera').on('shown.bs.modal', function (e) {
+                var config = {};
+                config.idConf = 1;
+                $.each($('#fCanvi [name]'), function (i, obj) {
+                    config[obj.name] = obj.value;
+                });
+
+                $.ajax({
+                    method: 'PUT',
+                    url: "obrirAlumnes/" + config.idConf,
+                    data: config
+                }).done(function () {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-check"></span>&nbsp; Actualització correcte');
+                    $('#mrText').html("<p>El termini d'alta s'ha modificat correctament.</p>");
+                    $('#bmDacord').on('click', function () {
+                        window.location.href = "../professor/dashBoard";
+                    });
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
+                    $('#bmDacord').on('click', function () {
+                        $('#mdResultat').modal('hide');
+                    });
+                }).always(function () {
+                    $('#mdEspera').modal('hide');
+                    $('#mdResultat').modal('show');
+                });
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block navegacio %}
+<a class="navbar-brand" href="../professor/dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
+</div>
+<div class="collapse navbar-collapse" id="myNavbar">
+
+
+    {% endblock %}
+
+    {% block contingut %}
+
+        <h2>Modificar el termini d'alta dels alumnes</h2>
+
+        <div class="well">
+            <form id="fCanvi" method="post">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-group required">
+                            <label for="nou" class="control-label">Data inici:</label>
+                            <input type="date" class="form-control" id="inici" name="inici" required="required"
+                                   value="{{ config.inici }}">
+                        </div>
+                        <div class="form-group required">
+                            <label for="repetir" class="control-label">Data final:</label>
+                            <input type="date" class="form-control" id="final" name="final" required="required"
+                                   value="{{ config.final }}">
+                        </div>
+                    </div><!--col-->
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4">
+                        <p>Els alumnes podran sol·licitar l'alta a la borsa de treball desde les 00:00:00 hores de la
+                            data inicial fins a les 23:59:59 hores de la data final.</p>
+                        <button type="submit" class="btn btn-success">Canviar</button>
+                        <button type="reset" class="btn btn-default">Netejar</button>
+                    </div>
+                </div> <!--Row -->
+
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label"></label>
+                        </div>
+                    </div>
+                </div>
+
+                {% include 'auxiliars/obligatoris.html.twig' %}
+            </form>
+        </div>
+        {{ include('auxiliars/modals.html.twig') }}
+        <script src="../js/dirtyForms.js"></script>
+        <script>
+            $('#fCanvi').submit(function (event) {
+                event.preventDefault();
+                var dInici=$('#inici').val();
+                var dFinal=$('#final').val();
+                if(dInici>dFinal){
+                    $('#mrTitol').html("Atenció!")
+                    $('#mrText').html("La data inicial no pot ser posterior a la data final.");
+                    $('#mdResultat').modal('show');
+                }else{
+                    $('#mdEspera').modal('show');
+                }
+            });
+        </script>
+    {% endblock %}
