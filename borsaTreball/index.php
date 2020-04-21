@@ -449,6 +449,7 @@ $app->group('/empresa', function () {
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
             $nivellsIdioma = NivellIdioma::orderBy('idNivellIdioma', 'ASC')->get();
+            $recompte=Dao::comptarCandidats($oferta, $this);
             $etiquetes = array("nom" => $empresa->nom, "labelLlista" => "en els que vol que es trobin els candidats");
             return $this->view->render($response, 'auxiliars/ofertaCompleta.html.twig', ['empresa' => $empresa, 'oferta' => $oferta, 'etiquetes' => $etiquetes, 'nivells' => $nivellsIdioma, 'recompte' => $recompte]);
             //return $response->withJSON($oferta->estatsLaborals);
@@ -696,7 +697,7 @@ $app->group('/professor', function () {
             $empreses = array();
             $alumnes = array();
 
-            $alumnesPendents = Alumne::where('validat', 0)->get();
+            $alumnesPendents = Alumne::where('validat', 0)->orderBy('llinatges','ASC')->orderBy('nom','ASC')->get();
             $empresesPendents = Empresa::where('Validada', 0)->where('rebuig', null)->orderBy('DataAlta', 'ASC')->orderBy('Nom', 'ASC')->get();
 
             foreach ($professor->estudis as $estudis) {
@@ -860,7 +861,7 @@ $app->group('/professor', function () {
             $professor = $usuari->getEntitat();
             $alumnes = array();
 
-            $alumnesPendents = Alumne::where('validat', 0)->get();
+            $alumnesPendents = Alumne::where('validat', 0)->orderBy('llinatges','ASC')->orderBy('nom','ASC')->get();
 
             foreach ($professor->estudis as $estudis) {
                 foreach ($alumnesPendents as $alumne) {

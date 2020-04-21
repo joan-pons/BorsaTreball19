@@ -1,0 +1,2 @@
+#Connexió al servidor d'amazon
+ ssh -i "server.pem" ubuntu@3.221.246.147

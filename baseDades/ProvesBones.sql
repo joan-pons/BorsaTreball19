@@ -65,7 +65,7 @@ CREATE TABLE `Alumne_has_EstatLaboral` (
 
 LOCK TABLES `Alumne_has_EstatLaboral` WRITE;
 /*!40000 ALTER TABLE `Alumne_has_EstatLaboral` DISABLE KEYS */;
-INSERT INTO `Alumne_has_EstatLaboral` VALUES (1,1),(1,3);
+INSERT INTO `Alumne_has_EstatLaboral` VALUES (6,1),(10,1),(3,2),(6,2),(10,3);
 /*!40000 ALTER TABLE `Alumne_has_EstatLaboral` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +95,7 @@ CREATE TABLE `Alumne_has_Estudis` (
 
 LOCK TABLES `Alumne_has_Estudis` WRITE;
 /*!40000 ALTER TABLE `Alumne_has_Estudis` DISABLE KEYS */;
-INSERT INTO `Alumne_has_Estudis` VALUES (1,'IFC32',2018,6),(1,'IFC33',2017,7),(2,'IFC31',2017,7),(3,'IFC32',2017,8),(3,'IFC33',2017,8);
+INSERT INTO `Alumne_has_Estudis` VALUES (2,'IFC32',2020,5),(3,'IFC32',2020,7),(6,'IFC33',2020,6),(8,'IFC33',2020,8),(10,'TMV31',2018,6);
 /*!40000 ALTER TABLE `Alumne_has_Estudis` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -126,7 +126,7 @@ CREATE TABLE `Alumne_has_Idiomes` (
 
 LOCK TABLES `Alumne_has_Idiomes` WRITE;
 /*!40000 ALTER TABLE `Alumne_has_Idiomes` DISABLE KEYS */;
-INSERT INTO `Alumne_has_Idiomes` VALUES (1,3,3),(1,1,4),(1,2,4);
+INSERT INTO `Alumne_has_Idiomes` VALUES (2,4,2),(6,3,2),(6,5,2),(2,3,3),(3,3,3),(3,4,3),(10,5,3),(2,1,4),(2,2,4),(3,1,4),(3,2,4),(6,1,4),(6,2,4),(8,3,4),(10,1,4),(10,2,4),(10,4,4);
 /*!40000 ALTER TABLE `Alumne_has_Idiomes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +154,7 @@ CREATE TABLE `Alumnes` (
   `profValidat` int(11) DEFAULT NULL,
   `estudisAlta` char(7) DEFAULT NULL,
   PRIMARY KEY (`idAlumne`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,7 +163,7 @@ CREATE TABLE `Alumnes` (
 
 LOCK TABLES `Alumnes` WRITE;
 /*!40000 ALTER TABLE `Alumnes` DISABLE KEYS */;
-INSERT INTO `Alumnes` VALUES (1,'Rafel','Sastre','Carrer s\'olivera 12','07320','Selva','Illes Balears','666555444','rafel@iespaucasesnoves.cat',1,'','<p><br></p>',1,1,'IFC32'),(2,'Borja','Perez','Plaça Major 4','07514','Llucmajor','Iiles Balears','698523654','borja@iespaucasesnoves.cat',0,NULL,NULL,0,NULL,'IFC31'),(3,'Cristian','Martínez','Carrer Albada 32','07436','Can Picafort','Illes Balears','647854123','cristian@cif66ppaucasesnovescifp.cat',0,NULL,NULL,0,NULL,'IFC33'),(8,'asdasdas','orytroity uoituy roityu ro',NULL,NULL,NULL,NULL,NULL,'2134@sdf.cde',0,NULL,NULL,0,NULL,'IFC33'),(10,'Un','Altre Alumne',NULL,NULL,NULL,NULL,NULL,'unAltreAlumne@yahoo.cat22',0,NULL,NULL,1,1,'IFC32'),(15,'Joan','Pons',NULL,NULL,NULL,NULL,NULL,'jp@gmail.net',0,NULL,NULL,0,NULL,'ADG32');
+INSERT INTO `Alumnes` VALUES (1,'Antoni','Noguera',NULL,NULL,NULL,NULL,NULL,'antoni@fictici.fic',0,NULL,NULL,0,NULL,'IFC32'),(2,'Pedro','Bosch','','','','','','pedro@fictici.fic',1,'','<p><br></p>',1,6,'IFC32'),(3,'Miquel','Riera','','','','','','miquel@fictici.fic',1,'','<p><br></p>',1,6,'IFC32'),(4,'Josep','Rubio',NULL,NULL,NULL,NULL,NULL,'josep@fictici.fic',0,NULL,NULL,0,NULL,'IFC32'),(5,'Antoni','Simon',NULL,NULL,NULL,NULL,NULL,'antoni@fictici.web',0,NULL,NULL,0,NULL,'IFC33'),(6,'Josep Lluis','Aloy','','','','','','josep@fictici.web',1,'','<p><br></p>',1,6,'IFC33'),(7,'Miquel','Bennassar',NULL,NULL,NULL,NULL,NULL,'miquel@fictici.web',0,NULL,NULL,0,NULL,'IFC33'),(8,'Francesc','Arrom','','','','','','francesc@fictici.web',1,'','<p><br></p>',1,6,'IFC33'),(9,'Salvador','Murano',NULL,NULL,NULL,NULL,NULL,'salvador@fictici.mec',0,NULL,NULL,0,NULL,'TMV31'),(10,'Rocio','Gonzalez','','','','','','rocio@fictici.mec',1,'','<p><br></p>',1,6,'TMV31'),(11,'Joan','Negre',NULL,NULL,NULL,NULL,NULL,'joan@fictici.mec',0,NULL,NULL,0,NULL,'TMV31');
 /*!40000 ALTER TABLE `Alumnes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -256,7 +256,7 @@ CREATE TABLE `Configuracio` (
 
 LOCK TABLES `Configuracio` WRITE;
 /*!40000 ALTER TABLE `Configuracio` DISABLE KEYS */;
-INSERT INTO `Configuracio` VALUES ('2020-04-21','2020-04-28',1);
+INSERT INTO `Configuracio` VALUES ('2020-04-20','2020-04-27',1);
 /*!40000 ALTER TABLE `Configuracio` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +279,7 @@ CREATE TABLE `Contactes` (
   UNIQUE KEY `email_UNIQUE` (`email`),
   KEY `fk_Contactes_Empreses1_idx` (`Empreses_idEmpresa`),
   CONSTRAINT `fk_Contactes_Empreses1` FOREIGN KEY (`Empreses_idEmpresa`) REFERENCES `Empreses` (`idEmpresa`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,7 +288,7 @@ CREATE TABLE `Contactes` (
 
 LOCK TABLES `Contactes` WRITE;
 /*!40000 ALTER TABLE `Contactes` DISABLE KEYS */;
-INSERT INTO `Contactes` VALUES (1,'Jo','Mateix','','jomateix@nissan.jp',NULL,2),(2,'Jo','Mateix','','jomateix@intel.es','RRHH',3),(3,'Miquel','Servera','971179654','miquel@intel.es','RRHH',3);
+INSERT INTO `Contactes` VALUES (2,'Sandra','Pujol','666366633','sandra@incasoft.emp','Cap RRHH',1);
 /*!40000 ALTER TABLE `Contactes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -317,7 +317,7 @@ CREATE TABLE `Empreses` (
   `rebuig` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`idEmpresa`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -326,7 +326,7 @@ CREATE TABLE `Empreses` (
 
 LOCK TABLES `Empreses` WRITE;
 /*!40000 ALTER TABLE `Empreses` DISABLE KEYS */;
-INSERT INTO `Empreses` VALUES (1,'Sa Meva','<h1>Sa Meva</h1><p>Empresa dedicada a tota casta de projectes.</p>','Carrer nou, 10','07300','Inca','Balears','971456985','info@sameva.cat',0,0,'2019-08-11','www.sameva.cat',NULL,NULL),(2,'Nissan','<h1>Nissan</h1><p>Idò això, una altra empresa de cotxes.</p>','Plaça Major 6','07300','Inca','Balears','654785214','info@nissan.jp',0,1,'2019-08-11','www.nissan.jp','IFC',''),(3,'Intel','<h1>Intel</h1><p>Una gran companyia que fa coses petites.</p>','Avinguda No Sé Què, s/n','07300','Inca','Balears','971179654','info@intel.es22',1,0,'2019-08-11','www.intel.com','IFC',''),(4,'Proves','<p>lakfj alsdfjalsd fjsdlfj lsdfjaljsldja fsk fjsdlf jalsdf jsdjf</p>','carrer desconegut 3','07957','Ariany','Illes Balears','698478523','info@poves.com',0,0,'2019-10-08','',NULL,NULL),(5,'lsdnsdlf','<p><br></p>','','','','','','asdfg@sdfsf.sdf',0,0,'2019-10-23','',NULL,NULL),(6,'Prova 27','<p>sañdflskdñ fsñdf ksñldkf sñdlkf sñdlkf sñdlkf sñdlkf sñkf&nbsp;</p>','faf sdf sfas sd','0730','Inca','Illes Balears','971179654','prova@empresa.cat',0,0,'2020-03-27','',NULL,NULL),(7,'Prova 27 v2','<p>a lñskd añskdañsldk añsldkañsldk añlsdk aska lñsd añk</p>','salksj dasdjalsjd l dsa','07300','Inca',' Illes Balears','987456789','prova27@asdasd.com',0,0,'2020-03-27','',NULL,NULL),(8,'sdfas fsdf asdf s','<p>&nbsp;sdf sñdlkfñsdl kfsñdlfk sñldkf ñsdlfk ñsdfk sñk</p>','sdfdfsdfsd','07300','Inca','Illes Balears','654654646','asdfsdf@sdsdffsdf.fdd',0,0,'2020-03-27','',NULL,NULL),(9,'lsdnsdlfxcvxcvx x','<p><br></p>','','','','','','asdfg456456@sdfsf.sdf',0,0,'2020-03-27','',NULL,NULL),(10,'hjkhkhjkhjkh khjkhj khjjh','<p><br></p>','','','','','','hjkhkhjkhkh@dell.com',0,0,'2020-03-27','',NULL,NULL),(11,'gjnbtkgnbkb','<p><br></p>','','','','','','cdedcedn@rty.com',0,0,'2020-03-27','','ADG',NULL),(12,'infoInfo','<p>.ma.sdm. d,a.sd,am s.dm a.sdm a.s,dmas.dma.sdma.s,md a.ds,madalsjd lakjdaljdal salskdj alskdj alskdj alskdj alksdjallaskjd alkdjalsjd a</p>','alkdalkjslda','07300','Inca','Illes Balears','123456789','info2@info2.com',0,0,'2020-03-28','www.info2.com','IFC',NULL),(13,'aasdads','<p><br></p>','','','','','asdasd','dasdasdads@asd.asd',1,1,'2020-03-28','','IFC',NULL),(14,'Darrera d&#39;avui','<p><br></p>','','','','','','ertertetre@darrera.avui',0,0,'2020-03-30','','IFC','NO sap escriure ni el seu nom'),(15,'Aquesta si que és la darrera d&#39;avui','<p><br></p>','','','','','','wsxedcefvr@rfvgb.com',0,0,'2020-03-30','','IFC',''),(16,'D\'avui & d\'ahir','<p><br></p>','','','0','','','sdfsfdd@wer.ert',0,0,'2020-03-30','','IFC',NULL),(20,'Prova email','<p><br></p>','','','0','','','email@email.ema',0,1,'2020-04-15','','',''),(21,'Prova email','<p><br></p>','','','0','','','email@prova.ema',0,0,'2020-04-15','','IFC','');
+INSERT INTO `Empreses` VALUES (1,'Inca Soft','<p>Aplicacions web des del Raiguer.&nbsp;</p>','','','0','','','info@incasoft.emp',1,0,'2020-04-20','','IFC',''),(2,'Autos Raiguer','<p>Taller multimarca</p>','','','0','','','info@autos.emp',0,0,'2020-04-20','','TMV',NULL),(3,'RN3','<p>Desenvolupadors per la teva empresa.&nbsp;</p>','','','0','','','info@rn3.emp',0,0,'2020-04-20','','IFC',NULL);
 /*!40000 ALTER TABLE `Empreses` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -460,7 +460,7 @@ CREATE TABLE `Estudis` (
 
 LOCK TABLES `Estudis` WRITE;
 /*!40000 ALTER TABLE `Estudis` DISABLE KEYS */;
-INSERT INTO `Estudis` VALUES ('ADG11','Serveis administratius','ADG'),('ADG21','Gestió administrativa','ADG'),('ADG31','Assistència a la direcció','ADG'),('ADG32','Administració i finances','ADG'),('ELE11','Electricitat i electrònica','ELE'),('ELE21','Instal·lacions elèctriques i automàtiques','ELE'),('ELE22','Instal·lacions de telecomunicacions','ELE'),('ELE31','Sistemes electrotècnics i automatitzats','ELE'),('ELE32','Sistemes de telecomunicació i informàtics','ELE'),('ELE33','Manteniment electrònic','ELE'),('ELE34','Automatització i robòtica industrial','ELE'),('IFC11','Informàtica i comunicacions','IFC'),('IFC12','Informàtica d\'oficina','IFC'),('IFC21','Sistemes microinformàtics i xarxes','IFC'),('IFC31','Administració de sistemes informàtics en xarxa','IFC'),('IFC32','Desenvolupament d\'aplicacions multiplataforma','IFC'),('IFC33','Desenvolupament d\'aplicacions web','IFC'),('TMV11','Manteniment de vehicles','TMV'),('TMV12','Manteniment d\'embarcacions esportives id\'esbarjo','TMV'),('TMV21','Carrosseria','TMV'),('TMV22','Electromecànica de vehicles automòbils','TMV'),('TMV31','Automoció','TMV');
+INSERT INTO `Estudis` VALUES ('ADG11','Serveis administratius','ADG'),('ADG21','Gestió administrativa','ADG'),('ADG31','Assistència a la direcció','ADG'),('ADG32','Administració i finances','ADG'),('ELE11','Electricitat i electrònica','ELE'),('ELE21','Instal·lacions elèctriques i automàtiques','ELE'),('ELE22','Instal·lacions de telecomunicacions','ELE'),('ELE31','Sistemes electrotècnics i automatitzats','ELE'),('ELE32','Sistemes de telecomunicació i informàtics','ELE'),('ELE33','Manteniment electrònic','ELE'),('ELE34','Automatització i robòtica industrial','ELE'),('ENA33','Energies renovables','ENA'),('IFC11','Informàtica i comunicacions','IFC'),('IFC12','Informàtica d\'oficina','IFC'),('IFC21','Sistemes microinformàtics i xarxes','IFC'),('IFC31','Administració de sistemes informàtics en xarxa','IFC'),('IFC32','Desenvolupament d\'aplicacions multiplataforma','IFC'),('IFC33','Desenvolupament d\'aplicacions web','IFC'),('TMV11','Manteniment de vehicles','TMV'),('TMV12','Manteniment d\'embarcacions esportives id\'esbarjo','TMV'),('TMV21','Carrosseria','TMV'),('TMV22','Electromecànica de vehicles automòbils','TMV'),('TMV31','Automoció','TMV');
 /*!40000 ALTER TABLE `Estudis` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -488,7 +488,7 @@ CREATE TABLE `Estudis_has_Responsables` (
 
 LOCK TABLES `Estudis_has_Responsables` WRITE;
 /*!40000 ALTER TABLE `Estudis_has_Responsables` DISABLE KEYS */;
-INSERT INTO `Estudis_has_Responsables` VALUES ('IFC32',1),('IFC33',1),('IFC31',2),('IFC33',2);
+INSERT INTO `Estudis_has_Responsables` VALUES ('IFC32',6),('IFC33',6),('TMV31',6);
 /*!40000 ALTER TABLE `Estudis_has_Responsables` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -563,7 +563,7 @@ CREATE TABLE `Localitats` (
 
 LOCK TABLES `Localitats` WRITE;
 /*!40000 ALTER TABLE `Localitats` DISABLE KEYS */;
-INSERT INTO `Localitats` VALUES ('071007300','Inca','071'),('071007310','Campanet','071');
+INSERT INTO `Localitats` VALUES ('071007300','Inca','071');
 /*!40000 ALTER TABLE `Localitats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -587,7 +587,7 @@ CREATE TABLE `NivellsIdioma` (
 
 LOCK TABLES `NivellsIdioma` WRITE;
 /*!40000 ALTER TABLE `NivellsIdioma` DISABLE KEYS */;
-INSERT INTO `NivellsIdioma` VALUES (1,'Gens'),(2,'Malament'),(3,'Bé'),(4,'Molt bé');
+INSERT INTO `NivellsIdioma` VALUES (1,'Gens'),(2,'Un poc'),(3,'Bé'),(4,'Molt bé');
 /*!40000 ALTER TABLE `NivellsIdioma` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -616,7 +616,7 @@ CREATE TABLE `Ofertes` (
   KEY `fk_Ofertes_Professors1_idx` (`professorValidada`),
   CONSTRAINT `fk_Ofertes_Empreses1` FOREIGN KEY (`Empreses_idEmpresa`) REFERENCES `Empreses` (`idEmpresa`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Ofertes_Professors1` FOREIGN KEY (`professorValidada`) REFERENCES `Professors` (`idProfessor`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -625,7 +625,7 @@ CREATE TABLE `Ofertes` (
 
 LOCK TABLES `Ofertes` WRITE;
 /*!40000 ALTER TABLE `Ofertes` DISABLE KEYS */;
-INSERT INTO `Ofertes` VALUES (1,'asdasd','\n                        Hola\n                    ',NULL,'2020-10-26',0,NULL,3,'asdasd','asdasd','asdasd',NULL),(2,'rfvrfv','Hola',NULL,'2020-05-15',0,NULL,3,'vrfvrfv','rfvrfv','rfvrfv',NULL),(3,'nyhnyhn','\n                        \n                        \n                        Hola\n                    \n                    \n                    ',NULL,'2020-05-05',0,NULL,3,'nyhnyhn','yhnyhn','yhnyhn',NULL),(4,'Programador junior Java','Hola','2020-03-31','2020-05-12',0,NULL,3,'Contracte en pràctiques','','',NULL),(5,'asdsdasd','\n                        \n                    ',NULL,'2020-10-18',0,NULL,3,'aasdasd','asdas','asdasd',NULL);
+INSERT INTO `Ofertes` VALUES (1,'Programador android','Cercam dues persones amb nocions d\'android i ganes d\'aprendre.&nbsp;\n                        \n                    ',NULL,'2020-04-30',0,NULL,1,'Pràctiques','De 8 a 15','Inca',NULL),(2,'Desenvolupador MEAN ','Programador MEAN amb experiència.','2020-04-21','2020-04-30',1,6,1,'Indefinit','de 8 a 15','Inca',NULL);
 /*!40000 ALTER TABLE `Ofertes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -653,6 +653,7 @@ CREATE TABLE `Ofertes_enviada_Alumnes` (
 
 LOCK TABLES `Ofertes_enviada_Alumnes` WRITE;
 /*!40000 ALTER TABLE `Ofertes_enviada_Alumnes` DISABLE KEYS */;
+INSERT INTO `Ofertes_enviada_Alumnes` VALUES (2,6),(2,8);
 /*!40000 ALTER TABLE `Ofertes_enviada_Alumnes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -680,7 +681,7 @@ CREATE TABLE `Ofertes_has_Contactes` (
 
 LOCK TABLES `Ofertes_has_Contactes` WRITE;
 /*!40000 ALTER TABLE `Ofertes_has_Contactes` DISABLE KEYS */;
-INSERT INTO `Ofertes_has_Contactes` VALUES (1,2),(4,2),(2,3),(4,3);
+INSERT INTO `Ofertes_has_Contactes` VALUES (2,2);
 /*!40000 ALTER TABLE `Ofertes_has_Contactes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -708,7 +709,6 @@ CREATE TABLE `Ofertes_has_EstatLaboral` (
 
 LOCK TABLES `Ofertes_has_EstatLaboral` WRITE;
 /*!40000 ALTER TABLE `Ofertes_has_EstatLaboral` DISABLE KEYS */;
-INSERT INTO `Ofertes_has_EstatLaboral` VALUES (4,1),(4,3);
 /*!40000 ALTER TABLE `Ofertes_has_EstatLaboral` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -738,7 +738,7 @@ CREATE TABLE `Ofertes_has_Estudis` (
 
 LOCK TABLES `Ofertes_has_Estudis` WRITE;
 /*!40000 ALTER TABLE `Ofertes_has_Estudis` DISABLE KEYS */;
-INSERT INTO `Ofertes_has_Estudis` VALUES (1,'IFC32',2019,5),(2,'ADG32',2017,5),(3,'IFC33',2014,5),(4,'IFC32',2017,5),(4,'IFC33',0,0);
+INSERT INTO `Ofertes_has_Estudis` VALUES (2,'IFC33',2017,5);
 /*!40000 ALTER TABLE `Ofertes_has_Estudis` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -769,7 +769,6 @@ CREATE TABLE `Ofertes_has_Idiomes` (
 
 LOCK TABLES `Ofertes_has_Idiomes` WRITE;
 /*!40000 ALTER TABLE `Ofertes_has_Idiomes` DISABLE KEYS */;
-INSERT INTO `Ofertes_has_Idiomes` VALUES (4,3,3),(2,4,4),(4,4,4);
 /*!40000 ALTER TABLE `Ofertes_has_Idiomes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -790,7 +789,7 @@ CREATE TABLE `Professors` (
   `validat` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`idProfessor`),
   UNIQUE KEY `Email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -799,7 +798,7 @@ CREATE TABLE `Professors` (
 
 LOCK TABLES `Professors` WRITE;
 /*!40000 ALTER TABLE `Professors` DISABLE KEYS */;
-INSERT INTO `Professors` VALUES (1,'Joan','Pons Tugores','666555444','ptj@iespaucasesnoves.cat',1,1),(2,'Tomeu','Campaner Fornés','699855477','ptj@paucasesnovescifp.cat',1,1),(4,'Jo','Mateix','','asd@paucasesnovescifp.cat',0,2),(5,'qwe','qwe qwe','123456789','qweqwe@paucasesnovescifp.cat',0,0);
+INSERT INTO `Professors` VALUES (6,'Joan','Pons Tugores','666555444','ptj@paucasesnovescifp.cat',1,1);
 /*!40000 ALTER TABLE `Professors` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -957,7 +956,6 @@ CREATE TABLE `Tokens` (
 
 LOCK TABLES `Tokens` WRITE;
 /*!40000 ALTER TABLE `Tokens` DISABLE KEYS */;
-INSERT INTO `Tokens` VALUES (7,'041fbafb22c911ebe935','2020-04-19'),(1,'0a3c906fb5037ae104b8','2020-04-23'),(7,'1ad8c9bcaf9135deff81','2020-04-19'),(5,'2e5d70e0c8e0d2517ab4','2020-04-23'),(7,'31589a5f35d405ecee59','2020-04-19'),(7,'3446691feb06aed2539b','2020-04-19'),(7,'62dd6f59eda2b909e1ea','2020-04-19'),(7,'65b5f0ce87ccaacea173','2020-04-19'),(7,'71ac0b3339949503dfd1','2020-04-19'),(7,'72f409e984f8b9d5de46','2020-04-19'),(7,'762838cfe35a5e195080','2020-04-19'),(7,'8ab3c809cb89bafe3a08','2020-04-19'),(7,'8c157b90992caf558307','2020-04-19'),(5,'8d6c84c3f483fbddb670','2020-04-23'),(30,'90132e4e19cb682eaec1','2020-04-23'),(7,'a3d1832cfc0e034f4a10','2020-04-19'),(7,'aac3a7e0fb9ed5d6ed3e','2020-04-19'),(7,'ad8798b19beca9ece4ea','2020-04-19'),(7,'b1acdf73bbdfdab86c69','2020-04-19'),(7,'b2cd6633a93e3edfa96e','2020-04-19'),(5,'b5ba6b6297bc1d95a9d8','2020-04-23'),(7,'bfb23d3ef74461e43678','2020-04-19'),(7,'e3948bbf4ef43ebe1d0d','2020-04-19'),(30,'ebaf9475c8c6da9257e6','2020-04-23');
 /*!40000 ALTER TABLE `Tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -978,7 +976,7 @@ CREATE TABLE `Usuaris` (
   UNIQUE KEY `nomUsuari_UNIQUE` (`nomUsuari`),
   KEY `fk_usuaris_TipusUsuaris1_idx` (`tipusUsuari`),
   CONSTRAINT `fk_usuaris_TipusUsuaris1` FOREIGN KEY (`tipusUsuari`) REFERENCES `TipusUsuaris` (`idTipusUsuaris`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -987,13 +985,7 @@ CREATE TABLE `Usuaris` (
 
 LOCK TABLES `Usuaris` WRITE;
 /*!40000 ALTER TABLE `Usuaris` DISABLE KEYS */;
-INSERT INTO `Usuaris` VALUES (1,30,'rafel@iespaucasesnoves.cat','$2y$10$YACeePU827ViFwv3.7NP/O9kjodHX6iDCwHDDft.UltrVmsXwkGTq',1),
-                             (2,30,'borja@iespaucasesnoves.cat','$2y$10$QbQmFIf9YGQQRrabTU8YFOKvYn.xAfslR9mHQ5h4K9GgXGk6QJpyG',2),
-                             (3,30,'cristian@cif66ppaucasesnovescifp.cat','$2y$10$uEjWzNsySyQ7csT0dVrMJesK2HETQydbnUZZazXRYAolsvzwJPbY2',3),
-                             (4,20,'info@sameva.cat','$2y$10$KiVbyC1XYfOks/ZkmZpaLuf7cFw7lCK1zjrZ6B7WmMD2KK8bYSVL6',1),
-                             (5,20,'info@nissan.jp','$2y$10$PDNpSAhsTH7FHRBnPeBUcOkDqkMEBUHhxDOfO9gqHIx9UcrW4faQ6',2),
-                             (7,10,'ptj@iespaucasesnoves.cat','$2y$10$i.UcBQWfrSLPS4Mk1Ai.U.TFrjDF2TwVCyfbFNyNShn1Qbbdf.bQi',1),
-                             (8,10,'ptj@paucasesnovescifp.cat','$2y$10$BwmG6AFDJFf4ekT4OrVaT.0M0dy5zG7Ecxdm8uaUlXF9LhAEFvbcq',2),(9,20,'info@poves.com','$2y$10$WxOrbxhfwZEsFaO3GsLuDuFWiEfk2o/tuGUdssZvHuT7rIypVFH2C',4),(10,20,'asdfg@sdfsf.sdf','$2y$10$ERrbViDS0pRA.AssfMEo9eCNXCX.SZhoxe2gpzL.udpqNUYX0E9e2',5),(11,20,'prova@empresa.cat','$2y$10$eNs8i0g3.zkDsKMIXViVnuZ9zlwVGCxB3mJoWgaDKTte/2QxCb24G',6),(12,20,'prova27@asdasd.com','$2y$10$aEiNXaubLQOHfpcrzLloc.MEImD0dNLL7hjuikfJAZor9eJHMEgwa',7),(13,20,'asdfsdf@sdsdffsdf.fdd','$2y$10$GSmn14D1z87ZOm0SGnyMJ.q.PZKfgIPJwfShl4vk1ckiTfTjqxxr.',8),(14,20,'asdfg456456@sdfsf.sdf','$2y$10$0D8418HGc6uM/1cxb.E0uOfC.vouhe.o2NEeeCHZ.GajwyCN65Q0i',9),(15,20,'hjkhkhjkhkh@dell.com','$2y$10$wbQdwth7679RfgqKBzZO1urzSvuMGasDcsxhHiL0/k4bSYC4VTRQ2',10),(16,20,'cdedcedn@rty.com','$2y$10$NyueMt983mBeNScAQeLPIOFHroAL0nWme15m4SA5on3laChOmeWBq',11),(17,20,'info2@info2.com','$2y$10$Nwx0ayy0wjsonSRJ0blLZ.FS4.4GbT1MtkjL/5EHMfYakwbrtH5Xe',12),(18,20,'dasdasdads@asd.asd','$2y$10$mql4w/hkzY0hYxpXe5nWpOlvobYyDo2CSuwnGiVg.S53ylOpQOs3m',13),(19,20,'ertertetre@darrera.avui','$2y$10$myevUsFuBiEGXi4dOzjog.idJmSsnyeFUnBD3.zZafy15UfNEs2aa',14),(20,20,'wsxedcefvr@rfvgb.com','$2y$10$CmH4TWVfSHC8RJ3QA17dQerpem8SbdaVN1V7/z5q26tgQugfDmA7W',15),(21,20,'sdfsfdd@wer.ert','$2y$10$q8iDQs3wIks9JLjbgxJ/Gu24NevTVhoevZ0YiTRneaiAPX2EB9BGi',16),(23,10,'asd@paucasesnovescifp.cat','$2y$10$WJD7NnZKPqVfEEUXCqSbK.rLqLv5H0U8NlJHHuzaRw.7YYt6oZy2y',4),(24,20,'info@intel.es22','$2y$10$rXysDfPzb.IcVAFukkeGFupNDD7rEa/iUvKDK/FO1.NKvjKmf0xyK',3),(29,30,'2134@sdf.cde','$2y$10$7260mBL0wfqP3Mmq5iTgxeQ2..U1XCmQ75W1yu9yOuzPsv0jF8U4y',8),(30,10,'qweqwe@paucasesnovescifp.cat','$2y$10$KuEvSfObCL7uRBkts4hUpeHEt.8tKkR4PoYUGuJUJ2yVJW6ErtpWO',5),(32,20,'email@email.ema','$2y$10$RUfcFdvIGVopG9RE1yXD0eiLvB/5/MF34Nfxuio8czjL.T2RznpfW',20),(33,20,'email@prova.ema','$2y$10$Fd9TwgmpvH6mMddcMTOmsuaAA14u/yKX2rlkXCyU2dS/ge7vKkqzW',21),(35,30,'unAltreAlumne@yahoo.cat22','$2y$10$MwVnGV2cUU4BpSxH7NJLourvvs.cFgShitDiSLjy0OLmbLbgGYMkW',10),(40,30,'jp@gmail.net','645930a3',15);
+INSERT INTO `Usuaris` VALUES (41,10,'ptj@paucasesnovescifp.cat','$2y$10$BwmG6AFDJFf4ekT4OrVaT.0M0dy5zG7Ecxdm8uaUlXF9LhAEFvbcq',6),(42,30,'antoni@fictici.fic','ac682996',1),(43,30,'pedro@fictici.fic','$2y$10$SFINXL2RoRmQVL6UCQ9hZORYckCt0YUripZAqKDZfBQwWaOXWujQG',2),(44,30,'miquel@fictici.fic','$2y$10$lZ.HonxDq3OOEU010fkB/OuOrWpmepxHTFQPqu0/cbYTu2Lqy0xaa',3),(45,30,'josep@fictici.fic','f2ee52d4',4),(46,30,'antoni@fictici.web','103d6a67',5),(47,30,'josep@fictici.web','$2y$10$x0AwDbJemTY2sU158qV.2O3zLMF8MBujyS7vl.rI/jqCy4riNxbVq',6),(48,30,'miquel@fictici.web','e1ac131a',7),(49,30,'francesc@fictici.web','$2y$10$2SEN7AeFYMQeT5O9OLVyM.CzFIa588yrk4waATHK/loSTC8qv64OS',8),(50,30,'salvador@fictici.mec','396a97a9',9),(51,30,'rocio@fictici.mec','$2y$10$x9ZtOj7mDxZDfuO7JgXMN.8I4PM9kKJIa8DxbMVoYohMN6dqjsCzq',10),(52,30,'joan@fictici.mec','c3a2b01b',11),(53,20,'info@incasoft.emp','$2y$10$lQpSpMC0h4hOU8aIWHFbvuH5MYtU6wDsRGwSj8ezUWvKCEIkN6BWa',1),(54,20,'info@autos.emp','beb6aeb9',2),(55,20,'info@rn3.emp','787bbadd',3);
 /*!40000 ALTER TABLE `Usuaris` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1042,7 +1034,7 @@ CREATE TABLE `Usuaris_has_Rols` (
 
 LOCK TABLES `Usuaris_has_Rols` WRITE;
 /*!40000 ALTER TABLE `Usuaris_has_Rols` DISABLE KEYS */;
-INSERT INTO `Usuaris_has_Rols` VALUES (7,10),(8,10),(23,10),(30,10),(4,20),(5,20),(9,20),(10,20),(11,20),(12,20),(13,20),(14,20),(15,20),(16,20),(17,20),(18,20),(19,20),(20,20),(21,20),(24,20),(32,20),(33,20),(1,30),(2,30),(3,30),(29,30),(35,30),(40,30),(7,40),(23,40);
+INSERT INTO `Usuaris_has_Rols` VALUES (41,10),(53,20),(54,20),(55,20),(42,30),(43,30),(44,30),(45,30),(46,30),(47,30),(48,30),(49,30),(50,30),(51,30),(52,30),(41,40);
 /*!40000 ALTER TABLE `Usuaris_has_Rols` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1087,4 +1079,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-19 20:42:01
+-- Dump completed on 2020-04-21 19:35:23

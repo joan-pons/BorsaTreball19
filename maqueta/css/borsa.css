@@ -11,6 +11,7 @@
 .jumbotron{
     padding-top: 0.5em;
     padding-bottom: 1.5em;
+    background-color: #dfe1dd;
 }
 .well.click:hover{
     /* background-color: #ddd;*/

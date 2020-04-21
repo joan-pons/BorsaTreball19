@@ -146,7 +146,7 @@
                     $('#mrTitol').html('Alta correcta')
                     $('#mrText').html("<p>L'oferta s'ha donat d'alta correctament.</p>");
                     $('#bmDacord').on('click', function () {
-                        window.location.href = "modificarOferta/" + ofertaRebuda.idOferta;
+                        window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
                     });
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');

@@ -35,7 +35,7 @@
                     $('#mrTitol').html('<span class="glyphicon glyphicon-check"></span>&nbsp; Actualització correcte');
                     $('#mrText').html("<p>La contrasenya s'ha modificat correctament.</p>");
                     $('#bmDacord').on('click', function () {
-                        window.location.href = "../";
+                        window.location.href = "{{ accio }}";
                     });
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');

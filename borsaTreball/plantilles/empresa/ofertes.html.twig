@@ -78,8 +78,7 @@
 
                 $.ajax({
                     method: 'GET',
-                    url: "ofertaCompleta/" + id,
-                    data: {recompte: 1}
+                    url: "ofertaCompleta/" + id
                 }).done(function (text) {
                     $('#mcText').html(text);
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -125,7 +124,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-group">
-                           {%if not oferta.dataPublicacio is empty %}<h4 style="color:#d9534f;"><big><strong>Publicada</strong></big></h4>{% endif %}
+                           {%if not oferta.dataPublicacio is empty %}<h3 class="vermell"><strong>Publicada.{% if oferta.validada==1 %} Validada.{% endif %}</strong></h3>{% endif %}
                             <p><label>idOferta:</label> {{oferta.idOferta}} </p>
                             <p><label>Títol:</label> {{oferta.titol}}</p>
                             <p><label>Data de publicació:</label> {{oferta.dataPublicacio | date('d/m/Y')}}</p>
