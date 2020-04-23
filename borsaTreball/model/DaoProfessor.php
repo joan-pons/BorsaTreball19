@@ -303,32 +303,42 @@ class DaoProfessor extends Dao
         try {
             $container->dbEloquent;
             $data = $request->getParsedBody();
+//            return $response->withJson($data);
+            //TODO:Recuperar alumnes filtrats.
             $oferta = Oferta::find(filter_var($args['idOferta'], FILTER_SANITIZE_NUMBER_INT));
             $professor = Professor::find(filter_var($data['idProfessor'], FILTER_SANITIZE_NUMBER_INT));
             if ($professor != null && $oferta != null) {
                 $oferta->validada = filter_var($data['validada'], FILTER_SANITIZE_NUMBER_INT);
                 $oferta->professorValidada = $professor->idProfessor;
-                $alumnesDefinitiu = Dao::alumnesOfertaComplets($oferta, $container);
 
-                //Genera un array només d'ID per al sync
-                $alumnesId = array();
-                foreach ($alumnesDefinitiu as $alumne) {
-                    array_push($alumnesId, $alumne->idAlumne);
-                }
+                if (count($data['alumnes']) == 0) {
+                    $alumnesDefinitiu = Dao::alumnesOfertaComplets($oferta, $container);
 
-
-                if (count($alumnesDefinitiu) > 0) {
-                    $oferta->alumnes()->sync($alumnesId);
-                    $oferta->save();
-
-                    Bustia::enviar($alumnesDefinitiu, 'Oferta de feina', '/email/oferta.twig', ['oferta' => $oferta], $container);
-                    Bustia::enviarUnic($oferta->empresa->email, 'Resultat de la validació de l\'oferta', '/email/ofertaResultat.html.twig', ['oferta' => $oferta], $container);
-                    $missatge = array("missatge" => "Oferta validada i emails enviats");
-                    return $response->withJSON($missatge);
+                    //Genera un array només d'ID per al sync
+                    $alumnesId = array();
+                    foreach ($alumnesDefinitiu as $alumne) {
+                        array_push($alumnesId, $alumne->idAlumne);
+                    }
                 } else {
-                    $missatge = array("missatge" => "No hi ha cap alumne per aquesta oferta");
-                    return $response->withJSON($missatge, 422);
+                    $alumnesId = filter_var_array($data['alumnes'], FILTER_SANITIZE_NUMBER_INT);
+                    $alumnesDefinitiu = [];
+                    foreach ($alumnesId as $id) {
+                        $alumnesDefinitiu[] = Alumne::find($id);
+                    }
                 }
+
+            if (count($alumnesDefinitiu) > 0) {
+                $oferta->alumnes()->sync($alumnesId);
+                $oferta->save();
+
+                Bustia::enviar($alumnesDefinitiu, 'Oferta de feina', '/email/oferta.twig', ['oferta' => $oferta], $container);
+                Bustia::enviarUnic($oferta->empresa->email, 'Resultat de la validació de l\'oferta', '/email/ofertaResultat.html.twig', ['oferta' => $oferta], $container);
+                $missatge = array("missatge" => "Oferta validada i emails enviats");
+                return $response->withJSON($missatge);
+            } else {
+                $missatge = array("missatge" => "No hi ha cap alumne per aquesta oferta");
+                return $response->withJSON($missatge, 422);
+            }
             } else {
                 $missatge = array("missatge" => "No s'ha trobat el professor o l'oferta que es vol validar.");
                 return $response->withJson($missatge, 422);

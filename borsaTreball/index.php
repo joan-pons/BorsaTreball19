@@ -111,6 +111,12 @@ $app->get('/', function ($request, $response, $args) {
     return $this->view->render($response, 'index.html.twig');
 });
 
+// Index
+$app->get('/proves', function ($request, $response, $args) {
+    return $this->view->render($response, 'index.html.twig');
+});
+
+
 $app->get('/sortir', function ($request, $response, $args) {
     session_unset();
     session_destroy();
@@ -884,6 +890,17 @@ $app->group('/professor', function () {
         if ($usuari != null) {
             $professor = $usuari->getEntitat();
             return DaoAlumne::validarAlumnes($request, $response, $args, $this, $professor);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
+
+    $this->get('/candidats/{idOferta}', function (Request $request, Response $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION["idUsuari"]);
+        if ($usuari != null) {
+            $oferta = Oferta::find(filter_var($args['idOferta'],FILTER_SANITIZE_NUMBER_INT));
+            return $response->withJson(Dao::alumnesOfertaComplets($oferta, $this));
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }

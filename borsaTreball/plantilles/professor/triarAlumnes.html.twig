@@ -1,7 +1,7 @@
 {% extends "auxiliars/baseDins.html.twig" %}
 
 {% block head %}
-    <title>Borsa de treball: Validació d'usuaris</title>
+    <title>Borsa de treball: Triar alumnes</title>
     <script>
         $(document).ready(function () {
             var dades;
@@ -16,7 +16,7 @@
 
                 $.ajax({
                     method: 'PUT',
-                    url: "usuaris/" + dades.idProfessor,
+                    url: "/borsaTreball/administrador/usuaris/" + dades.idProfessor,
                     data: dades
                 }).done(function () {
                     $('#mrTitol').html('Actualització correcte')
@@ -119,7 +119,7 @@
 {% endblock %}
 
 {% block navegacio %}
-<a class="navbar-brand" href="../professor/dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
+<a class="navbar-brand" href="/professor/dashBoard">Proves</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">

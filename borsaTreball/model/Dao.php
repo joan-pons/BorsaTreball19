@@ -12,10 +12,10 @@ use Borsa\Ajuda as Ajuda;
 use Borsa\Familia as Familia;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
+use Correu\Bustia as Bustia;
 use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Correu\Bustia as Bustia;
 
 /**
  * Description of Dao
@@ -25,7 +25,7 @@ use Correu\Bustia as Bustia;
 class Dao
 {
 
-    public function entrada(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function entrada(Request $request, Response $response, $args, \Slim\Container $container)
     {
         $container->dbEloquent;
         $data = $request->getParsedBody();
@@ -49,7 +49,7 @@ class Dao
         }
     }
 
-    public function contrasenyaOblidada(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function contrasenyaOblidada(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -58,9 +58,9 @@ class Dao
             $usuari = Usuari::where('nomUsuari', filter_var($data['nomUsuari'], FILTER_SANITIZE_EMAIL))->where('tipusUsuari', $tipus)->get();
 //            $resposta=array('usuari'=>$usuari, 'data'=>$data);
 //            return $response->withJSON($resposta);
-            if (count($usuari)>0) {
+            if (count($usuari) > 0) {
                 $longitud = 20;
-                $usuari=$usuari[0];
+                $usuari = $usuari[0];
                 $token = bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
                 $r = new Token();
                 $r->idUsuari = $usuari->idUsuari;
@@ -70,7 +70,7 @@ class Dao
                 $resultat = Bustia::enviarUnic($usuari->nomUsuari, 'Restablir la contrasenya de la borsa de treball del CIFP Pau Casesnoves', "/email/restablirContrasenya.twig", ['token' => $r->token], $container);
                 if ($resultat == true) {
                     $missatge = array("missatge" => "Procés correcte.");
-                    $missatge[]=$r;
+                    $missatge[] = $r;
                     return $response->withJSON($missatge); //array('professor' => $professor, 'validat' => $validat, 'Activat' => $activat, 'Primera' => $validat and !$professor->validat, 'Segona' => !$validat, 'Resultat' => $resultat));
                 } else {
                     $missatge = array("missatge" => "<p>No s'ha pogut enviar el missatge de confirmació. L'adreça de correu deu estar malament.</p> <p>Els canvis no s'han guardat a la base de dades.</p>");
@@ -84,7 +84,7 @@ class Dao
                 } elseif ($tipus == 10) {
                     $tipus = "alumne";
                 }
-                $missatge=array("missatge"=>"No es troba cap ".$tipus." amb l'identificador demanat.");
+                $missatge = array("missatge" => "No es troba cap " . $tipus . " amb l'identificador demanat.");
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
@@ -103,7 +103,7 @@ class Dao
         }
     }
 
-    public function canviarContrasenya(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function canviarContrasenya(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -138,7 +138,7 @@ class Dao
         }
     }
 
-    public function restablirContrasenya(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function restablirContrasenya(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -173,40 +173,56 @@ class Dao
     }
 
 
-    public function alumnesOfertaComplets($oferta, \Slim\Container $container)
+    public static function alumnesOfertaComplets($oferta, \Slim\Container $container)
     {
-        $container->dbEloquent;
-        //Allumnes per estudis, nota i any
-        $alumnes = DB::select('select distinct a.* from Ofertes_has_Estudis o inner join Alumne_has_Estudis e on o.Estudis_codi=e.Estudis_codi inner join Alumnes a on e.Alumnes_idAlumne=a.idAlumne where Ofertes_idOferta=' . $oferta->idOferta . ' and a.actiu=true and e.any>=IFNULL(o.any,1900) and e.nota>=IFNULL(o.nota,5)');
+        try {
+            $container->dbEloquent;
+            //Allumnes per estudis, nota i any
+            $alumnes = DB::select('select distinct a.* from Ofertes_has_Estudis o inner join Alumne_has_Estudis e on o.Estudis_codi=e.Estudis_codi inner join Alumnes a on e.Alumnes_idAlumne=a.idAlumne where Ofertes_idOferta=' . $oferta->idOferta . ' and a.actiu=true and e.any>=IFNULL(o.any,1900) and e.nota>=IFNULL(o.nota,5)  order by a.llinatges, a.nom');
 
-        //Alumnes per Idiomes
-        if ($oferta->idiomes->count() > 0 && count($alumnes) > 0) {
-            $alumnesIdiomes = array();
-            foreach ($alumnes as $alumne) {
-                $coincidencies = DB::select('select count(o.idiomes_idIdioma) as recompte from Ofertes_has_Idiomes o left join Alumne_has_Idiomes al  on o.idiomes_idIdioma=al.idiomes_idIdiomes where o.Ofertes_idOferta=' . $oferta->idOferta . ' and al.Alumne_idAlumne=' . $alumne->idAlumne . ' and al.NIvellsIdioma_idNivellIdioma>=o.NivellsIdioma_idNivellIdioma');
-                if ($coincidencies[0]->recompte == $oferta->idiomes->count()) {
-                    array_push($alumnesIdiomes, $alumne);
+            //Alumnes per Idiomes
+            if ($oferta->idiomes->count() > 0 && count($alumnes) > 0) {
+                $alumnesIdiomes = array();
+                foreach ($alumnes as $alumne) {
+                    $coincidencies = DB::select('select count(o.idiomes_idIdioma) as recompte from Ofertes_has_Idiomes o left join Alumne_has_Idiomes al  on o.idiomes_idIdioma=al.idiomes_idIdiomes where o.Ofertes_idOferta=' . $oferta->idOferta . ' and al.Alumne_idAlumne=' . $alumne->idAlumne . ' and al.NIvellsIdioma_idNivellIdioma>=o.NivellsIdioma_idNivellIdioma');
+                    if ($coincidencies[0]->recompte == $oferta->idiomes->count()) {
+                        array_push($alumnesIdiomes, $alumne);
+                    }
+                }
+                $alumnes = $alumnesIdiomes;
+            }
+
+            // Filtrar alumnes per estat laboral
+            if ($oferta->estatsLaborals->count() > 0 && count($alumnes) > 0) {
+                $alumnesEstats = '(';
+                $separador = '';
+                foreach ($alumnes as $alumne) {
+                    $alumnesEstats .= $separador . $alumne->idAlumne;
+                    $separador = ', ';
+                }
+                $alumnesEstats .= ')';
+
+                $alumnes = DB::select('select distinct a.* from Ofertes_has_EstatLaboral o inner join Alumne_has_EstatLaboral al on o.EstatLaboral_idEstatLaboral=al.EstatLaboral_idEstatLaboral inner join Alumnes a on idAlumne=Alumnes_idAlumne where o.Ofertes_idOferta=' . $oferta->idOferta . ' and Alumnes_idAlumne in ' . $alumnesEstats);
+            }
+            return $alumnes;
+        } catch (\Illuminate\Database\QueryException $ex) {
+            switch ($ex->getCode()) {
+                case 23000:
+                {
+                    $missatge = array("missatge" => "La contrasenya no pot ser nula");
+                    break;
+                }
+                default:
+                {
+                    $missatge = array("missatge" => "La contrasenya no s'ha pogut canviar correctament.");
+                    break;
                 }
             }
-            $alumnes = $alumnesIdiomes;
+            return $response->withJson($missatge, 422);
         }
-
-        // Filtrar alumnes per estat laboral
-        if ($oferta->estatsLaborals->count() > 0 && count($alumnes) > 0) {
-            $alumnesEstats = '(';
-            $separador = '';
-            foreach ($alumnes as $alumne) {
-                $alumnesEstats .= $separador . $alumne->idAlumne;
-                $separador = ', ';
-            }
-            $alumnesEstats .= ')';
-
-            $alumnes = DB::select('select distinct a.* from Ofertes_has_EstatLaboral o inner join Alumne_has_EstatLaboral al on o.EstatLaboral_idEstatLaboral=al.EstatLaboral_idEstatLaboral inner join Alumnes a on idAlumne=Alumnes_idAlumne where o.Ofertes_idOferta=' . $oferta->idOferta . ' and Alumnes_idAlumne in ' . $alumnesEstats);
-        }
-        return $alumnes;
     }
 
-    public function alumnesOferta($oferta, \Slim\Container $container)
+    public static function alumnesOferta($oferta, \Slim\Container $container)
     {
         $alumnes = Dao::alumnesOfertaComplets($oferta, $container);
 //        Tornar només els idAlumne
@@ -217,12 +233,12 @@ class Dao
         return $alumnesDefinitiu;
     }
 
-    public function comptarCandidats($oferta, \Slim\Container $container)
+    public static function comptarCandidats($oferta, \Slim\Container $container)
     {
         return count(Dao::alumnesOfertaComplets($oferta, $container));
     }
 
-    public function ajuda(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function ajuda(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -240,7 +256,7 @@ class Dao
         }
     }
 
-    public function ciclesFamilia(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function ciclesFamilia(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;

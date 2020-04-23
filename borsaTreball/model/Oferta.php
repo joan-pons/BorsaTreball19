@@ -44,4 +44,5 @@ class Oferta extends Model {
     public function alumnes(){
         return $this->belongsToMany("Borsa\Alumne", 'Ofertes_enviada_Alumnes', 'Ofertes_idOferta', 'Alumnes_idAlumne');        
     }
+
 }
