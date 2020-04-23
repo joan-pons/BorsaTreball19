@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `borsa` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `borsa`;
 -- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
 --
 -- Host: localhost    Database: borsa
@@ -616,7 +614,7 @@ CREATE TABLE `Ofertes` (
   KEY `fk_Ofertes_Professors1_idx` (`professorValidada`),
   CONSTRAINT `fk_Ofertes_Empreses1` FOREIGN KEY (`Empreses_idEmpresa`) REFERENCES `Empreses` (`idEmpresa`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Ofertes_Professors1` FOREIGN KEY (`professorValidada`) REFERENCES `Professors` (`idProfessor`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -625,7 +623,7 @@ CREATE TABLE `Ofertes` (
 
 LOCK TABLES `Ofertes` WRITE;
 /*!40000 ALTER TABLE `Ofertes` DISABLE KEYS */;
-INSERT INTO `Ofertes` VALUES (1,'Programador android','Cercam dues persones amb nocions d\'android i ganes d\'aprendre.&nbsp;\n                        \n                    ',NULL,'2020-04-30',0,NULL,1,'Pràctiques','De 8 a 15','Inca',NULL),(2,'Desenvolupador MEAN ','Programador MEAN amb experiència.','2020-04-21','2020-04-30',1,6,1,'Indefinit','de 8 a 15','Inca',NULL);
+INSERT INTO `Ofertes` VALUES (1,'Programador android','Cercam dues persones amb nocions d\'android i ganes d\'aprendre.&nbsp;\n                        \n                    ',NULL,'2020-04-30',0,NULL,1,'Pràctiques','De 8 a 15','Inca',NULL),(2,'Desenvolupador MEAN ','Programador MEAN amb experiència.','2020-04-20','2020-04-30',0,NULL,1,'Indefinit','de 8 a 15','Inca',NULL);
 /*!40000 ALTER TABLE `Ofertes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1079,4 +1077,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-21 19:35:23
+-- Dump completed on 2020-04-23 11:13:11
