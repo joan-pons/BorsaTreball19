@@ -1,2 +1,30 @@
 #Connexió al servidor d'amazon
  ssh -i "server.pem" ubuntu@3.221.246.147
+
+#SFTP
+sudo nano /etc/ssh/sshd_config
+    Comentar Subsystem sftp /usr/lib/openssh/sftp-server
+    Afegir Subsystem sftp internal-sftp
+    Al final afegir
+    Match Group sftp_users
+          ChrootDirectory /var/www/html
+          ForceCommand internal-sftp
+          X11Forwarding no
+          AllowTcpForwarding no
+          PasswordAuthentication yes
+
+#Restart the sshd service for changes to take affect.
+sudo service sshd restart
+
+#Afegir usuari només per SFTP
+sudo adduser developer
+#password K....64
+
+#Afegir un grup nou
+sudo groupadd sftp_users
+
+#Afegir l'usuari al nou grup
+sudo usermod -a -G sftp_users developerº1
+
+
+

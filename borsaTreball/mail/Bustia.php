@@ -15,8 +15,7 @@ class Bustia
             foreach ($emails as $adreca){
                 $message->bcc($adreca->email);
             }
-/*            $message->bcc('joan.pons.tugores@gmail.com');
-            $message->bcc('ptj@paucasesnovescifp.cat');*/
+
             $message->subject($subject);
         });
     }
@@ -31,6 +30,8 @@ class Bustia
                 $message->subject($subject);
             });
         }catch (phpmailerException $e) {
+            $resultat=$e->errorMessage();
+        }catch(Exception $e){
             $resultat=$e->errorMessage();
         }
         return $resultat;

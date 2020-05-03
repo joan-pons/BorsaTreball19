@@ -16,6 +16,7 @@ use Borsa\Oferta as Oferta;
 use Borsa\Professor as Professor;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
+use Correu\Bustia as Bustia;
 use Illuminate\Database\Capsule\Manager as DB;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -99,6 +100,30 @@ $container['mailer'] = function ($container) {
     return new \Correu\Mailer($container->view, $mailer);
 };
 
+//$container['mailer'] = function ($container) {
+//    $mailer = new PHPMailer(true);
+//
+//    $mailer->CharSet = 'UTF-8';
+//
+//    $mailer->isSMTP();
+//
+//    $mailer->Host = '127.0.0.1';//'ip-172-31-44-199.ec2.internal';  // your email host, to test I use localhost and check emails using test mail server application (catches all  sent mails)
+//    $mailer->SMTPSecure = '';#PHPMailer::ENCRYPTION_STARTTLS;              // set blank for localhost
+////    $mailer->SMTPAuth = true;                 // I set false for localhost
+////
+//    $mailer->Port = 25;                           // 25 for local host
+//////    $mailer->Username = 'modem.colonia@gmail.com';    // I set sender email in my mailer call
+//    $mailer->Username = 'borsa.treball@paucasesnovescifp.cat';    // I set sender email in my mailer call
+////
+//    require("incloure/password.php");
+//
+//    $mailer->isHTML(true);
+//    $mailer->SMTPDebug = 4; //4; //SMTP::DEBUG_SERVER;
+//    $mailer->Debugoutput = function($str, $level) {echo "debug level $level; message: $str";};
+//    $mailer->FromName = "Borsa de treball del CIFP Pau Casesnoves";
+//    return new \Correu\Mailer($container->view, $mailer);
+//};
+
 $container['notFoundHandler'] = function ($c) {
     return function ($request, $response) use ($c) {
         return $c['view']->render($response->withStatus(404), 'auxiliars/noTrobat.html.twig');
@@ -112,10 +137,20 @@ $app->get('/', function ($request, $response, $args) {
 });
 
 // Index
-$app->get('/proves', function ($request, $response, $args) {
-    return $this->view->render($response, 'index.html.twig');
-});
+//$app->get('/proves', function ($request, $response, $args) {
+//    return $this->view->render($response, 'index.html.twig');
+//});
 
+$app->get('/provesCorreu', function ($request, $response, $args) {
+    $resultat = Bustia::enviarUnic("ptj@paucasesnovescifp.cat", 'Proves', "/email/rebutjarProfessor.twig", [], $this);
+    if ($resultat == true) {
+        $missatge = array("missatge" => "Procés correcte.");
+        return $response->withJSON($missatge); //array('professor' => $professor, 'validat' => $validat, 'Activat' => $activat, 'Primera' => $validat and !$professor->validat, 'Segona' => !$validat, 'Resultat' => $resultat));
+    } else {
+        $missatge = array("missatge" => "<p>No s'ha pogut enviar el missatge de confirmació. L'adreça de correu deu estar malament.</p> <p>Els canvis no s'han guardat a la base de dades.</p>");
+        return $response->withJSON($missatge, 422);
+    }
+});
 
 $app->get('/sortir', function ($request, $response, $args) {
     session_unset();
@@ -160,14 +195,14 @@ $app->get('/restablirContrasenya', function ($request, $response, $args) {
 $app->put('/restablirContrasenya/{token}', function ($request, $response, $args) {
     return Dao::restablirContrasenya($request, $response, $args, $this);
 });
-$app->get('/sha', function ($request, $response, $args) {
-    $this->dbEloquent;
-    $usuaris = Usuari::all();
-    foreach ($usuaris as $usuari) {
-        $usuari->contrasenya = password_hash('123456789', PASSWORD_DEFAULT);
-        $usuari->save();
-    }
-});
+//$app->get('/sha', function ($request, $response, $args) {
+//    $this->dbEloquent;
+//    $usuaris = Usuari::all();
+//    foreach ($usuaris as $usuari) {
+//        $usuari->contrasenya = password_hash('123456789', PASSWORD_DEFAULT);
+//        $usuari->save();
+//    }
+//});
 /*
 $app->get('/mailing', function ($request, $response, $args) {
     $this->dbEloquent;
@@ -455,7 +490,7 @@ $app->group('/empresa', function () {
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
             $nivellsIdioma = NivellIdioma::orderBy('idNivellIdioma', 'ASC')->get();
-            $recompte=Dao::comptarCandidats($oferta, $this);
+            $recompte = Dao::comptarCandidats($oferta, $this);
             $etiquetes = array("nom" => $empresa->nom, "labelLlista" => "en els que vol que es trobin els candidats");
             return $this->view->render($response, 'auxiliars/ofertaCompleta.html.twig', ['empresa' => $empresa, 'oferta' => $oferta, 'etiquetes' => $etiquetes, 'nivells' => $nivellsIdioma, 'recompte' => $recompte]);
             //return $response->withJSON($oferta->estatsLaborals);
@@ -499,7 +534,7 @@ $app->get('/altaAlumne', function ($request, $response, $args) {
     } else {
         if ($avui < strtotime($config->inici)) {
             return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', ['config' => $config]);
-        }else{
+        } else {
             return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', []);
         }
     }
@@ -703,7 +738,7 @@ $app->group('/professor', function () {
             $empreses = array();
             $alumnes = array();
 
-            $alumnesPendents = Alumne::where('validat', 0)->orderBy('llinatges','ASC')->orderBy('nom','ASC')->get();
+            $alumnesPendents = Alumne::where('validat', 0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             $empresesPendents = Empresa::where('Validada', 0)->where('rebuig', null)->orderBy('DataAlta', 'ASC')->orderBy('Nom', 'ASC')->get();
 
             foreach ($professor->estudis as $estudis) {
@@ -816,8 +851,8 @@ $app->group('/professor', function () {
                     }
                 }
             }
-            $nivells=NivellIdioma::all();
-            return $this->view->render($response, 'professor/ofertesPendents.html.twig', ['professor' => $professor, "etiquetes" => $etiquetes, 'ofertes' => $ofertes, 'nivells'=>$nivells]);
+            $nivells = NivellIdioma::all();
+            return $this->view->render($response, 'professor/ofertesPendents.html.twig', ['professor' => $professor, "etiquetes" => $etiquetes, 'ofertes' => $ofertes, 'nivells' => $nivells]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
@@ -867,7 +902,7 @@ $app->group('/professor', function () {
             $professor = $usuari->getEntitat();
             $alumnes = array();
 
-            $alumnesPendents = Alumne::where('validat', 0)->orderBy('llinatges','ASC')->orderBy('nom','ASC')->get();
+            $alumnesPendents = Alumne::where('validat', 0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
 
             foreach ($professor->estudis as $estudis) {
                 foreach ($alumnesPendents as $alumne) {
@@ -899,7 +934,7 @@ $app->group('/professor', function () {
         $this->dbEloquent;
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
-            $oferta = Oferta::find(filter_var($args['idOferta'],FILTER_SANITIZE_NUMBER_INT));
+            $oferta = Oferta::find(filter_var($args['idOferta'], FILTER_SANITIZE_NUMBER_INT));
             return $response->withJson(Dao::alumnesOfertaComplets($oferta, $this));
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);

@@ -53,12 +53,20 @@
                                 <p class="notes">Has de seleccionar els estudis que has acabat ara.</p>
                             </div>
                         </div><!--row-->
-
                     </div><!--col-->
                 </div><!--row -->
 
             </div> <!--Col8 -->
             <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Acceptació</label>
+                        <div class="checkbox"><label><input type="checkbox" id="cbGuardar"  name="cbGuardar" value="true">Dades aplicació bla, bla, bla ...</label></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="checkbox"><label><input type="checkbox" id="cbCedir" name="cbCedir" value="true">Cedir dades empreses bla, bla, bla...</label></div>
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="form-group pull-right">
@@ -100,7 +108,9 @@
         if ($("#email").val().indexOf('@paucasesnovescifp.cat') >= 0) {
             errors += "<p>El correu electrònic no pot ser del domini <em>@paucasesnovescifp.cat</em></p>";
         }
-
+        if (!$("#cbGuardar").prop("checked")) {
+            errors += "<p>Ha d'acceptar les condicions</p>";
+        }
         if (errors === "") {
             $('#mdEspera').modal('show');
         } else {

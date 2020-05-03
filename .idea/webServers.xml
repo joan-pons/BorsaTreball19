@@ -5,6 +5,20 @@
       <webServer id="aa3d65e5-60d4-4820-a7a9-e4f9e6692544" name="Localhost" url="http://localhost">
         <fileTransfer mountedRoot="/var/www/html" accessType="MOUNT" port="0" />
       </webServer>
+      <webServer id="a7cedf29-9b86-49e0-ab3a-e735e7b7673f" name="AWS" url="http://3.221.246.147:22/borsaTreball">
+        <fileTransfer rootFolder="/var/www/html" accessType="SFTP" host="3.221.246.147" port="22" sshConfigId="c80aead8-a094-49e1-abdc-023bfc5f5d06" sshConfig="ubuntu@3.221.246.147:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="a816aac3-2343-4515-b5b1-c7e2b7578aac" name="AWS Proves" url="http://3.221.246.147:22/proves/borsaTreball">
+        <fileTransfer rootFolder="/var/www/html/proves" accessType="SFTP" host="3.221.246.147" port="22" sshConfigId="c80aead8-a094-49e1-abdc-023bfc5f5d06" sshConfig="ubuntu@3.221.246.147:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

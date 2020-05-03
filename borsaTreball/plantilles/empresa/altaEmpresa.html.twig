@@ -45,8 +45,26 @@
 
             $('#formEmpresa').submit(function (event) {
                 event.preventDefault();
-
-                $('#mdEspera').modal('show');
+                var errors = "";
+                if ($("#nom").val().trim().length < 1) {
+                    errors += "<p>El camp nom no pot ser buid.</p>";
+                }
+                if ($("#email").val().trim().length < 1) {
+                    errors += "<p>El camp correu electrònic no pot ser buid.</p>";
+                }
+                if ($("#email").val().indexOf('@paucasesnovescifp.cat') >= 0) {
+                    errors += "<p>El correu electrònic no pot ser del domini <em>@paucasesnovescifp.cat</em></p>";
+                }
+                if (!$("#cbGuardar").prop("checked")) {
+                    errors += "<p>Ha d'acceptar les condicions</p>";
+                }
+                if (errors === "") {
+                    $('#mdEspera').modal('show');
+                } else {
+                    $('#mrTitol').html("Atenció!")
+                    $('#mrText').html(errors);
+                    $('#mdResultat').modal('show');
+                }
             });
 
         });
@@ -69,4 +87,5 @@
         {% set alta = 1%}
         {{ include('auxiliars/formEmpresa.html.twig') }}
         <script src="js/dirtyForms.js"></script>
+
     {% endblock %}

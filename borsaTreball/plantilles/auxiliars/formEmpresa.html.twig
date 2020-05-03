@@ -100,6 +100,17 @@
                         <p>Una vegada validada, l'empresa podrà començar a publicar ofertes de treball.</p>
                     </div>
                 {% endif %}
+                {% if alta==1 %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Acceptació</label>
+                            <div class="checkbox"><label><input type="checkbox" id="cbGuardar"  name="cbGuardar" value="true">Dades aplicació bla, bla, bla ...</label></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="checkbox"><label><input type="checkbox" id="cbCedir" name="cbCedir" value="true">Cedir dades empreses bla, bla, bla...</label></div>
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="row">
                     <div class="form-group pull-right">
                         <label for="bEnviar">&nbsp;</label>
