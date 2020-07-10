@@ -23,6 +23,16 @@
                 $.each($('#formEmpresa [name]'), function (i, obj) {
                     empresa[obj.name] = obj.value;
                 });
+                if ($("#cbGuardar").prop("checked")) {
+                    empresa["guardar"]="Si";
+                }else{
+                    empresa["guardar"]="No";
+                }
+                if ($("#cbCedir").prop("checked")) {
+                    empresa["cedir"]="Si";
+                }else{
+                    empresa["cedir"]="No";
+                }
                 empresa.descripcio = $('#textDescripcio').summernote('code');
                 $.post("altaEmpresa", empresa, function () {
                     $('#mrTitol').html('Alta realitzada correctament')
@@ -58,6 +68,9 @@
                 if (!$("#cbGuardar").prop("checked")) {
                     errors += "<p>Ha d'acceptar les condicions</p>";
                 }
+                if (!$("#cbCedir").prop("checked")) {
+                    errors += "<p>Ha d'acceptar les condicions</p>";
+                }
                 if (errors === "") {
                     $('#mdEspera').modal('show');
                 } else {
@@ -84,7 +97,7 @@
 
     {% block contingut %}
 
-        {% set alta = 1%}
+        {% set alta = 1 %}
         {{ include('auxiliars/formEmpresa.html.twig') }}
         <script src="js/dirtyForms.js"></script>
 

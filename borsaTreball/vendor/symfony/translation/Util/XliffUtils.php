@@ -41,7 +41,7 @@ class XliffUtils
             $namespace = $xliff->attributes->getNamedItem('xmlns');
             if ($namespace) {
                 if (0 !== substr_compare('urn:oasis:names:tc:xliff:document:', $namespace->nodeValue, 0, 34)) {
-                    throw new InvalidArgumentException(sprintf('Not a valid XLIFF namespace "%s"', $namespace));
+                    throw new InvalidArgumentException(sprintf('Not a valid XLIFF namespace "%s".', $namespace));
                 }
 
                 return substr($namespace, 34);
@@ -101,10 +101,10 @@ class XliffUtils
     private static function getSchema(string $xliffVersion): string
     {
         if ('1.2' === $xliffVersion) {
-            $schemaSource = file_get_contents(__DIR__ . '/../Resources/schemas/xliff-core-1.2-strict.xsd');
+            $schemaSource = file_get_contents(__DIR__.'/../Resources/schemas/xliff-core-1.2-strict.xsd');
             $xmlUri = 'http://www.w3.org/2001/xml.xsd';
         } elseif ('2.0' === $xliffVersion) {
-            $schemaSource = file_get_contents(__DIR__ . '/../Resources/schemas/xliff-core-2.0.xsd');
+            $schemaSource = file_get_contents(__DIR__.'/../Resources/schemas/xliff-core-2.0.xsd');
             $xmlUri = 'informativeCopiesOf3rdPartySchemas/w3c/xml.xsd';
         } else {
             throw new InvalidArgumentException(sprintf('No support implemented for loading XLIFF version "%s".', $xliffVersion));

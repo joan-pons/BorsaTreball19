@@ -1,0 +1,9 @@
+{% extends "/email/baseEmail.twig" %}
+
+{% block contingut %}
+    <h1>Validació d'empresa pendent sense professor assignat.</h1>
+    <p>L'empresa <strong>{{ empresa.nom }}</strong> es vol donar d'alta a la borsa de treball però no hi ha cap professor responsable de cap dels cicles de la família professional {{ familia.id }} - {{ familia.nom }}.</p>
+    <p>Per favor, entri a l'aplicació i comprovi-ho el més aviat possible.</p>
+    <p>Moltes gràcies!</p>
+
+{%endblock%}

@@ -158,6 +158,12 @@ $app->get('/sortir', function ($request, $response, $args) {
     return $response->withRedirect("/borsaTreball");
 });
 
+$app->get('/sortirLogo', function ($request, $response, $args) {
+    session_unset();
+    session_destroy();
+    return $response->withRedirect("http://www.paucasesnovescifp.cat");
+});
+
 $app->post('/login', function ($request, $response, $args) {
     return Dao::entrada($request, $response, $args, $this);
 });
@@ -190,6 +196,19 @@ $app->get('/restablirContrasenya', function ($request, $response, $args) {
     } else {
         return $this->view->render($response, 'auxiliars/tokenNoValid.html.twig', []);
     }
+});
+
+
+$app->get('/valOferta', function ($request, $response, $args) {
+    return Dao::entradaToken($request, $response, $args, $this, 'professor/ofertes');
+});
+
+$app->get('/valEmpresa', function ($request, $response, $args) {
+    return Dao::entradaToken($request, $response, $args, $this, 'professor/empresesPendents');
+});
+
+$app->get('/valAlumnes', function ($request, $response, $args) {
+    return Dao::entradaToken($request, $response, $args, $this, 'professor/alumnesPendents');
 });
 
 $app->put('/restablirContrasenya/{token}', function ($request, $response, $args) {
@@ -503,7 +522,7 @@ $app->group('/empresa', function () {
         return DaoEmpresa::publicarOferta($request, $response, $args, $this);
     });
 })->add(function ($request, $response, $next) {
-    if (in_array(20, $_SESSION['rols']) || in_array(40, $_SESSION['rols'])) {
+    if (isset($_SESSION['rols']) && (in_array(20, $_SESSION['rols']) || in_array(40, $_SESSION['rols']))) {
         return $response = $next($request, $response);
     } else {
         return $this->view->render($response, '/auxiliars/noAutoritzat.html.twig')->withStatus(403);
@@ -701,7 +720,7 @@ $app->group('/alumne', function () {
         }
     });
 })->add(function ($request, $response, $next) {
-    if (in_array(30, $_SESSION['rols']) || in_array(40, $_SESSION['rols'])) {
+    if (isset($_SESSION['rols']) && (in_array(30, $_SESSION['rols']) || in_array(40, $_SESSION['rols']))) {
         return $response = $next($request, $response);
     } else {
         return $this->view->render($response, '/auxiliars/noAutoritzat.html.twig')->withStatus(403);
@@ -943,12 +962,13 @@ $app->group('/professor', function () {
 
 
 })->add(function ($request, $response, $next) {
-    if (in_array(10, $_SESSION['rols']) || in_array(40, $_SESSION['rols'])) {
+    if (isset($_SESSION['rols']) && (in_array(10, $_SESSION['rols']) || in_array(40, $_SESSION['rols']))) {
         return $response = $next($request, $response);
     } else {
         return $this->view->render($response, '/auxiliars/noAutoritzat.html.twig')->withStatus(403);
     }
 });
+
 //  //////////////////////////////////////////////////////////
 // //////////////////                       /////////////////
 //||||||||||||||||||       Administrador   |||||||||||||||||
@@ -1056,7 +1076,7 @@ $app->group('/administrador', function () {
     });
 
 })->add(function ($request, $response, $next) {
-    if (in_array(40, $_SESSION['rols'])) {
+    if (isset($_SESSION['rols']) && (in_array(40, $_SESSION['rols']))) {
         return $response = $next($request, $response);
     } else {
         return $this->view->render($response, '/auxiliars/noAutoritzat.html.twig')->withStatus(403);

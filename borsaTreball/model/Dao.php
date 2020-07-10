@@ -49,6 +49,42 @@ class Dao
         }
     }
 
+    public static function entradaToken(Request $request, Response $response, $args, \Slim\Container $container, $desti){
+        $container->dbEloquent;
+        $t = filter_var($request->getQueryParam('t'), FILTER_SANITIZE_STRING);
+        $token = Token::find($t);
+        $ara = strtotime('now');
+        if ($token != null && $ara <= strtotime($token->data)) {
+            $usuari = Usuari::find($token->idUsuari);
+            $token->destroy($token->token);
+
+            session_unset();
+            session_destroy();
+
+            session_start();
+            $_SESSION['idUsuari'] = $usuari->idUsuari;
+            $rols = [];
+            foreach ($usuari->rols as $rol) {
+                $rols[] = $rol->idRol;
+            }
+            $_SESSION['rols'] = $rols;
+            return $response->withHeader('Location',$desti)->withStatus(302);
+        } else {
+            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', []);
+        }
+    }
+    public static function generaToken($longitud, Usuari $usuari, $durada, \Slim\Container $container)
+    {
+        $container->dbEloquent;
+        $token = bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
+        $r = new Token();
+        $r->idUsuari = $usuari->idUsuari;
+        $r->token = $token;
+        $r->data = date('Y-m-d H:i:s', strtotime('+' . $durada . ' day'));
+        $r->save();
+        return $r;
+    }
+
     public static function contrasenyaOblidada(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
@@ -59,18 +95,13 @@ class Dao
 //            $resposta=array('usuari'=>$usuari, 'data'=>$data);
 //            return $response->withJSON($resposta);
             if (count($usuari) > 0) {
-                $longitud = 20;
                 $usuari = $usuari[0];
-                $token = bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
-                $r = new Token();
-                $r->idUsuari = $usuari->idUsuari;
-                $r->token = $token;
-                $r->data = date('Y-m-d H:i:s', strtotime('+1 day'));
-                $r->save();
+
+                $r=Dao::generaToken(20, $usuari,1, $container);
                 $resultat = Bustia::enviarUnic($usuari->nomUsuari, 'Restablir la contrasenya de la borsa de treball del CIFP Pau Casesnoves', "/email/restablirContrasenya.twig", ['token' => $r->token], $container);
                 if ($resultat == true) {
                     $missatge = array("missatge" => "Procés correcte.");
-                    $missatge[] = $r;
+                   // $missatge[] = $r;
                     return $response->withJSON($missatge); //array('professor' => $professor, 'validat' => $validat, 'Activat' => $activat, 'Primera' => $validat and !$professor->validat, 'Segona' => !$validat, 'Resultat' => $resultat));
                 } else {
                     $missatge = array("missatge" => "<p>No s'ha pogut enviar el missatge de confirmació. L'adreça de correu deu estar malament.</p> <p>Els canvis no s'han guardat a la base de dades.</p>");

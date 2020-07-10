@@ -8,7 +8,7 @@ use Borsa\Professor;
 
 class Bustia
 {
-    public function enviar($emails, $subject, $plantilla, $dades, $container)
+    public static function enviar($emails, $subject, $plantilla, $dades, $container)
     {
         return $container->mailer->send($plantilla, $dades, function ($message) use ($emails, $subject) {
             $message->from("borsa.treball@paucasesnovescifp.cat");
@@ -20,7 +20,7 @@ class Bustia
         });
     }
 
-    public function enviarUnic($destinatari, $subject, $plantilla, $dades, $container)
+    public static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container)
     {
         $resultat=false;
         try {

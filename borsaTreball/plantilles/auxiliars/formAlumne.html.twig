@@ -61,10 +61,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         <label>Acceptació</label>
-                        <div class="checkbox"><label><input type="checkbox" id="cbGuardar"  name="cbGuardar" value="true">Dades aplicació bla, bla, bla ...</label></div>
+                        <div class="checkbox"><label><input type="checkbox" id="cbGuardar"  name="guardar">Dades aplicació bla, bla, bla ...</label></div>
                     </div>
                     <div class="col-md-12">
-                        <div class="checkbox"><label><input type="checkbox" id="cbCedir" name="cbCedir" value="true">Cedir dades empreses bla, bla, bla...</label></div>
+                        <div class="checkbox"><label><input type="checkbox" id="cbCedir" name="cedir">Cedir dades empreses bla, bla, bla...</label></div>
                     </div>
                 </div>
 
@@ -109,7 +109,7 @@
             errors += "<p>El correu electrònic no pot ser del domini <em>@paucasesnovescifp.cat</em></p>";
         }
         if (!$("#cbGuardar").prop("checked")) {
-            errors += "<p>Ha d'acceptar les condicions</p>";
+            errors += "<p>Ha d'acceptar que l'aplicació guardi les dades.</p>";
         }
         if (errors === "") {
             $('#mdEspera').modal('show');
