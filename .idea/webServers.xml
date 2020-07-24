@@ -6,14 +6,21 @@
         <fileTransfer mountedRoot="/var/www/html" accessType="MOUNT" port="0" />
       </webServer>
       <webServer id="a7cedf29-9b86-49e0-ab3a-e735e7b7673f" name="AWS" url="http://3.221.246.147:22/borsaTreball">
-        <fileTransfer rootFolder="/var/www/html" accessType="SFTP" host="3.221.246.147" port="22" sshConfigId="c80aead8-a094-49e1-abdc-023bfc5f5d06" sshConfig="ubuntu@3.221.246.147:22 key" keyPair="true">
+        <fileTransfer rootFolder="/var/www/html" accessType="SFTP" host="192.168.1.119" port="22" sshConfigId="c80aead8-a094-49e1-abdc-023bfc5f5d06" sshConfig="webadmin@192.168.1.119:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>
       <webServer id="a816aac3-2343-4515-b5b1-c7e2b7578aac" name="AWS Proves" url="http://3.221.246.147:22/proves/borsaTreball">
-        <fileTransfer rootFolder="/var/www/html/proves" accessType="SFTP" host="3.221.246.147" port="22" sshConfigId="c80aead8-a094-49e1-abdc-023bfc5f5d06" sshConfig="ubuntu@3.221.246.147:22 key" keyPair="true">
+        <fileTransfer rootFolder="/var/www/html/proves" accessType="SFTP" host="192.168.1.119" port="22" sshConfigId="c80aead8-a094-49e1-abdc-023bfc5f5d06" sshConfig="webadmin@192.168.1.119:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="a759f529-c141-4621-a07e-530a7dab9999" name="intranet" url="http://intranet.paucasesnovescifp.cat/borsaTreball">
+        <fileTransfer rootFolder="/var/www/html" accessType="SFTP" host="192.168.1.119" port="22" sshConfigId="c80aead8-a094-49e1-abdc-023bfc5f5d06" sshConfig="webadmin@192.168.1.119:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

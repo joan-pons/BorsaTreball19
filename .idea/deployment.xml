@@ -23,6 +23,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="intranet">
+        <serverdata>
+          <mappings>
+            <mapping deploy="borsaTreball" local="$PROJECT_DIR$/borsaTreball" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
     <option name="myAutoUpload" value="ALWAYS" />
   </component>
