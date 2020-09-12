@@ -142,14 +142,16 @@ $app->get('/', function ($request, $response, $args) {
 //});
 
 $app->get('/provesCorreu', function ($request, $response, $args) {
-    $resultat = Bustia::enviarUnic("ptj@paucasesnovescifp.cat", 'Proves', "/email/rebutjarProfessor.twig", [], $this);
-    if ($resultat == true) {
-        $missatge = array("missatge" => "Procés correcte.");
-        return $response->withJSON($missatge); //array('professor' => $professor, 'validat' => $validat, 'Activat' => $activat, 'Primera' => $validat and !$professor->validat, 'Segona' => !$validat, 'Resultat' => $resultat));
-    } else {
-        $missatge = array("missatge" => "<p>No s'ha pogut enviar el missatge de confirmació. L'adreça de correu deu estar malament.</p> <p>Els canvis no s'han guardat a la base de dades.</p>");
-        return $response->withJSON($missatge, 422);
-    }
+    $alumne=array('validat'=>2, 'email'=>'kllskdf@ssdf.cat');
+    return $this->view->render($response, 'email/validarOferta.html.twig', []);
+//    $resultat = Bustia::enviarUnic("ptj@paucasesnovescifp.cat", 'Proves', "/email/rebutjarProfessor.twig", [], $this);
+//    if ($resultat == true) {
+//        $missatge = array("missatge" => "Procés correcte.");
+//        return $response->withJSON($missatge); //array('professor' => $professor, 'validat' => $validat, 'Activat' => $activat, 'Primera' => $validat and !$professor->validat, 'Segona' => !$validat, 'Resultat' => $resultat));
+//    } else {
+//        $missatge = array("missatge" => "<p>No s'ha pogut enviar el missatge de confirmació. L'adreça de correu deu estar malament.</p> <p>Els canvis no s'han guardat a la base de dades.</p>");
+//        return $response->withJSON($missatge, 422);
+//    }
 });
 
 $app->get('/sortir', function ($request, $response, $args) {

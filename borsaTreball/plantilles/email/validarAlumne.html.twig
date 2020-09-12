@@ -8,10 +8,10 @@
     {% else %}
     <p>Té una nova petició de validació d'algun alumne del centre.</p>
     <p>Per favor, entri a l'aplicació i comprovi-ho el més aviat possible.</p>
-        <p><a style="background-color: #3c763d; color: #ffffff; padding: 14px 25px;text-align: center; text-decoration: none; display: inline-block;" class="boto" href="http://3.221.246.147/valAlumnes?t={{ token }}">Validar alumnes</a></p>
+        <p><a style="background-color: #3c763d; color: #ffffff; padding: 14px 25px;text-align: center; text-decoration: none; display: inline-block;" class="boto" href="{{ ruta }}/valAlumnes?t={{ token }}">Validar alumnes</a></p>
         <p>Aquest enllaç té una validesa de set dies.</p>
         <p></p>
-        <p>Si no veu correctament el botó pot validar l'oferta clicant el següent enllaç: <a href="http://3.221.246.147/valAlumnes?t={{ token }}">http://3.221.246.147/valAlumnes?t={{ token }}</a>. </p>
+        <p>Si no veu correctament el botó pot validar l'oferta clicant el següent enllaç: <a href="{{ ruta }}/valAlumnes?t={{ token }}">{{ ruta }}/valAlumnes?t={{ token }}</a>. </p>
         <p></p>
     {% endif %}
         <p>Moltes gràcies!</p>

@@ -75,17 +75,19 @@
                 {% if alta %}
                     <div class='row'>
                         <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="sel1">Esculli la família professional més propera a la seva activitat.</label>
-                            <p> Un professor d'aquesta familia validarà la seva petició. Això no impedirà que pugui publicar ofertes relacionades amb altres famílies professional.</p>
-                            <select class="form-control" id="familia" name="familia" required="required">
-                                <option value="">Esculli la família professional</option>
-                                {% for familia in families %}
-                                    <option value="{{ familia.id }}">{{ familia.nom }} ({{ familia.id }} )</option>
-                                {% endfor %}
-                            </select>
+                            <div class="form-group">
+                                <label for="sel1">Esculli la família professional més propera a la seva
+                                    activitat.</label>
+                                <p> Un professor d'aquesta familia validarà la seva petició. Això no impedirà que pugui
+                                    publicar ofertes relacionades amb altres famílies professional.</p>
+                                <select class="form-control" id="familia" name="familia" required="required">
+                                    <option value="">Esculli la família professional</option>
+                                    {% for familia in families %}
+                                        <option value="{{ familia.id }}">{{ familia.nom }} ({{ familia.id }} )</option>
+                                    {% endfor %}
+                                </select>
 
-                        </div>
+                            </div>
                         </div><!--col -->
 
                     </div><!-- Row -->
@@ -104,11 +106,20 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label>Acceptació</label>
-                            <div class="checkbox"><label><input type="checkbox" id="cbGuardar"  name="guardar">Dades aplicació bla, bla, bla ...</label></div>
+                            <div class="checkbox"><label><input type="checkbox" id="cbGuardar" name="guardar">Dades
+                                    aplicació bla, bla, bla ...</label></div>
                         </div>
                         <div class="col-md-12">
-                            <div class="checkbox"><label><input type="checkbox" id="cbCedir" name="cedir">Cedir dades empreses bla, bla, bla...</label></div>
+                            <div class="checkbox"><label><input type="checkbox" id="cbCedir" name="cedir">Cedir dades
+                                    empreses bla, bla, bla...</label></div>
                         </div>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-6">
+<!--                            <label>Logo de l'empresa</label>
+                            <div><img src="../imatges/logos/10.jpg" alt="Logo de {{ objEmpresa.nom }}"></div>
+-->                       </div>
                     </div>
                 {% endif %}
                 <div class="row">
@@ -121,9 +132,9 @@
                 </div>
                 <div class="row">
                     <div class="form-group pull-right">
-                        <label for="CodiPostal">&nbsp;</label>
+                        <label for="bReset">&nbsp;</label>
                         <div>
-                            <button type="reset" class="btn btn-default">Netejar</button>
+                            <button id="bReset" type="reset" class="btn btn-default">Netejar</button>
                         </div>
                     </div>
                 </div>

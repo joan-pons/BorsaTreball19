@@ -1,4 +1,5 @@
 <html>
+{%  set ruta='http://intranet.paucasesnovescifp.cat/borsaTreball' %}
 <head>
     <meta charset="utf-8">
     <style>
@@ -47,14 +48,12 @@
 </head>
 <body>
 <p>
-    <img src="https://aulavirtual.iespaucasesnoves.cat/pluginfile.php/1/core_admin/logo/0x150/1570362588/cropped-Logo_Pau.png">
+    <img src="{{ ruta }}/imatges/cropped-Logo_Pau.png">
 </p>
 {% block contingut %}
 {% endblock %}
 <hr>
 <p class="petita">Aquesta adreça de correu només és emisora de missatges. Per favor no respongui a aquest missatge. Pot
-    posar-se en
-    contacte amb nosaltres a l'adreça <a
-            href="mailto:info.borsa@paucasesnovescifp.cat">info.borsa@paucasesnovescifp.cat</a> o al telèfon: <a href="tel:+34971881710">971 881 710</a></p>
+    posar-se en    contacte amb nosaltres a l'adreça <a href="mailto:info.borsa@paucasesnovescifp.cat">info.borsa@paucasesnovescifp.cat</a> o al telèfon: <a href="tel:+34971881710">971 881 710</a></p>
 </body>
 </html>
