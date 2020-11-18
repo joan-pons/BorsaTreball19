@@ -94,9 +94,11 @@
                                 indicador='FP bàsica';
                             }else if(xifra==='2'){
                                 indicador='Grau mitjà';
+                            } else  if (xifra === '3'){
+                                indicador = 'Grau superior';
                             }else{
-                                indicador='Grau superior';
-                            } 
+                                indicador = 'Certificat de professionalitat';
+                            }
                             opcions=opcions+'<optgroup label="'+indicador+'">';
                         }
                         opcions=opcions+'</optgroup>';

@@ -31,10 +31,10 @@
                             <label for="Actiu">Estat:</label>
                             <div>
                                 <label class="radio-inline"><input type="radio" id="Actiu" name="actiu" value="true"
-                                                                   {% if objEmpresa.activa==true %}checked="checked"{% endif %}>
+                                                                   {% if alta==1 or objEmpresa.activa==true %}checked="checked"{% endif %}>
                                     Activa</label>
                                 <label class="radio-inline"><input type="radio" id="Inactiu" name="actiu" value="false"
-                                                                   {% if objEmpresa.activa==false %}checked="checked"{% endif %}>
+                                                                   {% if alta!=1 and objEmpresa.activa==false %}checked="checked"{% endif %}>
                                     Inactiva</label>
                             </div>
                         </div>

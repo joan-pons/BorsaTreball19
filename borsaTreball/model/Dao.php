@@ -37,15 +37,19 @@ class Dao
         } else {
             session_unset();
             session_destroy();
-
-            session_start();
-            $_SESSION['idUsuari'] = $usuari->idUsuari;
-            $rols = [];
-            foreach ($usuari->rols as $rol) {
-                $rols[] = $rol->idRol;
+            if($usuari->getEntitat()->validat==1) {
+                session_start();
+                $_SESSION['idUsuari'] = $usuari->idUsuari;
+                $rols = [];
+                foreach ($usuari->rols as $rol) {
+                    $rols[] = $rol->idRol;
+                }
+                $_SESSION['rols'] = $rols;
+                return $response->withJSON(array("missatge" => "L'usuari s'ha validat correctament"));
+            }else{
+                $missatge = array("missatge" => "L'usuari no està validat.");
+                return $response->withJson($missatge, 401);
             }
-            $_SESSION['rols'] = $rols;
-            return $response->withJSON(array("missatge" => "L'usuari s'ha validat correctament"));
         }
     }
 
@@ -70,7 +74,7 @@ class Dao
             $_SESSION['rols'] = $rols;
             return $response->withHeader('Location',$desti)->withStatus(302);
         } else {
-            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', []);
+            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', ['missatge'=>$t." ".$ara." ".($ara <= strtotime($token->data))]);
         }
     }
     public static function generaToken($longitud, Usuari $usuari, $durada, \Slim\Container $container)

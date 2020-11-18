@@ -16,6 +16,10 @@
             <label for="password">Contrasenya: </label>
             <input type="password" class="form-control" id="password" name="password">
         </div>
+        <div>
+            <label for="mostra" class="noLabel">Mostrar la contrasenya: </label>
+            <input type="checkbox" id="mostra">
+        </div>
         <h5>Ha oblidat la contrasenya? <small><a href="contrasenyaOblidada?t={{ tipus }}">Cliqui aquí</a></small></h5>
         <button type="submit" name="bEntrar" >Entrar</button>
     </form>
@@ -23,7 +27,13 @@
 {{include('auxiliars/modals.html.twig')}}
 <script>
     $(document).ready(function () {
-
+        $("#mostra").change(function(){
+            if(this.checked){
+                document.getElementById("password").type="text";
+            }else{
+                document.getElementById("password").type="password";
+            }
+        });
         $("#fLogin").on('submit', function (event) {
             event.preventDefault();
             var dadesLogin;

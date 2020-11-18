@@ -9,7 +9,7 @@
 <div class="well">
     {{oferta.descripcio|raw}}
     <p>&nbsp;</p>
-    <p><label>Data de publicació:</label> {{oferta.dataPublicacio}}</p>
+    <p><label>Data de publicació:</label> {{oferta.dataPublicacio | date('d / m / Y')}}</p>
     <p><label>Vàlida fins a:</label> {{oferta.dataFinal | date('d / m / Y')}}</p>
     <p><label>Localitat:</label> {{oferta.localitat}}</p>
     <p><label>Tipus de contracte:</label> {{oferta.tipusContracte}}</p>
@@ -47,9 +47,9 @@
 {%endif%}
 
 {%if not oferta.estatsLaborals is empty %}
-    <h2> Situació laboral demanada </h2>
+    <h2> Jornada laboral demanada </h2>
     <div class="well">
-        <p>Es seleccionaran estudiants que es trobin en la situació laboral demanada.</p>
+        <p>Es seleccionaran estudiants que acceptin la jornada laboral demanada.</p>
         <ul>
             {%for estat in oferta.estatsLaborals %}
                 <li><p>{{estat.nomEstatLaboral}}</p></li>

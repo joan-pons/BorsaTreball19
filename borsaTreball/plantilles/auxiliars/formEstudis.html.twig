@@ -41,11 +41,12 @@
                             <label class="control-label">Any de finalització:</label>
                             <input type="number" min="2000" id="anyNou" name="any" required="required">
                         </div>
-                        <div class="form-group required">
-                            <label class="control-label">Nota final:</label>
-                            <input type="number" min="5" max="10" id="notaNou" name="nota" value='5'
-                                   required="required">
-                        </div>
+{#                        <div class="form-group required">#}
+{#                            <label class="control-label">Nota final:</label>#}
+                               <input type="hidden" name="nota" id="notaNou" value="5">
+{#                            <input type="number" min="5" max="10" id="notaNou" name="nota" value='5'#}
+{#                                   required="required">#}
+{#                        </div>#}
                     </div>
 
                     <div class='col-md-4'>
@@ -90,11 +91,11 @@
                             <input type="number" min="1970" max='{{ "now"|date("Y") }}' id="any" name="any"
                                    disabled='disabled' value='{{ grau.pivot.any }}' required="required">
                         </div>
-                        <div class="form-group required">
-                            <label class="control-label">Nota final:</label>
-                            <input type="number" min="5" max="10" id="nota" name="nota" value='{{ grau.pivot.nota }}'
-                                   disabled='disabled' required="required">
-                        </div>
+{#                        <div class="form-group required">#}
+{#                            <label class="control-label">Nota final:</label>#}
+{#                            <input type="number" min="5" max="10" id="nota" name="nota" value='{{ grau.pivot.nota }}'#}
+{#                                   disabled='disabled' required="required">#}
+{#                        </div>#}
                     </div>
 
                     <div class='col-md-6'>
@@ -125,7 +126,7 @@
 
         $('#dNou').hide();
         $('#anyNou').attr('max', new Date().getFullYear());
-        $('#anyNou').attr('value', new Date().getFullYear()-5);
+        $('#anyNou').attr('value', new Date().getFullYear()-1);
 
         $('form [name="bGuardar"]').hide();
         $('form [name="bCancel"]').hide();
@@ -345,8 +346,10 @@
                             indicador = 'FP bàsica';
                         } else if (xifra === '2') {
                             indicador = 'Grau mitjà';
-                        } else {
+                        } else  if (xifra === '3'){
                             indicador = 'Grau superior';
+                        }else{
+                            indicador = 'Certificat de professionalitat';
                         }
                         opcions = opcions + '<optgroup label="' + indicador + '">';
                     }

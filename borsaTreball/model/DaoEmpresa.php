@@ -40,7 +40,7 @@ class DaoEmpresa extends Dao
             $empresa->cedir = filter_var($data['cedir'], FILTER_SANITIZE_STRING);
             //$empresa->DataAlta= \Carbon::now();
             $empresa->save();
-            $professors = DB::select('SELECT p.email FROM borsa.Estudis_has_Responsables r inner join borsa.Estudis e on e.codi = r.Estudis_codi inner join borsa.Professors p on r.Professors_idProfessor=p.idProfessor where p.actiu=1 and e.familia=\'' . $empresa->familia . '\'');
+            $professors = DB::select('SELECT p.* FROM borsa.Estudis_has_Responsables r inner join borsa.Estudis e on e.codi = r.Estudis_codi inner join borsa.Professors p on r.Professors_idProfessor=p.idProfessor where p.actiu=1 and e.familia=\'' . $empresa->familia . '\'');
             if (count($professors) > 0) {
                 foreach ($professors as $professor) {
                     $usuari = Usuari::where('nomUsuari', $professor->email)->get();

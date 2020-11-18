@@ -4,9 +4,9 @@ namespace Borsa;
 
 use Borsa\Alumne as Alumne;
 use Correu\Bustia;
+use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Illuminate\Database\Capsule\Manager as DB;
 
 /**
  * Description of DaoProfessor
@@ -27,16 +27,17 @@ class DaoAlumne extends Dao
             $alumne->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
             $alumne->estudisAlta = filter_var($data['cicle'], FILTER_SANITIZE_EMAIL);
             $alumne->actiu = 0;
-            $alumne->guardar=filter_var($data['guardar'], FILTER_SANITIZE_STRING);
-            $alumne->cedir=filter_var($data['cedir'], FILTER_SANITIZE_STRING);
+            $alumne->guardar = filter_var($data['guardar'], FILTER_SANITIZE_STRING);
+            $alumne->cedir = filter_var($data['cedir'], FILTER_SANITIZE_STRING);
             $alumne->save();
 
-            $numAlumnes=DB::select('SELECT count(*) FROM borsa.Alumnes where estudisAlta=\''.$alumne->estudisAlta.'\'  and validat=0 and dataAlta > date_add(NOW(), INTERVAL -7 DAY)');
-            if($numAlumnes==0) {
+            $numAlumnes = DB::select('SELECT count(*) FROM borsa.Alumnes where estudisAlta=\'' . $alumne->estudisAlta . '\'  and validat=0 and dataAlta > date_add(NOW(), INTERVAL -7 DAY)');
+            if (true){ //TODO $numAlumnes  == 0) {
                 $estudis = Estudis::find($alumne->estudisAlta);
                 if (count($estudis->professors) > 0) {
                     foreach ($estudis->professors as $professor) {
                         $usuari = Usuari::where('nomUsuari', $professor->email)->get();
+
                         $r = Dao::generaToken(20, $usuari[0], 7, $container);
                         Bustia::enviarUnic($professor->email, "Validació d'alumnes pendent", 'email/validarAlumne.html.twig', ['token' => $r->token], $container);
                     }
@@ -47,13 +48,14 @@ class DaoAlumne extends Dao
                     foreach ($professors as $p) {
                         if ($p->teRol(40) && $p->getEntitat()->actiu == 1) {
                             $admins[] = $p->getEntitat();
+
                         }
                     }
                     $cicle = Estudis::find($alumne->estudisAlta);
                     Bustia::enviar($admins, "Validació d'alumnes pendents sense professor responsable", 'email/validarAlumne.html.twig', ['alumne' => $alumne, 'cicle' => $cicle], $container);
                 }
             }
-            $missatge = array("missatge" => 'Alta correcta.');
+            $missatge = array("missatge" => "Alta correcta");
             return $response->withJson($missatge);
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {

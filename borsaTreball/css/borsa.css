@@ -45,3 +45,6 @@ p{
 .jumbotron a, .jumbotron  a.visited {
     color: #175e17;
 }*/
+.noLabel{
+    font-weight: normal;
+}

@@ -36,7 +36,7 @@
         <li><a href="canviarContrasenya">Canviar contrasenya</a></li>
         <li><a href="estudis" id="mEstudis">Estudis</a></li>
         <li><a href="idiomes" id="mIdiomes">Idiomes</a></li>
-        <li><a href="estatLaboral" id="mEstats">Estat laboral</a></li>
+        <li><a href="estatLaboral" id="mEstats">Jornada laboral</a></li>
         <!--<li><a href="formacio">Altra formació</a></li>-->
         {% if alumne.actiu==1 %}
             <li><a href="ofertes">Ofertes</a></li>
@@ -95,9 +95,9 @@
                     </ul>
                 </div>
             {% endif %}
-            <h3>Situació laboral</h3>
+            <h3>Jornada laboral</h3>
             {% if alumne.estatsLaborals is empty %}
-                <div class="well"><p> Encara no tens cap situació laboral registrada </p></div>
+                <div class="well"><p> Encara no tens cap jornada laboral registrada </p></div>
             {% else %}
                 <div class="well click" id="dEstats">
                     <ul>

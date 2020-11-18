@@ -464,8 +464,8 @@ $app->group('/empresa', function () {
         $oferta = Oferta::find($request->getQueryParam('idOferta'));
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
-            $etiquetes = array("nom" => $empresa->nom, "labelLlista" => "en els que vol que es trobin els candidats");
-            $estats = EstatLaboral::orderBy('nomEstatLaboral', 'ASC')->get();
+            $etiquetes = array("nom" => $empresa->nom, "labelLlista" => "que han d'acceptar els candidats");
+            $estats = EstatLaboral::orderBy('idEstatLaboral', 'ASC')->get();
             return $this->view->render($response, 'empresa/estatLaboral.html.twig', ['empresa' => $empresa, 'actor' => $oferta, 'identificador' => $oferta->idOferta, 'etiquetes' => $etiquetes, 'estats' => $estats]);
         } else {
             return $response->withJSON('Errada: ', 500);

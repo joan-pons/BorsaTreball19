@@ -144,7 +144,9 @@
                     data: oferta
                 }).done(function (ofertaRebuda) {
                     $('#mrTitol').html('Alta correcta')
-                    $('#mrText').html("<p>L'oferta s'ha donat d'alta correctament.</p>");
+                    $('#mrText').html("<p>L'oferta s'ha donat d'alta correctament.</p>" +
+                        "<p>Heu de posar com a mínim uns estudis als que va dirigida la oferta.</p>" +
+                        "<p>En tenir al manco uns estudis assignats podreu publicar la oferta, un professor la validarà i llavors arribarà als alumnes.</p>");
                     $('#bmDacord').on('click', function () {
                         window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
                     });

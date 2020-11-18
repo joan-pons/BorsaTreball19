@@ -29,18 +29,14 @@
                     <input type="password" class="form-control" id="repetir" required="required" minlength="8"
                            maxlength="75">
                 </div>
+                <div class="form-group">
+                    <label for="mostra" class="noLabel">Mostrar la contrasenya: </label>
+                    <input type="checkbox" id="mostra">
+                </div>
             </div><!--col-->
         </div> <!--Row -->
 
-        {#        <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <div>
-                                <label class="radio-inline"><input type="checkbox" id="mostra" value="true"> Mostrar contrasenyes</label>
-                            </div>
-                        </div>
-                    </div><!--col -->
-                </div> <!--Row -->#}
+
         <div class="row">
             <div class="col-md-4">
                 <button type="submit" class="btn btn-success">Canviar</button>
@@ -60,6 +56,17 @@
 </div>
 <script src="../js/dirtyForms.js"></script>
 <script>
+    $("#mostra").change(function(){
+        if(this.checked){
+            document.getElementById("antic").type="text";
+            document.getElementById("nou").type="text";
+            document.getElementById("repetir").type="text";
+        }else{
+            document.getElementById("antic").type="password";
+            document.getElementById("nou").type="password";
+            document.getElementById("repetir").type="password";
+        }
+    });
 
     $('#fCanvi').submit(function (event) {
         event.preventDefault();
