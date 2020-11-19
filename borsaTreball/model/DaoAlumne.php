@@ -289,6 +289,7 @@ class DaoAlumne extends Dao
                 if ($nou != 0) {
                     $alumne = Alumne::find(filter_var($alu['idAlumne'], FILTER_SANITIZE_NUMBER_INT));
                     $alumne->validat = $nou;
+                    $alumne->actiu = $nou;
                     $alumne->profValidat = $professor->idProfessor;
                     $alumne->save();
 

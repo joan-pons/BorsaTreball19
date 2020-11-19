@@ -37,7 +37,7 @@ class Dao
         } else {
             session_unset();
             session_destroy();
-            if($usuari->getEntitat()->validat==1) {
+            if($usuari->getEntitat()->validat==1 || $usuari->getEntitat()->validada==1) {
                 session_start();
                 $_SESSION['idUsuari'] = $usuari->idUsuari;
                 $rols = [];

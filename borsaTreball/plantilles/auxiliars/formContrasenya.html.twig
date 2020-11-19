@@ -56,15 +56,19 @@
 </div>
 <script src="../js/dirtyForms.js"></script>
 <script>
-    $("#mostra").change(function(){
-        if(this.checked){
-            document.getElementById("antic").type="text";
-            document.getElementById("nou").type="text";
-            document.getElementById("repetir").type="text";
-        }else{
-            document.getElementById("antic").type="password";
-            document.getElementById("nou").type="password";
-            document.getElementById("repetir").type="password";
+    $("#mostra").change(function () {
+        if (this.checked) {
+            {% if not restablir %}
+                document.getElementById("antic").type = "text";
+            {% endif %}
+            document.getElementById("nou").type = "text";
+            document.getElementById("repetir").type = "text";
+        } else {
+            {% if not restablir %}
+                document.getElementById("antic").type = "password";
+            {% endif %}
+            document.getElementById("nou").type = "password";
+            document.getElementById("repetir").type = "password";
         }
     });
 
