@@ -17,7 +17,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class DaoEmpresa extends Dao
 {
 
-    public function altaEmpresa(Request $request, Response $response, \Slim\Container $container)
+    public static function altaEmpresa(Request $request, Response $response, \Slim\Container $container)
     {
         //TODO: Filtrar descripció
         try {
@@ -77,7 +77,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function modificarEmpresa(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarEmpresa(Request $request, Response $response, $args, \Slim\Container $container)
     {
         //TODO: Filtrar descripció
         try {
@@ -93,8 +93,8 @@ class DaoEmpresa extends Dao
                 $empresa->Provincia = filter_var($data['provincia'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $empresa->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
                 $empresa->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
-                $empresa->activa = filter_var($data['actiu'], FILTER_SANITIZE_STRING) == 'true';
-                $empresa->validada = false;
+                $empresa->activa = filter_var($data['activa'], FILTER_SANITIZE_STRING) == 'true';
+                $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->url = filter_var($data['url'], FILTER_SANITIZE_URL);
                 //$empresa->DataAlta= \Carbon::now();
                 $empresa->save();
@@ -119,7 +119,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function altaContacte(Request $request, Response $response, \Slim\Container $container)
+    public static function altaContacte(Request $request, Response $response, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -149,7 +149,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function modificarContacte(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarContacte(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -184,7 +184,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function esborrarContacte(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function esborrarContacte(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -199,7 +199,7 @@ class DaoEmpresa extends Dao
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    $missatge = array("missatge" => "No s'ha pogut eliminar. Segurament degut a que el contacte està associat a alguna oferta.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
                     $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -212,7 +212,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function validar(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function validar(Request $request, Response $response, $args, \Slim\Container $container)
     {
 
         try {
@@ -259,7 +259,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function altaOferta(Request $request, Response $response, \Slim\Container $container)
+    public static function altaOferta(Request $request, Response $response, \Slim\Container $container)
     {
         //TODO Filtrar descripció
         try {
@@ -299,7 +299,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function modificarOferta(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarOferta(Request $request, Response $response, $args, \Slim\Container $container)
     {
         //TODO Filtrar descripció
         try {
@@ -339,7 +339,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function afegirEstudisOferta(Request $request, Response $response, \Slim\Container $container)
+    public static function afegirEstudisOferta(Request $request, Response $response, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -370,7 +370,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -399,7 +399,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function modificarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -429,7 +429,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function modificarIdiomes(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarIdiomes(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -466,7 +466,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function modificarEstatLaboral(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarEstatLaboral(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -502,7 +502,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function afegirContOf(Request $request, Response $response, \Slim\Container $container)
+    public static function afegirContOf(Request $request, Response $response, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -534,7 +534,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function esborrarContacteOferta(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function esborrarContacteOferta(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -565,7 +565,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function esborrarOferta(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function esborrarOferta(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -593,7 +593,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public function publicarOferta(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function publicarOferta(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;

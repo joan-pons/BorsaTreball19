@@ -29,15 +29,26 @@ class Dao
     {
         $container->dbEloquent;
         $data = $request->getParsedBody();
+        $tipus = filter_var($data['tipus'], FILTER_SANITIZE_NUMBER_INT);
+        $usuari = Usuari::where('nomUsuari', filter_var($data['nomUsuari'], FILTER_SANITIZE_EMAIL))->where('tipusUsuari', $tipus)->first();
 
-        $usuari = Usuari::where('nomUsuari', filter_var($data['nomUsuari'], FILTER_SANITIZE_EMAIL))->where('tipusUsuari', filter_var($data['tipus'], FILTER_SANITIZE_NUMBER_INT))->first();
+        /*Si és el login d'una empresa i no l'ha trobat comprova que no sigui un professor intentant publicar una oferta en nom d'una empresa*/
+        if ($usuari == null && $tipus == 20) {
+            $usuari = Usuari::where('nomUsuari', filter_var($data['nomUsuari'], FILTER_SANITIZE_EMAIL))->where('tipusUsuari', 10)->first();
+
+        }
         if ($usuari == null || !password_verify(filter_var($data['password'], FILTER_SANITIZE_STRING), $usuari->contrasenya)) {
             $missatge = array("missatge" => "L'usuari i/o la contrasenya estan equivocats.");
             return $response->withJson($missatge, 401);
         } else {
             session_unset();
             session_destroy();
-            if($usuari->getEntitat()->validat==1 || $usuari->getEntitat()->validada==1) {
+            if ($usuari->getEntitat()->validat == 1 || $usuari->getEntitat()->validada == 1) {
+                // Si es tracta d'un professor entrant com a empresa
+                // Ha de canviar l'usuari del professor per el de l'empresa Pau Casesnoves
+                if ($tipus == 20 && $usuari->tipusUsuari == 10) {
+                    $usuari = Usuari::where('tipusUsuari', 20)->where('nomUsuari', 'borsa.treball@paucasesnovescifp.cat')->first();
+                }
                 session_start();
                 $_SESSION['idUsuari'] = $usuari->idUsuari;
                 $rols = [];
@@ -46,14 +57,15 @@ class Dao
                 }
                 $_SESSION['rols'] = $rols;
                 return $response->withJSON(array("missatge" => "L'usuari s'ha validat correctament"));
-            }else{
+            } else {
                 $missatge = array("missatge" => "L'usuari no està validat.");
                 return $response->withJson($missatge, 401);
             }
         }
     }
 
-    public static function entradaToken(Request $request, Response $response, $args, \Slim\Container $container, $desti){
+    public static function entradaToken(Request $request, Response $response, $args, \Slim\Container $container, $desti)
+    {
         $container->dbEloquent;
         $t = filter_var($request->getQueryParam('t'), FILTER_SANITIZE_STRING);
         $token = Token::find($t);
@@ -72,11 +84,12 @@ class Dao
                 $rols[] = $rol->idRol;
             }
             $_SESSION['rols'] = $rols;
-            return $response->withHeader('Location',$desti)->withStatus(302);
+            return $response->withHeader('Location', $desti)->withStatus(302);
         } else {
-            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', ['missatge'=>$t." ".$ara." ".($ara <= strtotime($token->data))]);
+            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', ['missatge' => $t . " " . $ara . " " . ($ara <= strtotime($token->data))]);
         }
     }
+
     public static function generaToken($longitud, Usuari $usuari, $durada, \Slim\Container $container)
     {
         $container->dbEloquent;
@@ -101,11 +114,11 @@ class Dao
             if (count($usuari) > 0) {
                 $usuari = $usuari[0];
 
-                $r=Dao::generaToken(20, $usuari,1, $container);
+                $r = Dao::generaToken(20, $usuari, 1, $container);
                 $resultat = Bustia::enviarUnic($usuari->nomUsuari, 'Restablir la contrasenya de la borsa de treball del CIFP Pau Casesnoves', "/email/restablirContrasenya.twig", ['token' => $r->token], $container);
                 if ($resultat == true) {
                     $missatge = array("missatge" => "Procés correcte.");
-                   // $missatge[] = $r;
+                    // $missatge[] = $r;
                     return $response->withJSON($missatge); //array('professor' => $professor, 'validat' => $validat, 'Activat' => $activat, 'Primera' => $validat and !$professor->validat, 'Segona' => !$validat, 'Resultat' => $resultat));
                 } else {
                     $missatge = array("missatge" => "<p>No s'ha pogut enviar el missatge de confirmació. L'adreça de correu deu estar malament.</p> <p>Els canvis no s'han guardat a la base de dades.</p>");
@@ -218,12 +231,14 @@ class Dao
             //Alumnes per Idiomes
             if ($oferta->idiomes->count() > 0 && count($alumnes) > 0) {
                 $alumnesIdiomes = array();
+                //Dins $alumnesIdiomes guarda els que hi ha a $alumnes que tenen els idiomes demanats
                 foreach ($alumnes as $alumne) {
                     $coincidencies = DB::select('select count(o.idiomes_idIdioma) as recompte from Ofertes_has_Idiomes o left join Alumne_has_Idiomes al  on o.idiomes_idIdioma=al.idiomes_idIdiomes where o.Ofertes_idOferta=' . $oferta->idOferta . ' and al.Alumne_idAlumne=' . $alumne->idAlumne . ' and al.NIvellsIdioma_idNivellIdioma>=o.NivellsIdioma_idNivellIdioma');
                     if ($coincidencies[0]->recompte == $oferta->idiomes->count()) {
                         array_push($alumnesIdiomes, $alumne);
                     }
                 }
+                //Actualitza $alumnes amb els filtrats per idioma.
                 $alumnes = $alumnesIdiomes;
             }
 
@@ -244,16 +259,16 @@ class Dao
             switch ($ex->getCode()) {
                 case 23000:
                 {
-                    $missatge = array("missatge" => "La contrasenya no pot ser nula");
+                    $missatge = array("missatge" => "Problemes filtrant els alumnes.");
                     break;
                 }
                 default:
                 {
-                    $missatge = array("missatge" => "La contrasenya no s'ha pogut canviar correctament.");
+                    $missatge = array("missatge" => "Problemes filtrant els alumnes. ");
                     break;
                 }
             }
-            return $response->withJson($missatge, 422);
+            return null; //$response->withJson($missatge, 422);
         }
     }
 
@@ -300,11 +315,11 @@ class Dao
                 return $response->withJson($familia->cicles, 200);
 
             } else {
-                return $response->withJson(array("missatge" => "No es troba l'ajuda demanada."), 422);
+                return $response->withJson(array("missatge" => "No es troba la familia demanada."), 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
 
-            return $response->withJson(array("missatge" => "No es troba l'ajuda demanada."), 422);
+            return $response->withJson(array("missatge" => "No es troba la familia demanada."), 422);
         }
     }
 }

@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class DaoAlumne extends Dao
 {
 
-    public function altaAlumne(Request $request, Response $response, \Slim\Container $container)
+    public static function altaAlumne(Request $request, Response $response, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -74,7 +74,7 @@ class DaoAlumne extends Dao
 
     }
 
-    public function modificarDades(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarDades(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -114,7 +114,7 @@ class DaoAlumne extends Dao
         }
     }
 
-    public function afegirEstudis(Request $request, Response $response, \Slim\Container $container)
+    public static function afegirEstudis(Request $request, Response $response, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -145,7 +145,7 @@ class DaoAlumne extends Dao
         }
     }
 
-    public function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -174,7 +174,7 @@ class DaoAlumne extends Dao
         }
     }
 
-    public function modificarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -204,7 +204,7 @@ class DaoAlumne extends Dao
         }
     }
 
-    public function modificarIdiomes(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarIdiomes(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -241,7 +241,7 @@ class DaoAlumne extends Dao
         }
     }
 
-    public function modificarEstatLaboral(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarEstatLaboral(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -278,7 +278,7 @@ class DaoAlumne extends Dao
         }
     }
 
-    public function validarAlumnes(Request $request, Response $response, $args, \Slim\Container $container, $professor)
+    public static function validarAlumnes(Request $request, Response $response, $args, \Slim\Container $container, $professor)
     {
         try {
             $container->dbEloquent;

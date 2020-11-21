@@ -446,7 +446,7 @@ $app->group('/empresa', function () {
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
             $etiquetes = array("nom" => $empresa->nom, "labelLlista" => "demanats, nivell mínim");
-            $idiomes = Idioma::all(); //orderBy('idioma', 'ASC')->get();
+            $idiomes = Idioma::orderBy('idioma', 'ASC')->get();
             $nivellsIdioma = NivellIdioma::orderBy('idNivellIdioma', 'ASC')->get();
             return $this->view->render($response, 'empresa/idiomes.html.twig', ['actor' => $oferta, 'identificador' => $oferta->idOferta, 'etiquetes' => $etiquetes, 'idiomes' => $idiomes, 'nivellsIdioma' => $nivellsIdioma]);
         } else {

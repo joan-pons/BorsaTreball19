@@ -18,7 +18,7 @@ class DaoProfessor extends Dao
 {
 //TODO: Revisar Sanitize i actiu
 
-    public function altaProfessor(Request $request, Response $response, \Slim\Container $container)
+    public static function altaProfessor(Request $request, Response $response, \Slim\Container $container)
     {
 
         try {
@@ -49,7 +49,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function modificarProfessor(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function modificarProfessor(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -83,7 +83,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function afegirEstudis(Request $request, Response $response, \Slim\Container $container)
+    public static function afegirEstudis(Request $request, Response $response, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -114,7 +114,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function esborrarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -144,7 +144,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function activar(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function activar(Request $request, Response $response, $args, \Slim\Container $container)
     {
         //TODO Canviar validació professors amb missatge per rebuig
         try {
@@ -203,7 +203,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function rols(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function rols(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -231,7 +231,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function afegirRol(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function afegirRol(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -264,7 +264,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function eliminarRol(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function eliminarRol(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -298,7 +298,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public function publicarOferta(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function publicarOferta(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -327,18 +327,18 @@ class DaoProfessor extends Dao
                     }
                 }
 
-            if (count($alumnesDefinitiu) > 0) {
-                $oferta->alumnes()->sync($alumnesId);
-                $oferta->save();
+                if (count($alumnesDefinitiu) > 0) {
+                    $oferta->alumnes()->sync($alumnesId);
+                    $oferta->save();
 
-                Bustia::enviar($alumnesDefinitiu, 'Oferta de feina', '/email/oferta.twig', ['oferta' => $oferta], $container);
-                Bustia::enviarUnic($oferta->empresa->email, 'Resultat de la validació de l\'oferta', '/email/ofertaResultat.html.twig', ['oferta' => $oferta], $container);
-                $missatge = array("missatge" => "Oferta validada i emails enviats");
-                return $response->withJSON($missatge);
-            } else {
-                $missatge = array("missatge" => "No hi ha cap alumne per aquesta oferta");
-                return $response->withJSON($missatge, 422);
-            }
+                    Bustia::enviar($alumnesDefinitiu, 'Oferta de feina', '/email/oferta.twig', ['oferta' => $oferta], $container);
+                    Bustia::enviarUnic($oferta->empresa->email, 'Resultat de la validació de l\'oferta', '/email/ofertaResultat.html.twig', ['oferta' => $oferta], $container);
+                    $missatge = array("missatge" => "Oferta validada i emails enviats");
+                    return $response->withJSON($missatge);
+                } else {
+                    $missatge = array("missatge" => "No hi ha cap alumne per aquesta oferta");
+                    return $response->withJSON($missatge, 422);
+                }
             } else {
                 $missatge = array("missatge" => "No s'ha trobat el professor o l'oferta que es vol validar.");
                 return $response->withJson($missatge, 422);
@@ -360,8 +360,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public
-    function rebutjarOferta(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function rebutjarOferta(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;
@@ -398,8 +397,7 @@ class DaoProfessor extends Dao
         }
     }
 
-    public
-    static function obrirAlumnes(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function obrirAlumnes(Request $request, Response $response, $args, \Slim\Container $container)
     {
         try {
             $container->dbEloquent;

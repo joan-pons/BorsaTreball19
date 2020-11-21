@@ -23,6 +23,11 @@
                 $.each($('#formEmpresa [name]'), function (i, obj) {
                     empresa[obj.name] = obj.value;
                 });
+                if ($("#actiu").prop("checked")) {
+                    empresa["actiu"]=true;
+                }else{
+                    empresa["actiu"]=false;
+                }
                 if ($("#cbGuardar").prop("checked")) {
                     empresa["guardar"]="Si";
                 }else{
