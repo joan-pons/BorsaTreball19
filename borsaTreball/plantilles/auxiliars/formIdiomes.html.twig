@@ -14,7 +14,7 @@
                                     {% set skill=llengua.pivot.NivellsIdioma_idNivellIdioma %}
                                 {% endif %}
                             {% endfor %}
-                            <option value="{{ idioma.idIdioma }}"
+                            <option id="o{{ idioma.idIdioma }}" value="{{ idioma.idIdioma }}"
                                     {% if skill!=0 %}disabled="disabled"{% endif %}>{{ idioma.idioma }}</option>
                         {% endfor %}
                     </select>
@@ -23,31 +23,40 @@
             </div>
             <h3>Idiomes {{ etiquetes.labelLlista }}:</h3>
             <div id="llistaIdiomes">
-                {% for idioma in idiomes %}
-                    {% set skill=0 %}
-                    {% for llengua in actor.idiomes %}
-                        {% if idioma.idIdioma==llengua.idIdioma %}
-                            {% set skill=llengua.pivot.NivellsIdioma_idNivellIdioma %}
-                        {% endif %}
-                    {% endfor %}
-                    {% if skill!=0 %}
-                        <div class="well">
-                            <h4>{{ idioma.idioma }}</h4>
-                            <div class="form-group">
-                                <div>
-                                    {% for nivell in nivellsIdioma %}
-                                        <label class="radio-inline"><input type="radio"
-                                                                           id="{{ idioma.idioma }}{{ nivell.idNivellIdioma }}"
-                                                                           name="l{{ idioma.idIdioma }}"
-                                                                           value="{{ nivell.idNivellIdioma }}"
-                                                                           {% if nivell.idNivellIdioma==skill %}checked="checked"{% endif %}>{{ nivell.nivell }}
-                                        </label>
-                                    {% endfor %}
+                {% if actor.idiomes | length >0 %}
+                    {% for idioma in idiomes %}
+                        {% set skill=0 %}
+                        {% for llengua in actor.idiomes %}
+                            {% if idioma.idIdioma==llengua.idIdioma %}
+                                {% set skill=llengua.pivot.NivellsIdioma_idNivellIdioma %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if skill!=0 %}
+                            <div class="well" id="d{{ idioma.idIdioma }}">
+                                <h4>{{ idioma.idioma }}</h4>
+                                <div class="form-group">
+                                    <div>
+                                        {% for nivell in nivellsIdioma %}
+                                            <label class="radio-inline"><input type="radio"
+                                                                               id="{{ idioma.idioma }}{{ nivell.idNivellIdioma }}"
+                                                                               name="l{{ idioma.idIdioma }}"
+                                                                               value="{{ nivell.idNivellIdioma }}"
+                                                                               {% if nivell.idNivellIdioma==skill %}checked="checked"{% endif %}>{{ nivell.nivell }}
+                                            </label>
+                                        {% endfor %}
+                                        &nbsp;<button type="button" class="btn btn-xs btn-danger" id="b{{ idioma.idIdioma }}"> &nbsp; <span class="glyphicon glyphicon-trash"></span> &nbsp </button>
+                                    </div>
                                 </div>
                             </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="well">
+                        <div class="form-group">
+                            <div>No hi ha cap idioma especificat.</div>
                         </div>
-                    {% endif %}
-                {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-6">
@@ -58,9 +67,10 @@
                     <p>Per exemple, si l'oferta demana un nivell <em>Molt bé</em> de castellà i català i <em>Bé</em>
                         d'anglés només es seleccionaran els alumnes amb un nivell <em>Molt bé</em> de castella i català
                         i <em>Bé</em> o <em>Molt bé</em> d'anglés.</p>
-                    <p>Si no s'especifica cap nivell de cap idioma, no es tendran en compte els nivells d'idiomes per
+                    <p>Si no s'especifica cap nivell de cap idioma, o es posa <em>Gens</em>, no es tendran en compte els
+                        nivells d'idiomes per
                         seleccionar els candidats.</p>
-                    <p>Si vol eliminar un idioma de la llista, marqui <em>Gens</em>.</p>
+                    <p>Si vol eliminar un idioma de la llista, pitgi el botó amb la paperera al costat dels nivells de l'idioma.</p>
                 </div>
                 <button class="btn btn-success" type="submit" name="bGuardar" id="bGuardar">Guardar</button>
                 <button class="btn btn-default" type="reset" name="bCancel" id="bCancel">Cancel·lar</button>
@@ -72,29 +82,33 @@
 <script>
 
     $('#bAfegir').on('click', function () {
+        if (document.getElementsByTagName("input").length == 0) {
+            $('#llistaIdiomes').empty();
+        }
         let nivells = [];
         {% for nivell in nivellsIdioma %}
-        nivells.push({nivell:"{{ nivell.nivell }}", idNivellIdioma:{{ nivell.idNivellIdioma }}});
+        nivells.push({nivell: "{{ nivell.nivell }}", idNivellIdioma:{{ nivell.idNivellIdioma }}});
         {% endfor %}
         const triat = document.getElementById('selIdioma').options[document.getElementById('selIdioma').selectedIndex];
-
-        let cadena='';
-        for(let nivell of nivells){
-            cadena+='<label class="radio-inline"><input type="radio" ' +
-                'id="'+triat.text+""+nivell.idNivellIdioma+'" '+
-                'name="l'+triat.value+'" '+
-                'value="'+ nivell.idNivellIdioma+'"'+
-                '>'+nivell.nivell+'</label>';
+        triat.disabled = true;
+        let cadena = '';
+        for (let nivell of nivells) {
+            cadena += '<label class="radio-inline"><input type="radio" ' +
+                'id="' + triat.text + "" + nivell.idNivellIdioma + '" ' +
+                'name="l' + triat.value + '" ' +
+                'value="' + nivell.idNivellIdioma + '"' +
+                '>' + nivell.nivell + ' </label>';
         }
-        $('#llistaIdiomes').prepend('<div class="well">\n' +
+        $('#llistaIdiomes').prepend('<div class="well" id="d' + triat.value + '">\n' +
             '                            <h4>' + triat.text + '</h4>\n' +
 
             '<div class="form-group">\n' +
-            '                                <div id="'+triat.value+'">' +
-                                                cadena+
-            '                                </div>\n' +
+            '                                <div>' + cadena +
+            ' &nbsp;<button type="button" class="btn btn-xs btn-danger" id="b' + triat.value +'"> &nbsp; <span class="glyphicon glyphicon-trash"></span> &nbsp </button>'
+            +'                                </div>\n' +
             '                        </div>' +
-            '                            </div>')
+            '                            </div>');
+        $('#b'+triat.value).on('click',esborra);
     });
     var resultat = [];
     $('#llengues').on('submit', function (event) {
@@ -144,6 +158,13 @@
 
         $('#mdEspera').modal('show');
     });
+    function esborra(e){
+        const ident=e.currentTarget.id.replace('b','');
+        $('#d'+ident).remove();
+        $('#o'+ident).prop("disabled", false);
+    };
+
+    $(".btn-danger").on('click',esborra);
 </script>
 
 <script src="../js/dirtyForms.js"></script>
