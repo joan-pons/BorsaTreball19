@@ -48,3 +48,7 @@ p{
 .noLabel{
     font-weight: normal;
 }
+
+.margeEsquerra{
+    margin-left: 2em;
+}

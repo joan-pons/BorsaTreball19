@@ -18,7 +18,7 @@
                                     {% if skill!=0 %}disabled="disabled"{% endif %}>{{ idioma.idioma }}</option>
                         {% endfor %}
                     </select>
-                    <button class="btn btn-primary" type="button" name="bAfegir" id="bAfegir">Afegir</button>
+                    <button class="btn btn-primary" type="button" name="bAfegir" id="bAfegir" disabled="disabled">Afegir</button>
                 </div>
             </div>
             <h3>Idiomes {{ etiquetes.labelLlista }}:</h3>
@@ -44,7 +44,7 @@
                                                                                {% if nivell.idNivellIdioma==skill %}checked="checked"{% endif %}>{{ nivell.nivell }}
                                             </label>
                                         {% endfor %}
-                                        &nbsp;<button type="button" class="btn btn-xs btn-danger" id="b{{ idioma.idIdioma }}"> &nbsp; <span class="glyphicon glyphicon-trash"></span> &nbsp </button>
+                                        <button type="button" class="btn btn-xs btn-danger margeEsquerra" id="b{{ idioma.idIdioma }}" title="Esborra l'idioma"> &nbsp; <span class="glyphicon glyphicon-trash"></span> &nbsp </button>
                                     </div>
                                 </div>
                             </div>
@@ -80,6 +80,9 @@
 </form>
 {{ include('auxiliars/modals.html.twig') }}
 <script>
+    $('#selIdioma').on('change',function(){
+        $('#bAfegir').prop('disabled',this.value=="");
+    });
 
     $('#bAfegir').on('click', function () {
         if (document.getElementsByTagName("input").length == 0) {
@@ -97,18 +100,20 @@
                 'id="' + triat.text + "" + nivell.idNivellIdioma + '" ' +
                 'name="l' + triat.value + '" ' +
                 'value="' + nivell.idNivellIdioma + '"' +
-                '>' + nivell.nivell + ' </label>';
+                '>' + nivell.nivell + ' </label> ';
         }
         $('#llistaIdiomes').prepend('<div class="well" id="d' + triat.value + '">\n' +
             '                            <h4>' + triat.text + '</h4>\n' +
 
             '<div class="form-group">\n' +
             '                                <div>' + cadena +
-            ' &nbsp;<button type="button" class="btn btn-xs btn-danger" id="b' + triat.value +'"> &nbsp; <span class="glyphicon glyphicon-trash"></span> &nbsp </button>'
+            '<button type="button" class="btn btn-xs btn-danger margeEsquerra" id="b' + triat.value +'"  title="Esborra l\'idioma"> &nbsp; <span class="glyphicon glyphicon-trash"></span> &nbsp </button>'
             +'                                </div>\n' +
             '                        </div>' +
             '                            </div>');
         $('#b'+triat.value).on('click',esborra);
+        $('#selIdioma').val("");
+        $('#bAfegir').prop('disabled',true);
     });
     var resultat = [];
     $('#llengues').on('submit', function (event) {
