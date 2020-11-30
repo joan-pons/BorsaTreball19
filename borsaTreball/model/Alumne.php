@@ -8,45 +8,58 @@
 
 namespace Borsa;
 
-use \Illuminate\Database\Eloquent\Model as Model;
-use \Borsa\EstatLaboral as EstatLaboral;
+use Illuminate\Database\Eloquent\Model as Model;
+
+//use \Borsa\EstatLaboral as EstatLaboral;
 
 /**
  * Description of Professor
  *
  * @author joan
  */
-class Alumne extends Model {
+class Alumne extends Model
+{
 
     protected $table = 'Alumnes';
     protected $primaryKey = "idAlumne";
     public $timestamps = false;
 
+//
+//    public function nomEstudisAlta()
+//    {
+//        return $this->belongsTo('Borsa\Estudis');
+//    }
 
-    public function getUsuari() {
+    public function getUsuari()
+    {
         $idEntitat = $this->attributes['idAlumne'];
         $entitat = Usuari::where('idEntitat', $idEntitat)->where('tipusUsuari', 30)->first();
         return $entitat;
     }
 
-    public function estatsLaborals() {
+    public function estatsLaborals()
+    {
         return $this->belongsToMany("Borsa\EstatLaboral", 'Alumne_has_EstatLaboral', 'Alumnes_idAlumne', 'EstatLaboral_idEstatLaboral');
     }
 
-    public function estudis() {
+    public function estudis()
+    {
         return $this->belongsToMany('Borsa\Estudis', 'Alumne_has_Estudis', 'Alumnes_idAlumne', 'Estudis_codi')->withPivot(['any', 'nota']);
     }
 
-    public function idiomes() {
+    public function idiomes()
+    {
         return $this->belongsToMany('Borsa\Idioma', 'Alumne_has_Idiomes', 'Alumne_idAlumne', 'Idiomes_idIdiomes')->withPivot('NivellsIdioma_idNivellIdioma');
     }
 
-    public function ofertes() {
-        return $this->belongsToMany('Borsa\Oferta', 'Ofertes_enviada_Alumnes', 'Alumnes_idAlumne', 'Ofertes_idOferta')->orderby('dataFinal','DES');
+    public function ofertes()
+    {
+        return $this->belongsToMany('Borsa\Oferta', 'Ofertes_enviada_Alumnes', 'Alumnes_idAlumne', 'Ofertes_idOferta')->orderby('dataFinal', 'DES');
     }
 
-    public function ofertesActives() {
-        return $this->belongsToMany('Borsa\Oferta', 'Ofertes_enviada_Alumnes', 'Alumnes_idAlumne', 'Ofertes_idOferta')->where('dataFinal','>=',date('Y-m-d'))->orderby('dataFinal','ASC')->get();
+    public function ofertesActives()
+    {
+        return $this->belongsToMany('Borsa\Oferta', 'Ofertes_enviada_Alumnes', 'Alumnes_idAlumne', 'Ofertes_idOferta')->where('dataFinal', '>=', date('Y-m-d'))->orderby('dataFinal', 'ASC')->get();
     }
-    
+
 }

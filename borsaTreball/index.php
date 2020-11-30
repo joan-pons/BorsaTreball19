@@ -16,7 +16,7 @@ use Borsa\Oferta as Oferta;
 use Borsa\Professor as Professor;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
-use Correu\Bustia as Bustia;
+//use Correu\Bustia as Bustia;
 use Illuminate\Database\Capsule\Manager as DB;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -137,9 +137,9 @@ $app->get('/', function ($request, $response, $args) {
 });
 
 // Index
-//$app->get('/proves', function ($request, $response, $args) {
-//    return $this->view->render($response, 'index.html.twig');
-//});
+$app->get('/proves', function ($request, $response, $args) {
+    return $this->view->render($response, 'index.html.twig');
+});
 
 $app->get('/provesCorreu', function ($request, $response, $args) {
     $alumne=array('validat'=>2, 'email'=>'kllskdf@ssdf.cat');
@@ -773,14 +773,14 @@ $app->group('/professor', function () {
                         $alumnes[] = $alumne;
                     }
                 }
-
-            }
-
-            foreach ($empresesPendents as $empresa) {
-                if ($empresa->familia == $estudis->familia) {
-                    $empreses[] = $empresa;
+                foreach ($empresesPendents as $empresa) {
+                    if ($empresa->familia == $estudis->familia) {
+                        $empreses[] = $empresa;
+                    }
                 }
             }
+
+
 
             $companys = null;
             if ($usuari->teRol(40)) {

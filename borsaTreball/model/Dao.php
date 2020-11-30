@@ -13,6 +13,7 @@ use Borsa\Familia as Familia;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
 use Correu\Bustia as Bustia;
+use Borsa\Email as Email;
 use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -321,5 +322,12 @@ class Dao
 
             return $response->withJson(array("missatge" => "No es troba la familia demanada."), 422);
         }
+    }
+
+    private static function altaMail($destinataris, $text,\Slim\Container $container){
+        $container->dbEloquent;
+        $email=new Email();
+        $email->text=$text;
+        $email->save();
     }
 }

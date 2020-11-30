@@ -20,6 +20,7 @@ class Bustia
         });
     }
 
+    //TODO: Els mètodes enviar i enviarÚnic han de insertar els missatges i els destinataris a la base de dades. Així no s'haurtà de tocar més codi.
     public static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container)
     {
         $resultat=false;
