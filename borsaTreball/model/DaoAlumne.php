@@ -31,7 +31,7 @@ class DaoAlumne extends Dao
             $alumne->cedir = filter_var($data['cedir'], FILTER_SANITIZE_STRING);
             $alumne->save();
 
-            $numAlumnes = DB::select('SELECT count(*) FROM borsa.Alumnes where estudisAlta=\'' . $alumne->estudisAlta . '\'  and validat=0 and dataAlta > date_add(NOW(), INTERVAL -7 DAY)');
+//            $numAlumnes = DB::select('SELECT count(*) FROM borsa.Alumnes where estudisAlta=\'' . $alumne->estudisAlta . '\'  and validat=0 and dataAlta > date_add(NOW(), INTERVAL -7 DAY)');
             if (true){ //TODO $numAlumnes  == 0) {
                 $estudis = Estudis::find($alumne->estudisAlta);
                 if (count($estudis->professors) > 0) {

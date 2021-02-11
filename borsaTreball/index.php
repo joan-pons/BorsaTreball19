@@ -16,12 +16,13 @@ use Borsa\Oferta as Oferta;
 use Borsa\Professor as Professor;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
-//use Correu\Bustia as Bustia;
 use Illuminate\Database\Capsule\Manager as DB;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
+//use Correu\Bustia as Bustia;
 
 require 'vendor/autoload.php';
 
@@ -142,7 +143,7 @@ $app->get('/proves', function ($request, $response, $args) {
 });
 
 $app->get('/provesCorreu', function ($request, $response, $args) {
-    $alumne=array('validat'=>2, 'email'=>'kllskdf@ssdf.cat');
+    $alumne = array('validat' => 2, 'email' => 'kllskdf@ssdf.cat');
     return $this->view->render($response, 'email/validarOferta.html.twig', []);
 //    $resultat = Bustia::enviarUnic("ptj@paucasesnovescifp.cat", 'Proves', "/email/rebutjarProfessor.twig", [], $this);
 //    if ($resultat == true) {
@@ -711,12 +712,15 @@ $app->group('/alumne', function () {
         if ($usuari != null) {
             $alumne = $usuari->getEntitat();
             $dades = $request->getQueryParams();
+
             if (array_key_exists('codiEstudis', $dades)) {
                 $empreses = DB::select('SELECT distinct em.* from Ofertes_has_Estudis oe inner join Ofertes on oe.Ofertes_idOferta=idOferta inner join Empreses em on em.idEmpresa=Ofertes.Empreses_idEmpresa where  em.activa=1 and Ofertes.validada=1 and oe.Estudis_codi=\'' . filter_var($dades['codiEstudis'], FILTER_SANITIZE_STRING) . '\'');
+                $codiEstudis=filter_var($dades['codiEstudis'], FILTER_SANITIZE_STRING);
             } else {
                 $empreses = null;
+                $codiEstudis=null;
             }
-            return $this->view->render($response, 'alumne/empreses.html.twig', ['actor' => $alumne, 'codiEstudis' => $args['codiEstudis'], 'empreses' => $empreses]);
+            return $this->view->render($response, 'alumne/empreses.html.twig', ['actor' => $alumne, 'codiEstudis' => $codiEstudis, 'empreses' => $empreses]);
         } else {
             return $response->withJSON('Errada: ', 500);
         }
@@ -760,12 +764,12 @@ $app->group('/professor', function () {
             $alumnes = array();
 
             $alumnesPendents = Alumne::where('validat', 0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
-            $empresesPendents = Empresa::where('Validada', 0)->where('rebuig', null)->orderBy('DataAlta', 'ASC')->orderBy('Nom', 'ASC')->get();
+            $empresesPendents = Empresa::where('validada', 0)->where('rebuig', null)->orderBy('DataAlta', 'ASC')->orderBy('Nom', 'ASC')->get();
 
             foreach ($professor->estudis as $estudis) {
                 foreach ($estudis->ofertes as $oferta) {
-                    if ($oferta->dataPublicacio != null && $oferta->validada == 0) {
-                        $ofertes[$oferta->idOferta] = $oferta;
+                    if ($oferta->dataPublicacio != null && $oferta->validada == 0 && !in_array($oferta, $ofertes)) {
+                        $ofertes[] = $oferta;
                     }
                 }
                 foreach ($alumnesPendents as $alumne) {
@@ -773,13 +777,13 @@ $app->group('/professor', function () {
                         $alumnes[] = $alumne;
                     }
                 }
+
                 foreach ($empresesPendents as $empresa) {
-                    if ($empresa->familia == $estudis->familia) {
+                    if ($empresa->familia == $estudis->familia && !in_array($empresa, $empreses)) {
                         $empreses[] = $empresa;
                     }
                 }
             }
-
 
 
             $companys = null;

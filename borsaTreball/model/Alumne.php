@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model as Model;
 //use \Borsa\EstatLaboral as EstatLaboral;
 
 /**
- * Description of Professor
+ * Description of Alumne
  *
  * @author joan
  */

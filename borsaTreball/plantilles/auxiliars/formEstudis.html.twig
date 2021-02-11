@@ -35,7 +35,7 @@
                 <form id="nouEstudi">
                     <input type="hidden" name="idAlumne" id="idAlumne" value="{{ identificador }}">
                     <input type="hidden" name="idGrau" id="idGrau">
-
+                    <input type="hidden" name="nota" id="notaNou" value="5">
                     <div class='col-md-4'>
                         <div class="form-group required">
                             <label class="control-label">Any de finalització:</label>
@@ -43,7 +43,6 @@
                         </div>
 {#                        <div class="form-group required">#}
 {#                            <label class="control-label">Nota final:</label>#}
-                               <input type="hidden" name="nota" id="notaNou" value="5">
 {#                            <input type="number" min="5" max="10" id="notaNou" name="nota" value='5'#}
 {#                                   required="required">#}
 {#                        </div>#}
@@ -62,7 +61,6 @@
                 <ul>
                     <li>Hagin acabat alguns dels estudis especificats a l'oferta.</li>
                     <li>Hagin acabats els estudis en una data igual o posterior a l'any especificat.</li>
-                    <li>Tenguin una nota igual o superior a l'especificada</li>
                 </ul>
             </div>
         </div>
@@ -84,6 +82,7 @@
                 <input type="hidden" name="idAlumne" id="idAlumne" value="{{ identificador }}">
                 <input type="hidden" name="idGrau" id="idGrau" value='{{ grau.codi }}'>
                 <input type="hidden" name="nomGrau" id="nomGrau" value='{{ grau.nom }}'>
+                <input type="hidden" name="nota" id="notaNou" value="5">
                 <div class='row'>
                     <div class='col-md-6'>
                         <div class="form-group required">

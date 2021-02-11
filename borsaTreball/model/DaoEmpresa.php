@@ -93,7 +93,7 @@ class DaoEmpresa extends Dao
                 $empresa->Provincia = filter_var($data['provincia'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $empresa->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
                 $empresa->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
-                $empresa->activa = filter_var($data['activa'], FILTER_SANITIZE_STRING) == 'true';
+                $empresa->activa = filter_var($data['actiu'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->url = filter_var($data['url'], FILTER_SANITIZE_URL);
                 //$empresa->DataAlta= \Carbon::now();

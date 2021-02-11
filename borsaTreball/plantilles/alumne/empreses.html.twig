@@ -5,7 +5,7 @@
 
 {% endblock %}
 {% block navegacio %}
-    <a class="navbar-brand" href="{%if not codiEstudis is empty%}../{%endif%}dashBoard">{{actor.nom}} {{actor.llinatges}}</a>
+    <a class="navbar-brand" href="dashBoard">{{actor.nom}} {{actor.llinatges}}</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
@@ -29,7 +29,7 @@
                                     <option value="{{ grau.codi }}" {%if grau.codi==codiEstudis%}selected='selected'{%endif%}>{{ grau.codi }} {{ grau.nom }}</option>
                                 {% endfor %}
                             </select>
-                            <span class="input-group-btn"><button type="button" class="btn btn-default" id="bVeure">Veure</button></span>
+                            <span class="input-group-btn"><button type="button" class="btn btn-default" id="bVeure" disabled="disabled">Veure</button></span>
                         </div>
                     </div>
                 </div>
@@ -68,6 +68,9 @@
         $(document).ready(function () {
             $('#bVeure').on('click',function(){
                 window.location='empreses?codiEstudis='+$('#graus').val();
+            });
+            $('#graus').on('change',function(){
+                $('#bVeure').prop('disabled',this.value=="");
             });
         });
     </script>
