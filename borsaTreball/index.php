@@ -944,6 +944,30 @@ $app->group('/professor', function () {
         }
     });
 
+    $this->get("/llistaAlumnesValidats", function ($request, $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION["idUsuari"]);
+        if ($usuari != null) {
+            $professor = $usuari->getEntitat();
+            $alumnes = array();
+
+            $alumnesPendents = Alumne::where('validat', 1)->orWhere('validat',2)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
+
+            foreach ($professor->estudis as $estudis) {
+                foreach ($alumnesPendents as $alumne) {
+                    if ($alumne->estudisAlta == $estudis->codi) {
+                        $alumnes[] = $alumne;
+                    }
+                }
+
+            }
+
+            return $this->view->render($response, 'professor/alumnesValidats.html.twig', ['professor' => $professor, 'usuari' => $usuari, 'alumnes' => $alumnes]);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
+
     $this->put("/alumnesPendents", function ($request, $response, $args) {
         $this->dbEloquent;
         $usuari = Usuari::find($_SESSION["idUsuari"]);

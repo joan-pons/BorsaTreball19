@@ -49,9 +49,9 @@
                 <li><a href="../administrador/usuaris">Usuaris</a></li>
                 <li><a href="../administrador/obrirAlumnes">Obrir alumnes</a></li>
             {% endif %}
-            {% if not alumnes is empty %}
-                <li><a href="alumnesPendents">Alumnes</a></li>
-            {% endif %}
+            {# {% if not alumnes is empty %} #}
+            <li><a href="alumnesPendents">Alumnes</a></li>
+            {# {% endif %} #}
             <li><a href="empresesPendents">Empreses</a></li>
         {% endif %}
     </ul>
@@ -109,10 +109,11 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                    {#                    {% if usuari.teRol(40) %}#}
-                    {% if not alumnes is empty %}
-                        <div id='alumnes'>
-                            <h3>Alumnes pendents de validar</h3>
+                    {# {% if usuari.teRol(40) %} #}
+                    <div id='alumnes'>
+                        <h3>Alumnes pendents de validar</h3>
+
+                        {% if not alumnes is empty %}
                             <div class="well click">
                                 <ul>
                                     {% for alumne in alumnes %}
@@ -120,9 +121,13 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-                        </div>
-                    {% endif %}
 
+                        {% else %}
+                            <div class='well'>
+                                <p> No hi ha alumnes pendents de validació.</p>
+                            </div>
+                        {% endif %}
+                    </div>
                     <div id='empreses'>
                         <h3>Empreses pendents de validar</h3>
                         {% if empreses is empty %}
@@ -139,30 +144,30 @@
                             {% endfor %}
                         {% endif %}
                     </div>
-                    {#                    {% endif %}#}
+                    {# {% endif %} #}
 
                 </div><!--col-->
 
                 <div class="col-md-4">
 
-{#                    {% if not  ofertes is empty  or not usuari.teRol(40) %}#}
-                        <h3>Ofertes pendents de validar</h3>
-                        {% if ofertes is empty %}
-                            <div class="well">
-                                <p>No hi ha cap oferta pendent de validació.</p>
-                            </div>
-                        {% else %}
-                            <div id="ofertes">
-                                {% for oferta in ofertes %}
-                                    <div class="well click" id="of{{ oferta.idOferta }}">
-                                        <p><label>Oferta: &nbsp;</label>{{ oferta.titol }}</p>
-                                        <p><label>Data de la sol·licitud:
-                                                &nbsp;</label>{{ oferta.dataPublicacio | date('d / m / Y') }}</p>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-{#                    {% endif %}#}
+                    {# {% if not  ofertes is empty  or not usuari.teRol(40) %} #}
+                    <h3>Ofertes pendents de validar</h3>
+                    {% if ofertes is empty %}
+                        <div class="well">
+                            <p>No hi ha cap oferta pendent de validació.</p>
+                        </div>
+                    {% else %}
+                        <div id="ofertes">
+                            {% for oferta in ofertes %}
+                                <div class="well click" id="of{{ oferta.idOferta }}">
+                                    <p><label>Oferta: &nbsp;</label>{{ oferta.titol }}</p>
+                                    <p><label>Data de la sol·licitud:
+                                            &nbsp;</label>{{ oferta.dataPublicacio | date('d / m / Y') }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {# {% endif %} #}
                 </div><!--col-->
             {% endif %}
         </div><!--row-->

@@ -220,7 +220,8 @@ class DaoEmpresa extends Dao
             $empresa = Empresa::find(filter_var($args['idEmpresa'], FILTER_SANITIZE_NUMBER_INT));
             if ($empresa != null) {
                 $data = $request->getParsedBody();
-                $empresa->activa = false;//filter_var($data['activa'], FILTER_SANITIZE_STRING) == 'true';
+                //$empresa->activa = false;//
+                $empresa->activa = filter_var($data['activa'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->rebuig = filter_var($data['rebuig'], FILTER_SANITIZE_STRING);
                 $empresa->save();

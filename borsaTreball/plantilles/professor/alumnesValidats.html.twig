@@ -73,19 +73,19 @@
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
 <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Alumnes pendents</a></li>
-            <li><a href="llistaAlumnesValidats">Alumnes validats</a></li>
+            <li><a href="alumnesPendents">Alumnes pendents</a></li>
+            <li class="active"><a href="#">Alumnes validats</a></li>
 </ul>
     {% endblock %}
 
     {% block contingut %}
-        <h2>Validar alumnes pendents</h2>
+        <h2>Alumnes validats</h2>
         {% if alumnes is empty %}
             <div class='well'>
-                <p> No hi ha alumnes pendents de validació.</p>
+                <p> No hi ha alumnes validats dels estudis que té assignats.</p>
             </div>
         {% else %}
-                <form id="alumnes">
+{#                <form id="alumnes">#}
             {% for alumne in alumnes %}
                     <div class="well">
                         <input type="hidden" name="idAlumne" id="idA{{ alumne.idAlumne }}" value="{{ alumne.idAlumne }}">
@@ -96,31 +96,31 @@
 {#                                   <p><label  class="control-label">Estudis d'alta: &nbsp;</label>{{ alumne.nomEstudisAlta }}</p>#}
                                 </div>
                             </div>
-                             <div class='col-md-2'>
-                                <div class="form-group">
-                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="1" id="rb1{{ alumne.idAlumne }}"> <label for="rb1{{ alumne.idAlumne }}"> Validat</label>
-                                </div>
-                             </div>
-                             <div class='col-md-2'>
-                                <div class="form-group">
-                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="2" id="rb2{{ alumne.idAlumne }}"> <label for="rb2{{ alumne.idAlumne }}"> Rebutjat</label>
-                                </div>
-                             </div>
-                             <div class='col-md-2'>
-                                <div class="form-group">
-                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="0" id="rb0{{ alumne.idAlumne }}" checked="checked"> <label for="rb0{{ alumne.idAlumne }}"> Posposat</label>
-                                </div>
-                             </div>
+{#                             <div class='col-md-2'>#}
+{#                                <div class="form-group">#}
+{#                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="1" id="rb1{{ alumne.idAlumne }}" checked="{{ (alumne.validat==1)?"checked":"" }}> <label for="rb1{{ alumne.idAlumne }}"> Validat</label>#}
+{#                                </div>#}
+{#                             </div>#}
+{#                             <div class='col-md-2'>#}
+{#                                <div class="form-group">#}
+{#                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="2" id="rb2{{ alumne.idAlumne }}"  checked="{{ (alumne.validat==2)?"checked":"" }}> <label for="rb2{{ alumne.idAlumne }}"> Rebutjat</label>#}
+{#                                </div>#}
+{#                             </div>#}
+{#                             <div class='col-md-2'>#}
+{#                                <div class="form-group">#}
+{#                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="0" id="rb0{{ alumne.idAlumne }}"> <label for="rb0{{ alumne.idAlumne }}"> Posposat</label>#}
+{#                                </div>#}
+{#                             </div>#}
                         </div>
                     </div>
             {% endfor %}
-                <div class="row">
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-success">Guardar els canvis</button>
-                        <button type="reset" class="btn btn-default">Netejar el formulari</button>
-                    </div>
-                </div>
-            </form>
+{#                <div class="row">#}
+{#                    <div class="col-md-4">#}
+{#                        <button type="submit" class="btn btn-success">Guardar els canvis</button>#}
+{#                        <button type="reset" class="btn btn-default">Netejar el formulari</button>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </form>#}
             <div><p></p></div>
         {% endif %}
         {{ include('auxiliars/modals.html.twig') }}
