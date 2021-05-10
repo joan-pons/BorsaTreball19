@@ -31,7 +31,16 @@ class DaoProfessor extends Dao
             $professor->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
             $professor->save();
             $admins = DB::select('SELECT u.idUsuari, u.nomUsuari as email FROM borsa.Usuaris u inner join borsa.Usuaris_has_Rols r on u.idUsuari=r.Usuaris_idUsuari inner join borsa.Professors p on u.idEntitat=p.idProfessor where r.Rols_idRol=40 and p.actiu=1;');
-            Bustia::enviar($admins, 'Sol·licitud d\'alta professorat', '/email/validarUsuari.html.twig', [], $container);
+
+            $longitud = 20;
+            $token = bin2hex(random_bytes(($longitud - ($longitud % 2)) / 2));
+            $r = new Token();
+            $r->idUsuari = $professor->getUsuari()->idUsuari;
+            $r->token = $token;
+            $r->data = date('Y-m-d H:i:s', strtotime('+1 week'));
+            $r->save();
+
+            Bustia::enviar($admins, 'Sol·licitud d\'alta professorat', '/email/validarUsuari.html.twig', ['token' => $token], $container);
             return $response->withJSON($professor);
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {

@@ -38,4 +38,7 @@ class Message {
         $this->mailer->AltBody = $altBody;
     }
 
+    public function clearAll(){
+        $this->mailer->clearAllRecipients();
+    }
 }

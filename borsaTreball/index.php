@@ -134,6 +134,8 @@ $container['notFoundHandler'] = function ($c) {
 
 // Index
 $app->get('/', function ($request, $response, $args) {
+    $nom="Jo Mateix";
+    var_dump($nom);
     return $this->view->render($response, 'index.html.twig');
 });
 
@@ -213,6 +215,11 @@ $app->get('/valEmpresa', function ($request, $response, $args) {
 $app->get('/valAlumnes', function ($request, $response, $args) {
     return Dao::entradaToken($request, $response, $args, $this, 'professor/alumnesPendents');
 });
+
+$app->get('/valProfessor', function ($request, $response, $args) {
+    return Dao::entradaToken($request, $response, $args, $this, '/administrador/usuarisPendents');
+});
+
 
 $app->put('/restablirContrasenya/{token}', function ($request, $response, $args) {
     return Dao::restablirContrasenya($request, $response, $args, $this);

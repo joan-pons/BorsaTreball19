@@ -87,7 +87,8 @@ class Dao
             $_SESSION['rols'] = $rols;
             return $response->withHeader('Location', $desti)->withStatus(302);
         } else {
-            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', ['missatge' => $t . " " . $ara . " " . ($ara <= strtotime($token->data))]);
+//            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', ['missatge' => $t . " " . $ara . " " . ($ara <= strtotime($token->data))]);
+            return $container->view->render($response, 'auxiliars/tokenNoValid.html.twig', []);
         }
     }
 
