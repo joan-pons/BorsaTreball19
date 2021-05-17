@@ -1,0 +1,10 @@
+{% extends "/email/baseEmail.twig" %}
+
+{% block contingut %}
+    <h1>Empresa validada per un company</h1>
+    <p>L'empresa {{ empresa }} ja ha estat validada per {{ professor.nom }} {{ professor.llinatges }}.</p>
+    <p>No és necessari que la validi.</p>
+    <p></p>
+    <p>Moltes gràcies!</p>
+
+{%endblock%}

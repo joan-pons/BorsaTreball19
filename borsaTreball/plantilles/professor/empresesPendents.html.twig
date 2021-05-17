@@ -9,7 +9,7 @@
            $(".btn-success").click(function (event) {
 
                var id = $(event.target).closest('form').attr('id').replace('f', '');
-               var dades={idEmpresa:id, validada:true, rebuig:null};
+               var dades={idEmpresa:id, validada:true, activa:true, rebuig:null};
                $('#mdEspera').on('shown.bs.modal', function (e) {
                    $.ajax({
                        method: 'PUT',

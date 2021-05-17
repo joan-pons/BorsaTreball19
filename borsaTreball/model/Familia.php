@@ -23,7 +23,7 @@ class Familia extends Model {
     public $incrementing = false; //Si no, tracta la clau primaria com a integer
 
     public function cicles() {
-        return $this->hasMany('Borsa\Estudis', 'familia', 'id');
+        return $this->hasMany('Borsa\Estudis', 'familia', 'id')->where('actiu',1);
     }
 
 }

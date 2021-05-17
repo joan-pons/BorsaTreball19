@@ -134,7 +134,7 @@ $container['notFoundHandler'] = function ($c) {
 
 // Index
 $app->get('/', function ($request, $response, $args) {
-    $nom="Jo Mateix";
+    $nom = "Jo Mateix";
     var_dump($nom);
     return $this->view->render($response, 'index.html.twig');
 });
@@ -427,7 +427,7 @@ $app->group('/empresa', function () {
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
             $etiquetes = array("subtitol" => "que han d'haver cursat els alumnes"/* per a l'oferta " . $oferta->idOferta . ' ' . $oferta->titol */, "labelLlista" => "que ha seleccionat", 'correcte' => "L'oferta filtrarà els alumnes per aquests estudis.");
-            $estudis = Estudis::orderBy('codi', 'ASC')->get();
+            $estudis = Estudis::where('actiu', 1)->orderBy('codi', 'ASC')->get();
             $families = Familia::orderBy('nom', 'ASC')->get();
             return $this->view->render($response, 'empresa/estudisOferta.html.twig', ['empresa' => $empresa, 'identificador' => $oferta->idOferta, 'entitat' => $oferta, "etiquetes" => $etiquetes, 'estudis' => $estudis, 'families' => $families]);
         } else {
@@ -557,7 +557,7 @@ $app->get('/altaAlumne', function ($request, $response, $args) {
     $avui = strtotime("now");
     if ($avui >= strtotime($config->inici) && $avui <= strtotime($config->final)) {
         $families = Familia::orderBy('nom', 'ASC')->get();
-        $estudis = Estudis::orderBy('nom', 'ASC')->get();
+        $estudis = Estudis::where('actiu', 1)->orderBy('nom', 'ASC')->get();
 
         return $this->view->render($response, 'alumne/altaAlumne.html.twig', ['families' => $families, 'estudis' => $estudis]);
     } else {
@@ -623,7 +623,7 @@ $app->group('/alumne', function () {
             $alumne = $usuari->getEntitat();
             $etiquetes = array("subtitol" => "pels que vols que les empreses et trobin", "labelLlista" => "que has acabat", 'correcte' => "A partir d'ara rebràs notificacions de les ofertes relacionades amb aquests estudis.");
             $families = Familia::orderBy('nom', 'ASC')->get();
-            $estudis = Estudis::orderBy('nom', 'ASC')->get();
+            $estudis = Estudis::where('actiu', 1)->orderBy('nom', 'ASC')->get();
             return $this->view->render($response, 'alumne/alumneEstudis.html.twig', ['entitat' => $alumne, 'identificador' => $alumne->idAlumne, "etiquetes" => $etiquetes, 'estudis' => $estudis, 'families' => $families]);
         } else {
             return $response->withJSON('Errada: ', 500);
@@ -722,10 +722,10 @@ $app->group('/alumne', function () {
 
             if (array_key_exists('codiEstudis', $dades)) {
                 $empreses = DB::select('SELECT distinct em.* from Ofertes_has_Estudis oe inner join Ofertes on oe.Ofertes_idOferta=idOferta inner join Empreses em on em.idEmpresa=Ofertes.Empreses_idEmpresa where  em.activa=1 and Ofertes.validada=1 and oe.Estudis_codi=\'' . filter_var($dades['codiEstudis'], FILTER_SANITIZE_STRING) . '\'');
-                $codiEstudis=filter_var($dades['codiEstudis'], FILTER_SANITIZE_STRING);
+                $codiEstudis = filter_var($dades['codiEstudis'], FILTER_SANITIZE_STRING);
             } else {
                 $empreses = null;
-                $codiEstudis=null;
+                $codiEstudis = null;
             }
             return $this->view->render($response, 'alumne/empreses.html.twig', ['actor' => $alumne, 'codiEstudis' => $codiEstudis, 'empreses' => $empreses]);
         } else {
@@ -839,7 +839,7 @@ $app->group('/professor', function () {
         if ($usuari != null) {
             $professor = $usuari->getEntitat();
             $etiquetes = array("subtitol" => "dels que haurà de validar ofertes", "labelLlista" => "dels que és responsable");
-            $estudis = Estudis::orderBy('Nom', 'ASC')->get();
+            $estudis = Estudis::where('actiu', 1)->orderBy('Nom', 'ASC')->get();
             $families = Familia::orderBy('nom', 'ASC')->get();
 
             return $this->view->render($response, 'professor/professorEstudis.html.twig', ['professor' => $professor, "etiquetes" => $etiquetes, 'estudis' => $estudis, 'families' => $families]);
@@ -924,7 +924,10 @@ $app->group('/professor', function () {
     });
 
     $this->put('/empreses/{idEmpresa}', function ($request, $response, $args) {
-        return DaoEmpresa::validar($request, $response, $args, $this);
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION['idUsuari']);
+        $prof = $usuari->getEntitat();
+        return DaoEmpresa::validar($request, $response, $args, $this, $prof);
     });
 
     $this->get("/alumnesPendents", function ($request, $response, $args) {
@@ -958,7 +961,7 @@ $app->group('/professor', function () {
             $professor = $usuari->getEntitat();
             $alumnes = array();
 
-            $alumnesPendents = Alumne::where('validat', 1)->orWhere('validat',2)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
+            $alumnesPendents = Alumne::where('validat', 1)->orWhere('validat', 2)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
 
             foreach ($professor->estudis as $estudis) {
                 foreach ($alumnesPendents as $alumne) {

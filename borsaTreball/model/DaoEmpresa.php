@@ -45,7 +45,7 @@ class DaoEmpresa extends Dao
                 foreach ($professors as $professor) {
                     $usuari = Usuari::where('nomUsuari', $professor->email)->get();
                     $r = Dao::generaToken(20, $usuari[0], 7, $container);
-                    Bustia::enviarUnic($professor->email, 'Validació d\'empresa pendent', '/email/validarEmpresa.html.twig', ['token'=>$r->token], $container);
+                    Bustia::enviarUnic($professor->email, 'Validació d\'empresa pendent', '/email/validarEmpresa.html.twig', ['empresa' => $empresa->nom, 'token' => $r->token], $container);
                 }
 //                Bustia::enviar($professors, 'Validació d\'empresa pendent sense professor assignat', '/email/validarEmpresa.html.twig', ['token'], $container);
             } else {
@@ -212,7 +212,7 @@ class DaoEmpresa extends Dao
         }
     }
 
-    public static function validar(Request $request, Response $response, $args, \Slim\Container $container)
+    public static function validar(Request $request, Response $response, $args, \Slim\Container $container, $professor)
     {
 
         try {
@@ -224,6 +224,7 @@ class DaoEmpresa extends Dao
                 $empresa->activa = filter_var($data['activa'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING) == 'true';
                 $empresa->rebuig = filter_var($data['rebuig'], FILTER_SANITIZE_STRING);
+                $empresa->profValidada = $professor->idProfessor;
                 $empresa->save();
 
                 $longitud = 20;
@@ -240,6 +241,18 @@ class DaoEmpresa extends Dao
                 } else { //Rebutjada
                     Bustia::enviarUnic($empresa->email, 'Sol·licitud rebutjada', '/email/rebutjarEmpresa.twig', ['motius' => $empresa->rebuig, 'usuari' => $empresa->email], $container);
                 }
+
+                $professors = DB::select('SELECT p.* FROM borsa.Estudis_has_Responsables r inner join borsa.Estudis e on e.codi = r.Estudis_codi inner join borsa.Professors p on r.Professors_idProfessor=p.idProfessor where p.actiu=1 and e.familia=\'' . $empresa->familia . '\'');
+                if (count($professors) > 1) {
+                    foreach ($professors as $profe) {
+                        if($profe->idProfessor!=$professor->idProfessor)
+                        $usuari = Usuari::where('nomUsuari', $profe->email)->get();
+                        $r = Dao::generaToken(20, $usuari[0], 7, $container);
+                        Bustia::enviarUnic($profe->email, 'Empresa validada per un company', '/email/empresaValidada.html.twig', ['empresa' => $empresa->nom, 'professor' => $professor], $container);
+                    }
+//                Bustia::enviar($professors, 'Validació d\'empresa pendent sense professor assignat', '/email/validarEmpresa.html.twig', ['token'], $container);
+                }
+
                 return $response->withJson($empresa);
             } else {
                 return $response->withJson("No es troba cap empresa amb l'identificador demanat.", 422);

@@ -42,8 +42,8 @@
                 var f = event.target.id;
                 dades = {};
                 dades['idProfessor'] = $('#' + f + ' #idProfessor').val();
-                dades['actiu'] = $('#' + f + ' #actiu').is(':checked');
-                dades['validat'] = $('#' + f + ' #validat').is(':checked');
+                dades['activa'] = $('#' + f + ' #actiu').is(':checked');
+                dades['validada'] = $('#' + f + ' #validat').is(':checked');
                 $('#mdEspera').modal('show');
             });
 
@@ -138,11 +138,11 @@
            
         });
     </script>
-    <script src="../../js/dirtyForms.js"></script>
+    <script src="../js/dirtyForms.js"></script>
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="/professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
+    <a class="navbar-brand" href="../professor/dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
