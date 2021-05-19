@@ -134,8 +134,6 @@ $container['notFoundHandler'] = function ($c) {
 
 // Index
 $app->get('/', function ($request, $response, $args) {
-    $nom = "Jo Mateix";
-    var_dump($nom);
     return $this->view->render($response, 'index.html.twig');
 });
 

@@ -250,7 +250,6 @@ class DaoEmpresa extends Dao
                         $r = Dao::generaToken(20, $usuari[0], 7, $container);
                         Bustia::enviarUnic($profe->email, 'Empresa validada per un company', '/email/empresaValidada.html.twig', ['empresa' => $empresa->nom, 'professor' => $professor], $container);
                     }
-//                Bustia::enviar($professors, 'Validació d\'empresa pendent sense professor assignat', '/email/validarEmpresa.html.twig', ['token'], $container);
                 }
 
                 return $response->withJson($empresa);
