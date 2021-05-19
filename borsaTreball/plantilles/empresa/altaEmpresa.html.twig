@@ -39,6 +39,7 @@
                     empresa["cedir"]="No";
                 }
                 empresa.descripcio = $('#textDescripcio').summernote('code');
+                // console.log(empresa);
                 $.post("altaEmpresa", empresa, function () {
                     $('#mrTitol').html('Alta realitzada correctament')
                     $('#mrText').html("<p>En uns dies rebrà un correu electrònic amb la confirmació de l'alta i les instruccions per començar.</p>");

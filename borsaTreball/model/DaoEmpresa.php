@@ -28,7 +28,7 @@ class DaoEmpresa extends Dao
             $empresa->descripcio = $data['descripcio'];
             $empresa->adreca = filter_var($data['adreca'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $empresa->codiPostal = filter_var($data['codiPostal'], FILTER_SANITIZE_STRING);
-            $empresa->localitat = filter_var($data['localitat'], FILTER_SANITIZE_STRING . FILTER_FLAG_NO_ENCODE_QUOTES);
+            $empresa->localitat = filter_var($data['localitat'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $empresa->provincia = filter_var($data['provincia'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $empresa->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
             $empresa->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
@@ -59,7 +59,7 @@ class DaoEmpresa extends Dao
                 $familia = Familia::Find($empresa->familia);
                 Bustia::enviar($admins, "Validació d'empresa pendent sense professor assignat.", 'email/validarEmpresaNoProfessor.html.twig', ['empresa' => $empresa, 'familia' => $familia], $container);
             }
-            $missatge = array("missatge" => 'Alta correcta.');
+            $missatge = array("missatge" => 'Alta correcta.', "empresa"=> $empresa, "data"=>$data);
             return $response->withJson($missatge);
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {

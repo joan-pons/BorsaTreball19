@@ -888,6 +888,27 @@ $app->group('/professor', function () {
         }
     });
 
+    $this->get('/ofertesValidades', function ($request, $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION["idUsuari"]);
+        if ($usuari != null) {
+            $professor = $usuari->getEntitat();
+            $etiquetes = array("subtitol" => "dels que haurà de validar ofertes", "labelLlista" => "dels que és responsable");
+            $ofertes = array();
+            foreach ($professor->estudis as $estudis) {
+                foreach ($estudis->ofertes as $oferta) {
+                    if ($oferta->dataPublicacio != null and $oferta->validada != 0) {
+                        $ofertes[$oferta->idOferta] = $oferta;
+                    }
+                }
+            }
+            $nivells = NivellIdioma::all();
+            return $this->view->render($response, 'professor/ofertesValidades.html.twig', ['professor' => $professor, "etiquetes" => $etiquetes, 'ofertes' => $ofertes, 'nivells' => $nivells]);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
+
     $this->put('/publicarOferta/{idOferta}', function ($request, $response, $args) {
         return DaoProfessor::publicarOferta($request, $response, $args, $this);
     });
@@ -916,6 +937,31 @@ $app->group('/professor', function () {
                 $empreses = Empresa::whereIn('familia', $families)->where('validada', 0)->where('rebuig', null)->orderBy('dataAlta', 'ASC')->orderBy('nom', 'ASC')->get();
             }
             return $this->view->render($response, 'professor/empresesPendents.html.twig', ['professor' => $prof, 'usuari' => $usuari, 'empreses' => $empreses, 'families' => $families, 'estudis' => $estudis]);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
+
+    $this->get('/empresesValidades', function ($request, $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION['idUsuari']);
+        $estudis = null;
+        $families = null;
+        if ($usuari != null) {
+            $prof = $usuari->getEntitat();
+            $empreses = null;
+            if ($usuari->teRol(40)) {
+                $empreses = Empresa::where('validada', '!=', 0)->orderBy('nom', 'ASC')->get();
+            } else {
+                $estudis = $prof->estudis;
+                $families = [];
+                foreach ($estudis as $e) {
+                    $families[] = $e->familia;
+                }
+                $families = array_unique($families, SORT_STRING);
+                $empreses = Empresa::whereIn('familia', $families)->where('validada', '!=', 0)->orderBy('nom', 'ASC')->get();
+            }
+            return $this->view->render($response, 'professor/empresesValidades.html.twig', ['professor' => $prof, 'usuari' => $usuari, 'empreses' => $empreses, 'families' => $families, 'estudis' => $estudis]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
