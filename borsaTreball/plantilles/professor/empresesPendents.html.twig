@@ -9,7 +9,7 @@
            $(".btn-success").click(function (event) {
 
                var id = $(event.target).closest('form').attr('id').replace('f', '');
-               var dades={idEmpresa:id, validada:true, activa:true, rebuig:null};
+               var dades={idEmpresa:id, validada:1, activa:1, rebuig:null};
                $('#mdEspera').on('shown.bs.modal', function (e) {
                    $.ajax({
                        method: 'PUT',
@@ -51,7 +51,7 @@
            $(".btn-danger").click(function (event) {
 
                var id = $(event.target).closest('form').attr('id').replace('f', '');
-               var dades={idEmpresa:id, validada:false, rebuig:null};
+               var dades={idEmpresa:id, validada:2, activa:1, rebuig:null};
                $('#mdEspera').on('shown.bs.modal', function (e) {
                    dades['rebuig']=$("#motius").val();
                    $.ajax({

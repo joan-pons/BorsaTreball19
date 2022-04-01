@@ -25,6 +25,7 @@
                 });
                 empresa['actiu'] = $('#Actiu').is(':checked');
                 empresa.descripcio = $('#textDescripcio').summernote('code');
+                console.log(empresa);
                 $.ajax({
                     method: 'PUT',
                     url: "modificarDades/" + empresa.idEmpresa,

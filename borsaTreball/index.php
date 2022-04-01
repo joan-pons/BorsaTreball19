@@ -16,6 +16,10 @@ use Borsa\Oferta as Oferta;
 use Borsa\Professor as Professor;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
+
+use Correu\Bustia as Bustia;
+
+
 use Illuminate\Database\Capsule\Manager as DB;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -139,7 +143,14 @@ $app->get('/', function ($request, $response, $args) {
 
 // Index
 $app->get('/proves', function ($request, $response, $args) {
-    return $this->view->render($response, 'index.html.twig');
+    $html=$this->view->fetch('/email/instruccionsValidat.html.twig',["token"=>"1234"]);
+//    $resultat=Dao::altaMail(null,$html,$this);
+//    $email=Bustia::enviarUnic('ptj@paucasesnovescifp.cat', 'Email de proves','/email/instruccionsValidat.html.twig',["token"=>"1234"],$this);
+      $email=Bustia::enviar(['ptj@paucasesnovescifp.cat','joan.pons.tugores@gmail.com'], 'Email de proves','/email/instruccionsValidat.html.twig',["token"=>"1234"],$this);
+//    $email=Bustia::afegirEmail('Email de proves',['ptj@paucasesnovescifp.cat','vqm@paucasesnovescifp.cat'],'/email/instruccionsValidat.html.twig',["token"=>"1234"],$this);
+    return $response->withJSON($email);
+//    return $response->withJSON($resultat);
+//    return $this->view->render($response, 'index.html.twig');
 });
 
 $app->get('/provesCorreu', function ($request, $response, $args) {
@@ -542,7 +553,7 @@ $app->group('/empresa', function () {
 //||||||||||||||||||       Alumne          |||||||||||||||||
 // \\\\\\\\\\\\\\\\\\                       \\\\\\\\\\\\\\\\\
 //  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-//  
+//
 //Entrada Alumnes
 $app->get('/alumneLogin', function ($request, $response, $args) {
     return $this->view->render($response, 'alumne/indexAlumne.html.twig', ['tipus' => 30]);

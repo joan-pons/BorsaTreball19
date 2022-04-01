@@ -2,21 +2,17 @@
 
 <div class='well' id="cont5">
     <form id="fOferta">
-        <input type="hidden" name="idEmpresa" value="{{empresa.idEmpresa}}">
+        <input type="hidden" name="idEmpresa" value="{{ empresa.idEmpresa }}">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="Nom">Codi oferta:</label>
-                    <input type="text" class="form-control" id="idOferta" name="idOferta" readonly="readonly" value="{{oferta.idOferta}}">
+                    <input type="text" class="form-control" id="idOferta" name="idOferta" readonly="readonly" value="{{ oferta.idOferta }}">
                 </div>
             </div><!--col-->
             <div class="col-md-6">
-                <div class="form-group">
-                    <label for="Llinatges">&nbsp;</label>
-                    <div>
-                        <button class="btn btn-success" type="submit" id="bEditar">Guardar</button>
-                        <button class="btn btn-default" type="reset" id="bSuprimir">Cancel·lar</button>
-                    </div>
+                <div class="alert alert-danger">
+                    <p><strong>Molt important!</strong> Una vegada emplenat i guardat aquest formulari ha d'anar a l'opció <em>Estudis</em> del menú per escollir al manco un cicle al que vulgui dirigir l'oferta. intFins que no ho faci <strong>no la podrà publicar</strong>.</p>
                 </div>
             </div><!--col-->
         </div><!--row-->
@@ -24,7 +20,8 @@
             <div class="col-md-12">
                 <div class="form-group required">
                     <label for="Titol" class='control-label'>Titol:</label>
-                    <input type="text" class="form-control" id="titol" name="titol" value="{{oferta.titol}}" required="required" maxlength="100">
+                    <input type="text" class="form-control" id="titol" name="titol" value="{{ oferta.titol }}"
+                           required="required" maxlength="100">
                 </div>
             </div><!--col-->
 
@@ -34,13 +31,16 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="dPublicacio">Data de publicació:</label>
-                    <input type="date" class="form-control" id="dPublicacio" name="dPublicacio" readonly="readonly" title="S'assignarà automàticament en publicar l'oferta" data-toggle="tooltip" value="{{ oferta.dataPublicacio}}">
+                    <input type="date" class="form-control" id="dPublicacio" name="dPublicacio" readonly="readonly"
+                           title="S'assignarà automàticament en publicar l'oferta" data-toggle="tooltip"
+                           value="{{ oferta.dataPublicacio }}">
                 </div>
             </div><!--col-->
             <div class="col-md-6">
                 <div class="form-group required">
                     <label for="dFinal" class='control-label'>Data finalització:</label>
-                    <input type="date" class="form-control" id="dFinal" name="dFinal" readonly="readonly" value="{{oferta.dataFinal}}" required="required">
+                    <input type="date" class="form-control" id="dFinal" name="dFinal" readonly="readonly"
+                           value="{{ oferta.dataFinal }}" required="required">
                 </div>
             </div><!--col-->
         </div><!--row-->
@@ -49,13 +49,15 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="tContracte">Tipus de contracte:</label>
-                    <input type="text" class="form-control" id="tContracte" name="tContracte" value="{{oferta.tipusContracte}}">
+                    <input type="text" class="form-control" id="tContracte" name="tContracte"
+                           value="{{ oferta.tipusContracte }}">
                 </div>
             </div><!--col-->
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="localitat">Localitat:</label>
-                    <input type="text" class="form-control" id="localitat" name="localitat" value="{{oferta.localitat}}">
+                    <input type="text" class="form-control" id="localitat" name="localitat"
+                           value="{{ oferta.localitat }}">
                 </div>
             </div><!--col-->
         </div><!--row-->
@@ -64,25 +66,35 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="horari">Horari:</label>
-                    <input type="text" class="form-control" id="horari" name="horari"  value="{{oferta.horari}}">
+                    <input type="text" class="form-control" id="horari" name="horari" value="{{ oferta.horari }}">
                 </div>
             </div><!--col-->
         </div><!--row-->
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-9">
                 <div class="form-group">
                     <label for="textOferta">Descripció de l'oferta:</label>
                     <div id="textOferta">
-                        {{oferta.descripcio|raw}}
+                        {{ oferta.descripcio|raw }}
                     </div>
                 </div>
             </div><!--col-->
-        </div>           
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <div>
+                        <button class="btn btn-success" type="submit" id="bEditar">Guardar</button>
+                        &nbsp;
+                        <button class="btn btn-default" type="reset" id="bSuprimir">Cancel·lar</button>
+                    </div>
+                </div>
+            </div><!--col-->
+        </div>
     </form>
 </div><!--well-->
 
-{{include('auxiliars/modals.html.twig')}}
+{{ include('auxiliars/modals.html.twig') }}
 
 <script src="../js/dirtyForms.js"></script>
 <script>
@@ -98,7 +110,7 @@
                 ['font', ['strikethrough', 'superscript', 'subscript']],
                 ['fontsize', ['fontsize']],
                 ['color', ['color']],
-                ['para', ['style','ul', 'ol', 'paragraph']],
+                ['para', ['style', 'ul', 'ol', 'paragraph']],
                 ['height', ['height']]
             ]
         });
@@ -137,51 +149,51 @@
                 oferta[obj.name] = obj.value;
             });
             oferta.descripcio = $('#textOferta').summernote('code');
-    {% if oferta is empty %}
-                $.ajax({
-                    method: 'POST',
-                    url: "afegirOferta",
-                    data: oferta
-                }).done(function (ofertaRebuda) {
-                    $('#mrTitol').html('Alta correcta')
-                    $('#mrText').html("<p>L'oferta s'ha donat d'alta correctament.</p>" +
-                        "<p>Heu de posar com a mínim uns estudis als que va dirigida la oferta.</p>" +
-                        "<p>En tenir al manco uns estudis assignats podreu publicar la oferta, un professor la validarà i llavors arribarà als alumnes.</p>");
-                    $('#bmDacord').on('click', function () {
-                        window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
-                    });
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');
-                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
-                    $('#bmDacord').on('click', function () {
-                        $('#mdResultat').modal('hide');
-                    });
-                }).always(function () {
-                    $('#mdEspera').modal('hide');
-                    $('#mdResultat').modal('show');
+            {% if oferta is empty %}
+            $.ajax({
+                method: 'POST',
+                url: "afegirOferta",
+                data: oferta
+            }).done(function (ofertaRebuda) {
+                $('#mrTitol').html('Alta correcta')
+                $('#mrText').html("<p>L'oferta s'ha donat d'alta correctament.</p>" +
+                    "<p>Heu de posar com a mínim uns estudis als que va dirigida la oferta.</p>" +
+                    "<p>En tenir al manco uns estudis assignats podreu publicar la oferta, un professor la validarà i llavors arribarà als alumnes.</p>");
+                $('#bmDacord').on('click', function () {
+                    window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
                 });
-    {%else%}
-                $.ajax({
-                    method: 'PUT',
-                    url: "modificarOferta/" + oferta.idOferta,
-                    data: oferta
-                }).done(function (ofertaRebuda) {
-                    $('#mrTitol').html('Modificació correcta')
-                    $('#mrText').html("<p>L'oferta s'ha modificat correctament.</p>");
-                    $('#bmDacord').on('click', function () {
-                        window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
-                    });
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');
-                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
-                    $('#bmDacord').on('click', function () {
-                        $('#mdResultat').modal('hide');
-                    });
-                }).always(function () {
-                    $('#mdEspera').modal('hide');
-                    $('#mdResultat').modal('show');
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');
+                $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
+                $('#bmDacord').on('click', function () {
+                    $('#mdResultat').modal('hide');
                 });
-    {%endif%}
+            }).always(function () {
+                $('#mdEspera').modal('hide');
+                $('#mdResultat').modal('show');
             });
+            {% else %}
+            $.ajax({
+                method: 'PUT',
+                url: "modificarOferta/" + oferta.idOferta,
+                data: oferta
+            }).done(function (ofertaRebuda) {
+                $('#mrTitol').html('Modificació correcta')
+                $('#mrText').html("<p>L'oferta s'ha modificat correctament.</p>");
+                $('#bmDacord').on('click', function () {
+                    window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
+                });
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'alta');
+                $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
+                $('#bmDacord').on('click', function () {
+                    $('#mdResultat').modal('hide');
+                });
+            }).always(function () {
+                $('#mdEspera').modal('hide');
+                $('#mdResultat').modal('show');
+            });
+            {% endif %}
         });
+    });
 </script>

@@ -84,7 +84,7 @@
                     });
                 });
                 $('#mcTitol').html("Confirmi el rebuig.");
-                $('#mcText').html('<p>Si confirma el rebuig s\'enviarà un correu a l\'empresa que inclourà els motius de rebuig que posi a continuació.</p><p>Motius del rebuig:</p><p><textarea style="width:100%" id="motius"></textarea></p>');
+                $('#mcText').html('<p>Si confirma el rebuig s\'enviarà un correu a l\'empresa que inclourà els motius de rebuig que posi a continuació.</p><p>Motius del rebuig (màxim 250 caràcters):</p><p><textarea style="width:100%" id="motius" maxlength=250></textarea></p>');
 
                 $('#bcDacord').on('click', function () {
                     $('#mdConfirm').modal('hide');

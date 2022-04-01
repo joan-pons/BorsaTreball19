@@ -59,7 +59,7 @@ class DaoEmpresa extends Dao
                 $familia = Familia::Find($empresa->familia);
                 Bustia::enviar($admins, "Validació d'empresa pendent sense professor assignat.", 'email/validarEmpresaNoProfessor.html.twig', ['empresa' => $empresa, 'familia' => $familia], $container);
             }
-            $missatge = array("missatge" => 'Alta correcta.', "empresa"=> $empresa, "data"=>$data);
+            $missatge = array("missatge" => 'Alta correcta.', "empresa" => $empresa, "data" => $data);
             return $response->withJson($missatge);
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {
@@ -94,7 +94,7 @@ class DaoEmpresa extends Dao
                 $empresa->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
                 $empresa->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
                 $empresa->activa = filter_var($data['actiu'], FILTER_SANITIZE_STRING) == 'true';
-                $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING) == 'true';
+                $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING);
                 $empresa->url = filter_var($data['url'], FILTER_SANITIZE_URL);
                 //$empresa->DataAlta= \Carbon::now();
                 $empresa->save();
@@ -221,9 +221,12 @@ class DaoEmpresa extends Dao
             if ($empresa != null) {
                 $data = $request->getParsedBody();
                 //$empresa->activa = false;//
-                $empresa->activa = filter_var($data['activa'], FILTER_SANITIZE_STRING) == 'true';
-                $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING) == 'true';
+                $empresa->activa = filter_var($data['activa'], FILTER_SANITIZE_STRING);
+                $empresa->validada = filter_var($data['validada'], FILTER_SANITIZE_STRING);
                 $empresa->rebuig = filter_var($data['rebuig'], FILTER_SANITIZE_STRING);
+                if ($empresa->validada < 2) {
+                    $empresa->rebuig = null;
+                }
                 $empresa->profValidada = $professor->idProfessor;
                 $empresa->save();
 
@@ -236,7 +239,7 @@ class DaoEmpresa extends Dao
                 $r->save();
 
                 $usuari = Usuari::where('idEntitat', $empresa->idEmpresa)->where('tipusUsuari', 20)->get();
-                if ($empresa->rebuig == null) { //Acceptada
+                if ($empresa->validada) { //Acceptada
                     Bustia::enviarUnic($empresa->email, 'Sol·licitud aprovada', '/email/instruccionsValidat.html.twig', ['usuari' => $empresa->email, 'contrasenya' => $usuari[0]->contrasenya, 'token' => $token], $container);
                 } else { //Rebutjada
                     Bustia::enviarUnic($empresa->email, 'Sol·licitud rebutjada', '/email/rebutjarEmpresa.twig', ['motius' => $empresa->rebuig, 'usuari' => $empresa->email], $container);
@@ -245,8 +248,8 @@ class DaoEmpresa extends Dao
                 $professors = DB::select('SELECT p.* FROM borsa.Estudis_has_Responsables r inner join borsa.Estudis e on e.codi = r.Estudis_codi inner join borsa.Professors p on r.Professors_idProfessor=p.idProfessor where p.actiu=1 and e.familia=\'' . $empresa->familia . '\'');
                 if (count($professors) > 1) {
                     foreach ($professors as $profe) {
-                        if($profe->idProfessor!=$professor->idProfessor)
-                        $usuari = Usuari::where('nomUsuari', $profe->email)->get();
+                        if ($profe->idProfessor != $professor->idProfessor)
+                            $usuari = Usuari::where('nomUsuari', $profe->email)->get();
                         $r = Dao::generaToken(20, $usuari[0], 7, $container);
                         Bustia::enviarUnic($profe->email, 'Empresa validada per un company', '/email/empresaValidada.html.twig', ['empresa' => $empresa->nom, 'professor' => $professor], $container);
                     }

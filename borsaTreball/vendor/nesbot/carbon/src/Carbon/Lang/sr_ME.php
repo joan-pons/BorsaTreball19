@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Carbon package.
  *
  * (c) Brian Nesbitt <brian@nesbot.com>
@@ -9,4 +9,4 @@
  * file that was distributed with this source code.
  */
 
-return require __DIR__ . '/sr_Latn_ME.php';
+return require __DIR__.'/sr_Latn_ME.php';

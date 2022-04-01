@@ -82,7 +82,7 @@
                         <p><label>Títol: &nbsp;</label>{{oferta.titol }}</p>
                         <p><label>Data publicació: &nbsp;</label>{{oferta.dataPublicacio }}</p>
                         <p><label>Data final: &nbsp;</label>{{oferta.dataFinal }}</p>
-                        <p><label>Validada: &nbsp;</label><span class="glyphicon {% if oferta.validada %}glyphicon-ok{% else %}glyphicon-remove{% endif %}"></span></p>
+                        <p><label>Validada: &nbsp;</label><span class="glyphicon {% if oferta.validada ==1 %}glyphicon-ok{% elseif oferta.validada ==2 %}glyphicon-remove{% endif %}"></span></p>
                     </div>
                 {% endfor %}
             {% endif %}       

@@ -9,11 +9,12 @@
 namespace Borsa;
 
 use Borsa\Ajuda as Ajuda;
+use Borsa\Destinatari as Destinatari;
+use Borsa\Email as Email;
 use Borsa\Familia as Familia;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
 use Correu\Bustia as Bustia;
-use Borsa\Email as Email;
 use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -117,7 +118,7 @@ class Dao
                 $usuari = $usuari[0];
 
                 $r = Dao::generaToken(20, $usuari, 1, $container);
-                $resultat = Bustia::enviarUnic($usuari->nomUsuari, 'Restablir la contrasenya de la borsa de treball del CIFP Pau Casesnoves', "/email/restablirContrasenya.twig", ['token' => $r->token], $container);
+                $resultat = Bustia::enviarUnic($usuari->nomUsuari, 'Restablir la contrasenya de la borsa de treball del CIFP Pau Casesnoves', "/email/restablirContrasenya.twig", ['token' => $r->token], $container,false);
                 if ($resultat == true) {
                     $missatge = array("missatge" => "Procés correcte.");
                     // $missatge[] = $r;
@@ -325,10 +326,15 @@ class Dao
         }
     }
 
-    private static function altaMail($destinataris, $text,\Slim\Container $container){
+    public static function altaMail($destinataris, $text, \Slim\Container $container)
+    {
         $container->dbEloquent;
-        $email=new Email();
-        $email->text=$text;
+        $email = new Email();
+        $email->assumpte="Prova";
+        $email->textEmail = $text;
         $email->save();
+        return $email;
     }
+
+
 }
