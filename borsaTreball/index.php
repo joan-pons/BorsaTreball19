@@ -135,6 +135,12 @@ $container['notFoundHandler'] = function ($c) {
     };
 };
 
+$container['logger'] = function($c) {
+    $logger = new \Monolog\Logger('Borsa_logger');
+    $file_handler = new \Monolog\Handler\StreamHandler('./sgol/borsa.log');
+    $logger->pushHandler($file_handler);
+    return $logger;
+};
 
 // Index
 $app->get('/', function ($request, $response, $args) {

@@ -62,6 +62,7 @@ class DaoEmpresa extends Dao
             $missatge = array("missatge" => 'Alta correcta.', "empresa" => $empresa, "data" => $data);
             return $response->withJson($missatge);
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per una altra empresa.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -104,6 +105,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per una altra empresa.");
@@ -134,6 +136,7 @@ class DaoEmpresa extends Dao
             $contacte->save();
             return $response->withJson($contacte);
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -169,6 +172,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -197,6 +201,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson("No es troba cap contacte amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "No s'ha pogut eliminar. Segurament degut a que el contacte està associat a alguna oferta.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -260,6 +265,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson("No es troba cap empresa amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -300,6 +306,7 @@ class DaoEmpresa extends Dao
             $oferta->save();
             return $response->withJson($oferta);
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per una altra empresa.", 'info' => $ex->getCode() . " " . $ex->getMessage());
@@ -340,6 +347,7 @@ class DaoEmpresa extends Dao
             $oferta->save();
             return $response->withJson($oferta);
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per una altra empresa.", 'info' => $ex->getCode() . " " . $ex->getMessage());
@@ -371,6 +379,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja estan registrats els estudis que vol afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -400,6 +409,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson("No es troba cap estudis amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -430,6 +440,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -467,6 +478,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -503,6 +515,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -535,6 +548,7 @@ class DaoEmpresa extends Dao
             }
             return $response->withJson('POST contactesOferta afegirContacteOferta');
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja és responsable dels estudis que vol afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -566,6 +580,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson("No es troba cap oferta amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -587,13 +602,14 @@ class DaoEmpresa extends Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             $oferta = Oferta::find(filter_var($args['idOferta'], FILTER_SANITIZE_NUMBER_INT));
-            if ($oferta != null && !$oferta->validada) {
+            if ($oferta != null && $oferta->validada != 1) {
                 Oferta::destroy(filter_var($args['idOferta'], FILTER_SANITIZE_NUMBER_INT));
-                return $response->withJson(['oferta' => $oferta]);
+                return $response->withJson(['oferta' => $oferta], 200);
             } else {
-                return $response->withJson("No es troba cap oferta amb l'identificador demanat, o l'oferta ja està publicada.", 422);
+                return $response->withJson(array("missatge" => "No es troba cap oferta amb l'identificador demanat, o l'oferta ja està publicada."), 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -632,6 +648,7 @@ class DaoEmpresa extends Dao
                 return $response->withJson("No es troba cap oferta amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());

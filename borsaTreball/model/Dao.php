@@ -139,6 +139,8 @@ class Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());

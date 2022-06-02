@@ -58,6 +58,8 @@ class DaoAlumne extends Dao
             $missatge = array("missatge" => "Alta correcta");
             return $response->withJson($missatge);
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -99,6 +101,7 @@ class DaoAlumne extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -130,6 +133,7 @@ class DaoAlumne extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -159,6 +163,7 @@ class DaoAlumne extends Dao
                 return $response->withJson("No es troba cap contacte amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -189,6 +194,7 @@ class DaoAlumne extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -226,6 +232,7 @@ class DaoAlumne extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getCode() . ' ' . $ex->getMessage());
@@ -263,6 +270,7 @@ class DaoAlumne extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -308,6 +316,7 @@ class DaoAlumne extends Dao
             $missatge = array("missatge" => "OK");
             return $response->withJson($resultats);
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja tens registrats els estudis que vols afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());

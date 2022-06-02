@@ -65,8 +65,12 @@
                                 indicador='Grau mitjà';
                             } else  if (xifra === '3'){
                                 indicador = 'Grau superior';
-                            }else{
+                            }else  if (xifra === 'D'){
                                 indicador = 'Certificat de professionalitat';
+                            }else  if (xifra === 'E'){
+                                indicador = "Curs d'especialització";
+                            }else{
+                                indicador = 'Altres';
                             }
                             opcions=opcions+'<optgroup label="'+indicador+'">';
                         }

@@ -15,10 +15,14 @@
 {% endblock %}
 {% block contingut %}
     <h2>Ofertes que t'han arribat</h2>
-    {% for oferta in actor.ofertes %}
-        <div class="well" id="of{{oferta.idOferta}}">
-            {{include('auxiliars/ofertaCompleta.html.twig')}}
-        </div>
-    {% endfor %}
+     {% if alumne.idiomes is empty %}
+                    <div class="well"><p> Encara no has rebut cap oferta. </p></div>
+    {% else %}
+        {% for oferta in actor.ofertes %}
+            <div class="well" id="of{{oferta.idOferta}}">
+                {{include('auxiliars/ofertaCompleta.html.twig')}}
+            </div>
+        {% endfor %}
+    {% endif %}
     {{include('auxiliars/modals.html.twig')}}
 {% endblock %}

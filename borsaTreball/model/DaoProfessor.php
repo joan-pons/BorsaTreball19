@@ -43,6 +43,7 @@ class DaoProfessor extends Dao
             Bustia::enviar($admins, 'Sol·licitud d\'alta professorat', '/email/validarUsuari.html.twig', ['token' => $token], $container);
             return $response->withJSON($professor);
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -77,6 +78,7 @@ class DaoProfessor extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -108,6 +110,7 @@ class DaoProfessor extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja és responsable dels estudis que vol afegir.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -138,6 +141,7 @@ class DaoProfessor extends Dao
                 return $response->withJson("No es troba cap contacte amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -197,6 +201,7 @@ class DaoProfessor extends Dao
                 return $response->withJson("No es troba cap professor amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -225,6 +230,7 @@ class DaoProfessor extends Dao
                 return $response->withJson("No es troba cap professor amb l'identificador demanat.", 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -258,6 +264,7 @@ class DaoProfessor extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja és administrador", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -292,6 +299,7 @@ class DaoProfessor extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja és administrador", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -353,6 +361,7 @@ class DaoProfessor extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -391,6 +400,7 @@ class DaoProfessor extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
@@ -424,6 +434,7 @@ class DaoProfessor extends Dao
                 return $response->withJson($missatge, 422);
             }
         } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
                     $missatge = array("missatge" => "Dades duplicades. Segurament degut a que ja és administrador", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
