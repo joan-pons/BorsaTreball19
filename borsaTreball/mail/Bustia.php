@@ -11,52 +11,56 @@ class Bustia
 {
     public static function enviar($emails, $subject, $plantilla, $dades, $container, $diferit = false)
     {
-        if ($diferit) {
-            $resultat = self::afegirEmail($emails, $subject, $plantilla, $dades, $container);
-            $resultat = $resultat . "\nDesprés d'afegirEmail";
-        } else {
-            return $container->mailer->send($plantilla, $dades, function ($message) use ($emails, $subject) {
-
-                $message->clearAll();
-                $message->from("borsa.treball@paucasesnovescifp.cat");
-                foreach ($emails as $adreca) {
-                    $message->bcc($adreca->email);
-                }
-
-                $message->subject($subject);
-            });
-        }
-    }
-
-    //TODO: Els mètodes enviar i enviarÚnic han de insertar els missatges i els destinataris a la base de dades. Així no s'haurà de tocar més codi.
-    public static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container, $diferit = false)
-    {
-        if ($diferit) {
-            $destinataris = array();
-            $destinataris[] = $destinatari;
-            $resultat = self::afegirEmail($destinataris, $subject, $plantilla, $dades, $container);
+//        if ($diferit) {
+//            $resultat = self::afegirEmail($emails, $subject, $plantilla, $dades, $container);
 //            $resultat = $resultat . "\nDesprés d'afegirEmail";
-        } else {
-            $resultat = false;
-            try {
-                $resultat = $container->mailer->send($plantilla, $dades, function ($message) use ($destinatari, $subject) {
-                    $message->clearAll();
-                    $message->from("borsa.treball@paucasesnovescifp.cat");
-                    $message->to($destinatari);
-                    $message->subject($subject);
-                });
-            } catch (phpmailerException $ex) {
-                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
-                $resultat = $resultat . $ex->errorMessage();
-            } catch (Exception $ex) {
-                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
-                $resultat = $resultat . $ex->errorMessage();
-            }
-        }
-        return $resultat;
+//        } else {
+//            return $container->mailer->send($plantilla, $dades, function ($message) use ($emails, $subject) {
+//
+//                $message->clearAll();
+//                $message->from("borsa.treball@paucasesnovescifp.cat");
+//                foreach ($emails as $adreca) {
+//                    $message->bcc($adreca->email);
+//                }
+//
+//                $message->subject($subject);
+//            });
+//        }
+        return true;
     }
 
-    public static function afegirEmail($destinataris, $assumpte, $plantilla, $dades, $container)
+//TODO: Els mètodes enviar i enviarÚnic han de insertar els missatges i els destinataris a la base de dades. Així no s'haurà de tocar més codi.
+    public
+    static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container, $diferit = false)
+    {
+//        if ($diferit) {
+//            $destinataris = array();
+//            $destinataris[] = $destinatari;
+//            $resultat = self::afegirEmail($destinataris, $subject, $plantilla, $dades, $container);
+////            $resultat = $resultat . "\nDesprés d'afegirEmail";
+//        } else {
+//            $resultat = false;
+//            try {
+//                $resultat = $container->mailer->send($plantilla, $dades, function ($message) use ($destinatari, $subject) {
+//                    $message->clearAll();
+//                    $message->from("borsa.treball@paucasesnovescifp.cat");
+//                    $message->to($destinatari);
+//                    $message->subject($subject);
+//                });
+//            } catch (phpmailerException $ex) {
+//                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+//                $resultat = $resultat . $ex->errorMessage();
+//            } catch (Exception $ex) {
+//                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+//                $resultat = $resultat . $ex->errorMessage();
+//            }
+//        }
+//        return $resultat;
+        return true;
+    }
+
+    public
+    static function afegirEmail($destinataris, $assumpte, $plantilla, $dades, $container)
     {
         try {
             $text = $container->view->fetch($plantilla, $dades);

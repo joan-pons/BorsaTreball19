@@ -48,9 +48,16 @@
 
 {% block navegacio %}
 <a class="navbar-brand" href="../professor/dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
+
 </div>
 <div class="collapse navbar-collapse" id="myNavbar">
-
+ <ul class="nav navbar-nav">
+        <li><a href="usuarisPendents">Validar usuaris pendents</a></li>
+        <li><a href="usuaris">Activar / validar usuari</a></li>
+        <li><a href="administrador">Rol administrador</a></li>
+        <li class="active"><a href="#">Obrir alumnes</a>
+        <li><a href="logs">Logs</a>
+    </ul>
 
     {% endblock %}
 
