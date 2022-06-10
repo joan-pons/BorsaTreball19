@@ -9,7 +9,6 @@
 namespace Borsa;
 
 use Borsa\Ajuda as Ajuda;
-use Borsa\Destinatari as Destinatari;
 use Borsa\Email as Email;
 use Borsa\Familia as Familia;
 use Borsa\Token as Token;
@@ -93,6 +92,40 @@ class Dao
         }
     }
 
+    public static function estadistiques(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $resultats = new \stdClass();
+
+            $alumnes = DB::select('SELECT e.familia, count(a.idAlumne) as alumnes FROM borsa.Alumnes a inner join borsa.Estudis e on a.estudisAlta=e.codi group by e.familia;');
+            $empreses = DB::select('SELECT familia, count(*) as empreses FROM borsa.Empreses group by familia;');
+            $ofertes = DB::select('select w.familia, count(*) as ofertes from (SELECT distinct o.idOferta, es.familia       FROM borsa.Ofertes o inner join borsa.Ofertes_has_Estudis e on o.idOferta = e.Ofertes_idOferta                            inner join Estudis es on es.codi=e.Estudis_codi       where o.dataPublicacio is not null       order by o.idOferta) w group by familia;');
+            $alumnesAny = DB::select('SELECT distinct a.Estudis_codi as codi, e.nom as nom, count(*) as alumnes, a.any as year FROM borsa.Alumne_has_Estudis a inner join borsa.Estudis e on a.Estudis_codi=e.codi group by a.Estudis_codi, a.any order  by a.Estudis_codi, a.any;');
+
+            $resultats->alumnes = $alumnes;
+            $resultats->empreses = $empreses;
+            $resultats->ofertes = $ofertes;
+            $resultats->alumnesAny = $alumnesAny;
+            return $resultats;
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "El professor no s'ha pogut modificar.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
     public static function generaToken($longitud, Usuari $usuari, $durada, \Slim\Container $container)
     {
         $container->dbEloquent;
@@ -118,7 +151,7 @@ class Dao
                 $usuari = $usuari[0];
 
                 $r = Dao::generaToken(20, $usuari, 1, $container);
-                $resultat = Bustia::enviarUnic($usuari->nomUsuari, 'Restablir la contrasenya de la borsa de treball del CIFP Pau Casesnoves', "/email/restablirContrasenya.twig", ['token' => $r->token], $container,false);
+                $resultat = Bustia::enviarUnic($usuari->nomUsuari, 'Restablir la contrasenya de la borsa de treball del CIFP Pau Casesnoves', "/email/restablirContrasenya.twig", ['token' => $r->token], $container, false);
                 if ($resultat == true) {
                     $missatge = array("missatge" => "Procés correcte.");
                     // $missatge[] = $r;
@@ -332,7 +365,7 @@ class Dao
     {
         $container->dbEloquent;
         $email = new Email();
-        $email->assumpte="Prova";
+        $email->assumpte = "Prova";
         $email->textEmail = $text;
         $email->save();
         return $email;

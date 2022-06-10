@@ -1131,12 +1131,26 @@ $app->group('/administrador', function () {
         if ($usuari != null) {
             $prof = $usuari->getEntitat();
             $logs=file('./sgol/borsa.log');
+            $logs=array_reverse($logs);
             return $this->view->render($response, 'professor/logs.html.twig', ['professor' => $prof, 'logs' => $logs]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
     });
 
+    $this->get('/estadistiques', function ($request, $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION["idUsuari"]);
+        if ($usuari != null) {
+            $prof = $usuari->getEntitat();
+//            $resultats=null;
+            $resultats=Dao::estadistiques($request,$response,$args, $this);
+
+            return $this->view->render($response, 'professor/estadistiques.html.twig', ['professor' => $prof, 'resultats' => $resultats]);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
 
     $this->get('/rols/{idProfessor}', function (Request $request, Response $response, $args) {
         return DaoProfessor::rols($request, $response, $args, $this);

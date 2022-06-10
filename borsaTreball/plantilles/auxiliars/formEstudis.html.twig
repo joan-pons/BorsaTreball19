@@ -125,7 +125,7 @@
 
         $('#dNou').hide();
         $('#anyNou').attr('max', new Date().getFullYear());
-        $('#anyNou').attr('value', new Date().getFullYear()-1);
+        $('#anyNou').attr('value', new Date().getFullYear()-10);
 
         $('form [name="bGuardar"]').hide();
         $('form [name="bCancel"]').hide();
@@ -266,6 +266,8 @@
             $("form .btn-danger").hide('fast');
             $("#bGuar" + ident).show('fast');
             $("#bCan" + ident).show('fast');
+            $("#bGuar" + ident).prop('disabled', false);
+            $("#bCan" + ident).prop('disabled', false);
             $("#bAfegir").prop('disabled', 'disabled');
         });
 
@@ -299,7 +301,7 @@
                 }).done(function (dades) {
                     $('#mrTitol').html('Modificació correcta');
                     if (dades.quantitat >= 0) {
-                        $('#mrText').html("<p>Les dades dels estudis <em>" + estudisElegits.nomEstudis + "</em> s'han modificat correctament.</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
+                        $('#mrText').html("<p>Les dades dels estudis <em>" + estudisElegits.nomGrau + "</em> s'han modificat correctament.</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
                     } else {
                         $('#mrText').html("<p>Les dades dels estudis s'han modificat correctament.</p>");
                     }
@@ -308,6 +310,9 @@
                         $("#bCan" + estudisElegits.idGrau).hide('fast');
                         $(".btn-primary").show('fast');
                         $(".btn-danger").show('fast');
+                        $(".btn-primary").prop('disabled', false);
+                        $(".btn-danger").prop('disabled', false);
+
                         $("#bAfegir").prop('disabled', false);
                         $('#mdResultat').modal('hide');
 
