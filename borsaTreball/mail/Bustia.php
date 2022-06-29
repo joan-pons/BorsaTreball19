@@ -11,21 +11,21 @@ class Bustia
 {
     public static function enviar($emails, $subject, $plantilla, $dades, $container, $diferit = false)
     {
-//        if ($diferit) {
-//            $resultat = self::afegirEmail($emails, $subject, $plantilla, $dades, $container);
-//            $resultat = $resultat . "\nDesprés d'afegirEmail";
-//        } else {
-//            return $container->mailer->send($plantilla, $dades, function ($message) use ($emails, $subject) {
-//
-//                $message->clearAll();
-//                $message->from("borsa.treball@paucasesnovescifp.cat");
-//                foreach ($emails as $adreca) {
-//                    $message->bcc($adreca->email);
-//                }
-//
-//                $message->subject($subject);
-//            });
-//        }
+        if ($diferit) {
+            $resultat = self::afegirEmail($emails, $subject, $plantilla, $dades, $container);
+            $resultat = $resultat . "\nDesprés d'afegirEmail";
+        } else {
+            return $container->mailer->send($plantilla, $dades, function ($message) use ($emails, $subject) {
+
+                $message->clearAll();
+                $message->from("borsa.treball@paucasesnovescifp.cat");
+                foreach ($emails as $adreca) {
+                    $message->bcc($adreca->email);
+                }
+
+                $message->subject($subject);
+            });
+        }
         return true;
     }
 
@@ -33,29 +33,29 @@ class Bustia
     public
     static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container, $diferit = false)
     {
-//        if ($diferit) {
-//            $destinataris = array();
-//            $destinataris[] = $destinatari;
-//            $resultat = self::afegirEmail($destinataris, $subject, $plantilla, $dades, $container);
-////            $resultat = $resultat . "\nDesprés d'afegirEmail";
-//        } else {
-//            $resultat = false;
-//            try {
-//                $resultat = $container->mailer->send($plantilla, $dades, function ($message) use ($destinatari, $subject) {
-//                    $message->clearAll();
-//                    $message->from("borsa.treball@paucasesnovescifp.cat");
-//                    $message->to($destinatari);
-//                    $message->subject($subject);
-//                });
-//            } catch (phpmailerException $ex) {
-//                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
-//                $resultat = $resultat . $ex->errorMessage();
-//            } catch (Exception $ex) {
-//                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
-//                $resultat = $resultat . $ex->errorMessage();
-//            }
-//        }
-//        return $resultat;
+        if ($diferit) {
+            $destinataris = array();
+            $destinataris[] = $destinatari;
+            $resultat = self::afegirEmail($destinataris, $subject, $plantilla, $dades, $container);
+//            $resultat = $resultat . "\nDesprés d'afegirEmail";
+        } else {
+            $resultat = false;
+            try {
+                $resultat = $container->mailer->send($plantilla, $dades, function ($message) use ($destinatari, $subject) {
+                    $message->clearAll();
+                    $message->from("borsa.treball@paucasesnovescifp.cat");
+                    $message->to($destinatari);
+                    $message->subject($subject);
+                });
+            } catch (phpmailerException $ex) {
+                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+                $resultat = $resultat . $ex->errorMessage();
+            } catch (Exception $ex) {
+                $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+                $resultat = $resultat . $ex->errorMessage();
+            }
+        }
+        return $resultat;
         return true;
     }
 
