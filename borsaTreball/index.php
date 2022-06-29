@@ -1202,6 +1202,31 @@ $app->group('/administrador', function () {
         return DaoProfessor::obrirAlumnes($request, $response, $args, $this);
     });
 
+//    $this->get("/reenviarAltaAlumnes", function ($request, $response, $args) {
+//        $this->dbEloquent;
+//        $usuari = Usuari::find($_SESSION["idUsuari"]);
+//        if ($usuari != null) {
+//            $prof = $usuari->getEntitat();
+////            $resultats=null;
+//            $resultats=DaoProfessor::reenviarMailProfessorsAltaAlumne($request,$response,$this);
+//            return $this->view->render($response, 'professor/estadistiques.html.twig', ['professor' => $prof, 'resultats' => $resultats]);
+//        } else {
+//            return $response->withJSON('Errada: ' . $_SESSION);
+//        }
+//    });
+//    $this->get("/reenviarAltaEmpreses", function ($request, $response, $args) {
+//        $this->dbEloquent;
+//        $usuari = Usuari::find($_SESSION["idUsuari"]);
+//        if ($usuari != null) {
+//            $prof = $usuari->getEntitat();
+////            $resultats=null;
+//            $resultats=DaoProfessor::reenviarMailProfessorsAltaEmpresa($request,$response,$this);
+//            return $this->view->render($response, 'professor/estadistiques.html.twig', ['professor' => $prof, 'resultats' => $resultats]);
+//        } else {
+//            return $response->withJSON('Errada: ' . $_SESSION);
+//        }
+//    });
+
 })->add(function ($request, $response, $next) {
     if (isset($_SESSION['rols']) && (in_array(40, $_SESSION['rols']))) {
         return $response = $next($request, $response);

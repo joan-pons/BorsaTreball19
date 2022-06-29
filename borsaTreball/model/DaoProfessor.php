@@ -2,6 +2,8 @@
 
 namespace Borsa;
 
+use Borsa\Alumne as Alumne;
+use Borsa\Empresa as Empresa;
 use Borsa\Professor as Professor;
 use Correu\Bustia as Bustia;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -423,7 +425,6 @@ class DaoProfessor extends Dao
             $config = Configuracio::find(1);
 
             if ($config != null) {
-
                 $data = $request->getParsedBody();
                 $config->inici = filter_var($data['inici'], FILTER_SANITIZE_STRING);
                 $config->final = filter_var($data['final'], FILTER_SANITIZE_STRING);
@@ -444,6 +445,111 @@ class DaoProfessor extends Dao
                     break;
                 default:
                     $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la seva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function reenviarMailProfessorsAltaAlumne(Request $request, Response $response, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+
+            $alumnes = Alumne::whereDate('dataAlta', '>', '2022-06-09')->where('validat', '=', 0)->get();
+
+//            $numAlumnes = DB::select('SELECT count(*) FROM borsa.Alumnes where estudisAlta=\'' . $alumne->estudisAlta . '\'  and validat=0 and dataAlta > date_add(NOW(), INTERVAL -7 DAY)');
+            if (true) { //TODO $numAlumnes  == 0) {
+                foreach ($alumnes as $alumne) {
+                    $estudis = Estudis::find($alumne->estudisAlta);
+                    if (count($estudis->professors) > 0) {
+                        foreach ($estudis->professors as $professor) {
+                            $usuari = Usuari::where('nomUsuari', $professor->email)->get();
+                            $container->logger->addInfo($alumne->idAlumne . " " . $professor->email);
+
+                            $r = Dao::generaToken(20, $usuari[0], 7, $container);
+                            Bustia::enviarUnic($professor->email, "Validació d'alumnes pendent", 'email/validarAlumne.html.twig', ['token' => $r->token], $container);
+                        }
+//                Bustia::enviar($estudis->professors, "Validació d'alumnes pendent", 'email/validarAlumne.html.twig', [], $container);
+                    } else {
+                        $professors = Usuari::where('tipusUsuari', 10)->get();
+                        $admins = array();
+                        foreach ($professors as $p) {
+                            if ($p->teRol(40) && $p->getEntitat()->actiu == 1) {
+                                $admins[] = $p->getEntitat();
+
+                            }
+                        }
+                        $cicle = Estudis::find($alumne->estudisAlta);
+                        Bustia::enviar($admins, "Validació d'alumnes pendents sense professor responsable", 'email/validarAlumne.html.twig', ['alumne' => $alumne, 'cicle' => $cicle], $container);
+                    }
+                }
+            }
+            $missatge = array("missatge" => "Alta correcta");
+            return $response->withJson($missatge);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades de l'alumne no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+
+    }
+
+    public static function reenviarMailProfessorsAltaEmpresa(Request $request, Response $response, \Slim\Container $container)
+    {
+        //TODO: Filtrar descripció
+        try {
+            $container->dbEloquent;
+            $empreses = Empresa::whereDate('dataAlta', '>', '2022-06-09')->where('validada', '=', 0)->get();
+            foreach ($empreses as $empresa) {
+
+                $professors = DB::select('SELECT p.* FROM borsa.Estudis_has_Responsables r inner join borsa.Estudis e on e.codi = r.Estudis_codi inner join borsa.Professors p on r.Professors_idProfessor=p.idProfessor where p.actiu=1 and e.familia=\'' . $empresa->familia . '\'');
+                foreach ($professors as $professor) {
+                    $container->logger->addInfo($empresa->idEmpresa . ' ' . $professor->idProfessor);
+
+                    if (count($professors) > 0) {
+                        $usuari = Usuari::where('nomUsuari', $professor->email)->get();
+                        $r = Dao::generaToken(20, $usuari[0], 7, $container);
+                        Bustia::enviarUnic($professor->email, 'Validació d\'empresa pendent', '/email/validarEmpresa.html.twig', ['empresa' => $empresa->nom, 'token' => $r->token], $container);
+
+//                Bustia::enviar($professors, 'Validació d\'empresa pendent sense professor assignat', '/email/validarEmpresa.html.twig', ['token'], $container);
+                    } else {
+                        $professors = Usuari::where('tipusUsuari', 10)->get();
+                        $admins = array();
+                        foreach ($professors as $p) {
+                            if ($p->teRol(40) && $p->getEntitat()->actiu == 1) {
+                                $admins[] = $p->getEntitat();
+                            }
+                        }
+                        $familia = Familia::Find($empresa->familia);
+                        Bustia::enviar($admins, "Validació d'empresa pendent sense professor assignat.", 'email/validarEmpresaNoProfessor.html.twig', ['empresa' => $empresa, 'familia' => $familia], $container);
+                    }
+                }
+            }
+//            $missatge = array("missatge" => 'Alta correcta.', "empresa" => $empresa, "data" => $data);
+            return $response->withJson($missatge);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per una altra empresa.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "L'empresa no s'ha pogut donar d'alta correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
             }
             return $response->withJson($missatge, 422);
