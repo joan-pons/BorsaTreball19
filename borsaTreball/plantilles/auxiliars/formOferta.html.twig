@@ -6,8 +6,8 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="Nom">Codi oferta:</label>
-                    <input type="text" class="form-control" id="idOferta" name="idOferta" readonly="readonly" value="{{ oferta.idOferta }}">
+                    <label for="idOferta">Codi oferta:</label>
+                    <input type="text" maxlength="11" class="form-control" id="idOferta" name="idOferta" readonly="readonly" value="{{ oferta.idOferta }}">
                 </div>
             </div><!--col-->
             <div class="col-md-6">
@@ -49,14 +49,14 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="tContracte">Tipus de contracte:</label>
-                    <input type="text" class="form-control" id="tContracte" name="tContracte"
+                    <input type="text"  maxlength="45" class="form-control" id="tContracte" name="tContracte"
                            value="{{ oferta.tipusContracte }}">
                 </div>
             </div><!--col-->
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="localitat">Localitat:</label>
-                    <input type="text" class="form-control" id="localitat" name="localitat"
+                    <input type="text" maxlength="60" class="form-control" id="localitat" name="localitat"
                            value="{{ oferta.localitat }}">
                 </div>
             </div><!--col-->
@@ -66,7 +66,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="horari">Horari:</label>
-                    <input type="text" class="form-control" id="horari" name="horari" value="{{ oferta.horari }}">
+                    <input type="text" maxlength="60" class="form-control" id="horari" name="horari" value="{{ oferta.horari }}">
                 </div>
             </div><!--col-->
         </div><!--row-->

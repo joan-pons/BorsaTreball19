@@ -30,8 +30,7 @@ class Bustia
     }
 
 //TODO: Els mètodes enviar i enviarÚnic han de insertar els missatges i els destinataris a la base de dades. Així no s'haurà de tocar més codi.
-    public
-    static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container, $diferit = false)
+    public static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container, $diferit = false)
     {
         if ($diferit) {
             $destinataris = array();
@@ -59,8 +58,7 @@ class Bustia
         return true;
     }
 
-    public
-    static function afegirEmail($destinataris, $assumpte, $plantilla, $dades, $container)
+    public static function afegirEmail($destinataris, $assumpte, $plantilla, $dades, $container)
     {
         try {
             $text = $container->view->fetch($plantilla, $dades);
