@@ -258,7 +258,7 @@ class DaoProfessor extends Dao
                 $data = $request->getParsedBody();
                 $idrol = filter_var($data['idRol'], FILTER_SANITIZE_NUMBER_INT);
                 $usuari->rols()->sync([$idrol], false);
-                Bustia::enviarUnic('ptj@paucasesnovescifp.cat', 'Rol administrador', "/email/administrador.twig", ['administrador' => true], $container);
+                Bustia::enviarUnic($professor->email, 'Rol administrador', "/email/administrador.twig", ['administrador' => true], $container,false);
 
                 return $response->withJSON($professor);
             } else {
@@ -538,7 +538,8 @@ class DaoProfessor extends Dao
                 }
             }
 //            $missatge = array("missatge" => 'Alta correcta.', "empresa" => $empresa, "data" => $data);
-            return $response->withJson($missatge);
+//            return $response->withJson($missatge);
+            return $response->withJson('[2]');
         } catch (\Illuminate\Database\QueryException $ex) {
             $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
