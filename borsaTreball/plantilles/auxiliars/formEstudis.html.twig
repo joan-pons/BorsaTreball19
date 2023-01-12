@@ -173,8 +173,10 @@
                         data: estudisElegits
                     }).done(function (dades) {
                         $('#mrTitol').html('Actualització correcte');
-                        if (dades.quantitat >= 0) {
+                        if (dades.quantitat > 0) {
                             $('#mrText').html("<p>{{ etiquetes.correcte }}</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
+                        }else if (dades.quantitat == 0) {
+                            $('#mrText').html('<p>{{ etiquetes.correcte }}</p><p class="text-danger">No hi ha cap alumne que cumpleixi les condicions de l\'oferta . Miri de posar un any anterior.</p>');
                         } else {
                             $('#mrText').html("<p>{{ etiquetes.correcte }}</p>");
                         }
@@ -300,8 +302,11 @@
                     data: estudisElegits
                 }).done(function (dades) {
                     $('#mrTitol').html('Modificació correcta');
-                    if (dades.quantitat >= 0) {
+
+                    if (dades.quantitat > 0) {
                         $('#mrText').html("<p>Les dades dels estudis <em>" + estudisElegits.nomGrau + "</em> s'han modificat correctament.</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
+                    }else if (dades.quantitat == 0) {
+                        $('#mrText').html('<p>{{ etiquetes.correcte }}</p><p  class="text-danger">No hi ha cap alumne que cumpleixi les condicions de l\'oferta . Miri de posar un any anterior.</p>');
                     } else {
                         $('#mrText').html("<p>Les dades dels estudis s'han modificat correctament.</p>");
                     }

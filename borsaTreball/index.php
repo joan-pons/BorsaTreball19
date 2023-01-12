@@ -1,7 +1,6 @@
 <?php
 
 use Borsa\Alumne as Alumne;
-use Borsa\Configuracio as Configuracio;
 use Borsa\Dao as Dao;
 use Borsa\DaoAlumne as DaoAlumne;
 use Borsa\DaoEmpresa as DaoEmpresa;
@@ -16,15 +15,13 @@ use Borsa\Oferta as Oferta;
 use Borsa\Professor as Professor;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
-
 use Correu\Bustia as Bustia;
-
-
 use Illuminate\Database\Capsule\Manager as DB;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
 
 //use Correu\Bustia as Bustia;
 
@@ -135,7 +132,7 @@ $container['notFoundHandler'] = function ($c) {
     };
 };
 
-$container['logger'] = function($c) {
+$container['logger'] = function ($c) {
     $logger = new \Monolog\Logger('Borsa_logger');
     $file_handler = new \Monolog\Handler\StreamHandler('./sgol/borsa.log');
     $logger->pushHandler($file_handler);
@@ -149,10 +146,10 @@ $app->get('/', function ($request, $response, $args) {
 
 // Index
 $app->get('/proves', function ($request, $response, $args) {
-    $html=$this->view->fetch('/email/instruccionsValidat.html.twig',["token"=>"1234"]);
+    $html = $this->view->fetch('/email/instruccionsValidat.html.twig', ["token" => "1234"]);
 //    $resultat=Dao::altaMail(null,$html,$this);
 //    $email=Bustia::enviarUnic('ptj@paucasesnovescifp.cat', 'Email de proves','/email/instruccionsValidat.html.twig',["token"=>"1234"],$this);
-      $email=Bustia::enviar(['ptj@paucasesnovescifp.cat','joan.pons.tugores@gmail.com'], 'Email de proves','/email/instruccionsValidat.html.twig',["token"=>"1234"],$this);
+    $email = Bustia::enviar(['ptj@paucasesnovescifp.cat', 'joan.pons.tugores@gmail.com'], 'Email de proves', '/email/instruccionsValidat.html.twig', ["token" => "1234"], $this);
 //    $email=Bustia::afegirEmail('Email de proves',['ptj@paucasesnovescifp.cat','vqm@paucasesnovescifp.cat'],'/email/instruccionsValidat.html.twig',["token"=>"1234"],$this);
     return $response->withJSON($email);
 //    return $response->withJSON($resultat);
@@ -568,22 +565,32 @@ $app->get('/alumneLogin', function ($request, $response, $args) {
 //Alta Alumne
 $app->get('/altaAlumne', function ($request, $response, $args) {
     $this->dbEloquent;
-    $config = Configuracio::find(1);
-    $avui = strtotime("now");
-    if ($avui >= strtotime($config->inici) && $avui <= strtotime($config->final)) {
-        $families = Familia::orderBy('nom', 'ASC')->get();
-        $estudis = Estudis::where('actiu', 1)->orderBy('nom', 'ASC')->get();
+    $families = Familia::orderBy('nom', 'ASC')->get();
+    $estudis = Estudis::where('actiu', 1)->orderBy('nom', 'ASC')->get();
 
-        return $this->view->render($response, 'alumne/altaAlumne.html.twig', ['families' => $families, 'estudis' => $estudis]);
-    } else {
-        if ($avui < strtotime($config->inici)) {
-            return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', ['config' => $config]);
-        } else {
-            return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', []);
-        }
-    }
+    return $this->view->render($response, 'alumne/altaAlumne.html.twig', ['families' => $families, 'estudis' => $estudis]);
+
 });
 
+////Alta Alumne
+//$app->get('/altaAlumne', function ($request, $response, $args) {
+//    $this->dbEloquent;
+//    $config = Configuracio::find(1);
+//    $avui = strtotime("now");
+//    if ($avui >= strtotime($config->inici) && $avui <= strtotime($config->final)) {
+//        $families = Familia::orderBy('nom', 'ASC')->get();
+//        $estudis = Estudis::where('actiu', 1)->orderBy('nom', 'ASC')->get();
+//
+//        return $this->view->render($response, 'alumne/altaAlumne.html.twig', ['families' => $families, 'estudis' => $estudis]);
+//    } else {
+//        if ($avui < strtotime($config->inici)) {
+//            return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', ['config' => $config]);
+//        } else {
+//            return $this->view->render($response, 'auxiliars/altaAlumneTancada.html.twig', []);
+//        }
+//    }
+//});
+//
 $app->post('/altaAlumne', function ($request, $response) {
     return DaoAlumne::altaAlumne($request, $response, $this);
 
@@ -1130,8 +1137,8 @@ $app->group('/administrador', function () {
         $usuari = Usuari::find($_SESSION["idUsuari"]);
         if ($usuari != null) {
             $prof = $usuari->getEntitat();
-            $logs=file('./sgol/borsa.log');
-            $logs=array_reverse($logs);
+            $logs = file('./sgol/borsa.log');
+            $logs = array_reverse($logs);
             return $this->view->render($response, 'professor/logs.html.twig', ['professor' => $prof, 'logs' => $logs]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
@@ -1144,7 +1151,7 @@ $app->group('/administrador', function () {
         if ($usuari != null) {
             $prof = $usuari->getEntitat();
 //            $resultats=null;
-            $resultats=Dao::estadistiques($request,$response,$args, $this);
+            $resultats = Dao::estadistiques($request, $response, $args, $this);
 
             return $this->view->render($response, 'professor/estadistiques.html.twig', ['professor' => $prof, 'resultats' => $resultats]);
         } else {
@@ -1186,21 +1193,21 @@ $app->group('/administrador', function () {
         }
     });
 
-    $this->get("/obrirAlumnes", function ($request, $response, $args) {
-        $this->dbEloquent;
-        $usuari = Usuari::find($_SESSION['idUsuari']);
-        if ($usuari != null) {
-            $prof = $usuari->getEntitat();
-            $config = Configuracio::find(1);
-            return $this->view->render($response, 'professor/obrirAlumnes.html.twig', ['config' => $config, 'professor' => $prof]);
-        } else {
-            return $response->withJSON('Errada: ' . $_SESSION);
-        }
-    });
+//    $this->get("/obrirAlumnes", function ($request, $response, $args) {
+//        $this->dbEloquent;
+//        $usuari = Usuari::find($_SESSION['idUsuari']);
+//        if ($usuari != null) {
+//            $prof = $usuari->getEntitat();
+//            $config = Configuracio::find(1);
+//            return $this->view->render($response, 'professor/obrirAlumnes.html.twig', ['config' => $config, 'professor' => $prof]);
+//        } else {
+//            return $response->withJSON('Errada: ' . $_SESSION);
+//        }
+//    });
 
-    $this->put("/obrirAlumnes/{idConfig}", function ($request, $response, $args) {
-        return DaoProfessor::obrirAlumnes($request, $response, $args, $this);
-    });
+//    $this->put("/obrirAlumnes/{idConfig}", function ($request, $response, $args) {
+//        return DaoProfessor::obrirAlumnes($request, $response, $args, $this);
+//    });
 
 //    $this->get("/reenviarAltaAlumnes", function ($request, $response, $args) {
 //        $this->dbEloquent;
