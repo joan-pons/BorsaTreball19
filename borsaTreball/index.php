@@ -174,7 +174,7 @@ $app->get('/provesCorreu', function ($request, $response, $args) {
 $app->get('/sortir', function ($request, $response, $args) {
     session_unset();
     session_destroy();
-    return $response->withRedirect("/borsaTreball");
+    return $this->view->render($response, 'index.html.twig');
 });
 
 $app->get('/sortirLogo', function ($request, $response, $args) {

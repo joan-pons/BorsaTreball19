@@ -5,6 +5,7 @@
     <script>
         $(document).ready(function () {
             var dades;
+            document.getElementById("nomEntitat").href="../professor/dashBoard";
 
             $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
             $('#bmDacord').on('click', function () {
@@ -56,7 +57,7 @@
                 $('#mdEspera').modal('show');
             });
 
-            $('[name="validat"').on('change', function (event) {
+            $('[name="validat"]').on('change', function (event) {
                 var id = event.target.id.replace("val", "");
                 if ($("#" + event.target.id).is(':checked')) {
                     $("#act" + id).prop('checked', true);
