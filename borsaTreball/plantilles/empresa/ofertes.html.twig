@@ -106,15 +106,8 @@
     </script>
 {% endblock %}
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{empresa.nom}}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="#"><span class="glyphicon glyphicon-list"></span> Llista d'ofertes</a></li>
-        <li><a href="afegirOferta"><span class="glyphicon glyphicon-plus"></span> Afegir oferta
-            </a></li>
-    </ul>
-
+    {%  set actiu=221 %}
+    {{ parent() }}
 {% endblock %}
 {% block contingut %}
     <h2>Ofertes</h2>

@@ -7,20 +7,20 @@
 
 {% endblock %}
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{empresa.nom}}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="ofertes"><span class="glyphicon glyphicon-list"></span> Llista d'ofertes</a></li>
-        <li class="active"><a href="#">Actualitzar dades</a></li>
-        <li><a href="estudis?idOferta={{oferta.idOferta}}">Estudis</a></li>
-        <li><a href="idiomes?idOferta={{oferta.idOferta}}">Idiomes</a></li>
-        <li><a href="estatLaboral?idOferta={{oferta.idOferta}}">Jornada laboral</a></li>
-        <li><a href="contactesOferta?idOferta={{oferta.idOferta}}">Persones de contacte</a></li>
+{#    <a class="navbar-brand" href="dashBoard">{{ empresa.nom }}</a>#}
+{#    </div>#}
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+            <li><a href="ofertes"><span class="glyphicon glyphicon-list"></span> Llista d'ofertes</a></li>
+            <li class="active"><a href="#">Actualitzar dades</a></li>
+            <li><a href="estudis?idOferta={{ oferta.idOferta }}">Estudis</a></li>
+{#            <li><a href="idiomes?idOferta={{ oferta.idOferta }}">Idiomes</a></li>#}
+{#            <li><a href="estatLaboral?idOferta={{ oferta.idOferta }}">Jornada laboral</a></li>#}
+        <li><a href="contactesOferta?idOferta={{ oferta.idOferta }}">Persones de contacte</a></li>
     </ul>
 
-{% endblock %}
-{% block contingut %}
-    <!--<h4>Dades oferta: Codi: {{oferta.idOferta}} Titol: {{oferta.titol}}</h4>-->
-    {{include('auxiliars/formOferta.html.twig')}}
+    {% endblock %}
+    {% block contingut %}
+    <!--<h4>Dades oferta: Codi: {{ oferta.idOferta }} Titol: {{ oferta.titol }}</h4>-->
+    {{ include('auxiliars/formOferta.html.twig') }}
 {% endblock %}

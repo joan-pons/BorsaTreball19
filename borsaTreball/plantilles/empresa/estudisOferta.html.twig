@@ -4,15 +4,14 @@
     <title>Borsa de treball: Ofertes</title>
 {% endblock %}
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{empresa.nom}}</a>
-</div>
+
 <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
         <li><a href="ofertes"><span class="glyphicon glyphicon-list"></span> Llista d'ofertes</a></li>
         <li><a href="modificarOferta?idOferta={{identificador}}">Actualitzar dades</a></li>
         <li class="active"><a href="#">Estudis</a></li>
-        <li><a href="idiomes?idOferta={{identificador}}">Idiomes</a></li>
-        <li><a href="estatLaboral?idOferta={{identificador}}">Jornada laboral</a></li>
+{#        <li><a href="idiomes?idOferta={{identificador}}">Idiomes</a></li>#}
+{#        <li><a href="estatLaboral?idOferta={{identificador}}">Jornada laboral</a></li>#}
         <li><a href="contactesOferta?idOferta={{identificador}}">Persones de contacte</a></li>
     </ul>
 

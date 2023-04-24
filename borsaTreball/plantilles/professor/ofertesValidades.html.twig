@@ -7,11 +7,11 @@
 
 
             $('.btn-info').on('click', function (e) {
-               const boto=e.currentTarget;
-               const div=boto.parentNode.parentNode.nextSibling.nextSibling;
-               console.log(div);
-               div.classList.remove("oculta");
-               $(boto).hide();
+                const boto = e.currentTarget;
+                const div = boto.parentNode.parentNode.nextSibling.nextSibling;
+                console.log(div);
+                div.classList.remove("oculta");
+                $(boto).hide();
             });
 
         });
@@ -19,97 +19,101 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
-    </div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="ofertes">Validar ofertes pendents</a></li>
-        <li class="active"><a href="#">Ofertes validades</a></li>
-    </ul>
-
-
-    {% endblock %}
+    {% set actiu=112 %}
+    {{ parent() }}
+{% endblock %}
 
     {% block contingut %}
-    <h2>Ofertes validades</h2>
-    {% for oferta in ofertes %}
-    <div>
-        <div class="well" id="of{{ oferta.idOferta }}">
-            {# {{ include('auxiliars/ofertaCompleta.html.twig') }} #}
-            <div class="row">
-                <div class="col-md-4"><label>Empresa: </label> {{ oferta.empresa.nom }} </div>
-                <div class="col-md-8"><label>Oferta: </label> {{ oferta.titol }} </div>
-            </div>
-             <div class="row">
-                    <div class="col-md-4"><label>Data de publicació:</label> {{ oferta.dataPublicacio | date('d / m / Y') }}       </div>
-                    <div class="col-md-4"><label>Vàlida fins a:</label> {{ oferta.dataFinal | date('d / m / Y') }}</div>
-                    <div class="col-md-4"><button class="btn-info">Més informació</button> </div>
-             </div>
-             <div class="oculta">
-             <div class="row">
-             <div class="col-md-12"><label>Descripció: </label> {{ oferta.descripcio | raw }} </div>
-             </div>
-                 <div class="row">
-                     <div class="col-md-12">
-                        <p><label>Localitat:</label> {{ oferta.localitat }}</p>
-                        <p><label>Tipus de contracte:</label> {{ oferta.tipusContracte }}</p>
-                        <p><label>Horari:</label> {{ oferta.horari }}</p>
-                        <p>Es seleccionaran estudiants que hagin acabat <strong>qualsevol</strong> dels estudis demanats a l'oferta.</p>
-                        <ul>
-                           {% for grau in oferta.estudis %}
-                             <li><p>{{ grau.nom }}</p></li>
-                           {% endfor %}
-                        </ul>
-
-                        {% if not oferta.idiomes is empty %}
-
-                             <p>Es seleccionaran estudiants que, de tots els idiomes demanats, tenguin un nivell igual o superior al demanat            a l'oferta.</p>
-
-                             <ul>
-                                  {% for idioma in oferta.idiomes %}
-                                        <li><p>{{ idioma.idioma }}:
-                                             {% for nivell in nivells %}
-                                                 {% if idioma.pivot.NivellsIdioma_idNivellIdioma == nivell.idNivellIdioma %}
-                                                     {{ nivell.nivell }}
-                                                 {% endif %}
-                                            {% endfor %}
-                                        </p></li>
-                                  {% endfor %}
-                             </ul>
-
-
-                        {% endif %}
-
-                        {% if not oferta.estatsLaborals is empty %}
-                            <p>Es seleccionaran estudiants que acceptin la jornada laboral demanada.</p>
-                            <ul>
-                                {% for estat in oferta.estatsLaborals %}
-                                    <li><p>{{ estat.nomEstatLaboral }}</p></li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-
-                        {% if oferta.contactes is not empty or oferta.empresa.email!="borsa.treball@paucasesnovescifp.cat" %}
-                            <p>Enviau les vostres            dades {% if oferta.contactes|length>1 %}a un dels següents correus electrònics.{% else %}al següent correu electrònic{% endif %}</p>
-                            <ul>
-                                {% if oferta.contactes is empty %}
-                                    <li>{{ oferta.empresa.nom }}: <a href="mailto:{{ oferta.empresa.email }}">{{ oferta.empresa.email }}</a></li>
-                                {% else %}
-                                    {% for contacte in oferta.contactes %}
-                                        <li><p>{{ contacte.nom }} {{ contacte.llinatges }}: <a                                    href="mailto:{{ contacte.email }}">{{ contacte.email }}</a></p></li>
+        <h2>Ofertes validades</h2>
+        {% for oferta in ofertes %}
+            <div>
+                <div class="well" id="of{{ oferta.idOferta }}">
+                    {# {{ include('auxiliars/ofertaCompleta.html.twig') }} #}
+                    <div class="row">
+                        <div class="col-md-4"><label>Empresa: </label> {{ oferta.empresa.nom }} </div>
+                        <div class="col-md-8"><label>Oferta: </label> {{ oferta.titol }} </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"><label>Data de
+                                publicació:</label> {{ oferta.dataPublicacio | date('d / m / Y') }}       </div>
+                        <div class="col-md-4"><label>Vàlida fins a:</label> {{ oferta.dataFinal | date('d / m / Y') }}
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn-info">Més informació</button>
+                        </div>
+                    </div>
+                    <div class="oculta">
+                        <div class="row">
+                            <div class="col-md-12"><label>Descripció: </label> {{ oferta.descripcio | raw }} </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><label>Localitat:</label> {{ oferta.localitat }}</p>
+                                <p><label>Tipus de contracte:</label> {{ oferta.tipusContracte }}</p>
+                                <p><label>Horari:</label> {{ oferta.horari }}</p>
+                                <p>Es seleccionaran estudiants que hagin acabat <strong>qualsevol</strong> dels estudis
+                                    demanats a l'oferta.</p>
+                                <ul>
+                                    {% for grau in oferta.estudis %}
+                                        <li><p>{{ grau.nom }}</p></li>
                                     {% endfor %}
+                                </ul>
+
+                                {% if not oferta.idiomes is empty %}
+
+                                    <p>Es seleccionaran estudiants que, de tots els idiomes demanats, tenguin un nivell
+                                        igual o superior al demanat a l'oferta.</p>
+
+                                    <ul>
+                                        {% for idioma in oferta.idiomes %}
+                                            <li><p>{{ idioma.idioma }}:
+                                                    {% for nivell in nivells %}
+                                                        {% if idioma.pivot.NivellsIdioma_idNivellIdioma == nivell.idNivellIdioma %}
+                                                            {{ nivell.nivell }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </p></li>
+                                        {% endfor %}
+                                    </ul>
+
+
                                 {% endif %}
-                            </ul>
-                        {% endif %}
 
-                     </div>
-                 </div>
+                                {% if not oferta.estatsLaborals is empty %}
+                                    <p>Es seleccionaran estudiants que acceptin la jornada laboral demanada.</p>
+                                    <ul>
+                                        {% for estat in oferta.estatsLaborals %}
+                                            <li><p>{{ estat.nomEstatLaboral }}</p></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
 
-             </div>
-        </div>
-    </div>
-{#</div>#}
-    {% endfor %}
+                                {% if oferta.contactes is not empty or oferta.empresa.email!="borsa.treball@paucasesnovescifp.cat" %}
+                                    <p>Enviau les vostres
+                                        dades {% if oferta.contactes|length>1 %}a un dels següents correus electrònics.{% else %}al següent correu electrònic{% endif %}</p>
+                                    <ul>
+                                        {% if oferta.contactes is empty %}
+                                            <li>{{ oferta.empresa.nom }}: <a
+                                                        href="mailto:{{ oferta.empresa.email }}">{{ oferta.empresa.email }}</a>
+                                            </li>
+                                        {% else %}
+                                            {% for contacte in oferta.contactes %}
+                                                <li><p>{{ contacte.nom }} {{ contacte.llinatges }}: <a
+                                                                href="mailto:{{ contacte.email }}">{{ contacte.email }}</a>
+                                                    </p></li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {# </div> #}
+        {% endfor %}
         {% if ofertes is empty %}
             <div class="well">
                 <p>No hi ha cap oferta pendent de validar.</p>

@@ -96,19 +96,9 @@
 {% endblock %}
 
 {% block navegacio %}
-<a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="empresesPendents">Validar empreses pendents</a></li>
-        <li class="active"><a href="#">Empreses validades</a></li>
-        {% if usuari.teRol(40) %}
-            <li><a href="../administrador/empreses">Activar / validar empresa</a></li>
-        {% endif %}
-    </ul>
-
-
-    {% endblock %}
+    {% set actiu=132 %}
+    {{ parent() }}
+{% endblock %}
 
     {% block contingut %}
         <h2>Empreses validades</h2>
@@ -130,12 +120,15 @@
                         </div>
 
                     </div>
-                     <div class="row">
-                            <div class='col-md-12'>
-                                <p><label>Adreça: &nbsp;</label>{{ empresa.adreca }} <label>Codi postal: &nbsp;</label>{{ empresa.codiPostal }} <label>Localitat: &nbsp;</label>{{ empresa.localitat }} <label>Província: &nbsp;</label>{{ empresa.provincia }}</p>
-                                <p><label>Data d'alta: &nbsp;</label>{{ empresa.dataAlta }}</p>
-                            </div>
+                    <div class="row">
+                        <div class='col-md-12'>
+                            <p><label>Adreça: &nbsp;</label>{{ empresa.adreca }} <label>Codi postal:
+                                    &nbsp;</label>{{ empresa.codiPostal }} <label>Localitat:
+                                    &nbsp;</label>{{ empresa.localitat }} <label>Província:
+                                    &nbsp;</label>{{ empresa.provincia }}</p>
+                            <p><label>Data d'alta: &nbsp;</label>{{ empresa.dataAlta }}</p>
                         </div>
+                    </div>
                 </div>
             </form>
         {% endfor %}

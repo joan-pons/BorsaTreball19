@@ -8,7 +8,7 @@
 
 namespace Borsa;
 
-use \Illuminate\Database\Eloquent\Model as Model;
+use Illuminate\Database\Eloquent\Model as Model;
 
 /**
  * Description of Estudis
@@ -33,4 +33,9 @@ class Estudis extends Model {
     public function familia(){
         return $this->belongsTo('Borsa\Familia', 'id');
     }
+
+//    public function tipusEstudis()
+//    {
+//        return $this->belongsTo('Borsa\TipusEstudis', 'idTipus');
+//    }
 }

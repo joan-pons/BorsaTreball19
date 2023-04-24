@@ -41,11 +41,11 @@
                             <label class="control-label">Any de finalització:</label>
                             <input type="number" min="2000" id="anyNou" name="any" required="required" maxlength="4">
                         </div>
-{#                        <div class="form-group required">#}
-{#                            <label class="control-label">Nota final:</label>#}
-{#                            <input type="number" min="5" max="10" id="notaNou" name="nota" value='5'#}
-{#                                   required="required">#}
-{#                        </div>#}
+                        {# <div class="form-group required"> #}
+                        {# <label class="control-label">Nota final:</label> #}
+                        {# <input type="number" min="5" max="10" id="notaNou" name="nota" value='5' #}
+                        {# required="required"> #}
+                        {# </div> #}
                     </div>
 
                     <div class='col-md-4'>
@@ -90,11 +90,11 @@
                             <input type="number" min="1970" max='{{ "now"|date("Y") }}' id="any" name="any"
                                    disabled='disabled' value='{{ grau.pivot.any }}' required="required">
                         </div>
-{#                        <div class="form-group required">#}
-{#                            <label class="control-label">Nota final:</label>#}
-{#                            <input type="number" min="5" max="10" id="nota" name="nota" value='{{ grau.pivot.nota }}'#}
-{#                                   disabled='disabled' required="required">#}
-{#                        </div>#}
+                        {# <div class="form-group required"> #}
+                        {# <label class="control-label">Nota final:</label> #}
+                        {# <input type="number" min="5" max="10" id="nota" name="nota" value='{{ grau.pivot.nota }}' #}
+                        {# disabled='disabled' required="required"> #}
+                        {# </div> #}
                     </div>
 
                     <div class='col-md-6'>
@@ -123,9 +123,16 @@
         var idAlumne ={{ identificador }} ;
         var estudisElegits;
 
+        var te = new Map();
+
+        {% for tipus in tipusEstudis %}
+        te.set({{ tipus.idTipus }}, '{{ tipus.nomTipus }}');
+        {% endfor %}
+
         $('#dNou').hide();
         $('#anyNou').attr('max', new Date().getFullYear());
-        $('#anyNou').attr('value', new Date().getFullYear()-10);
+        $('#anyNou').attr('value', new Date().getFullYear() - 10);
+
 
         $('form [name="bGuardar"]').hide();
         $('form [name="bCancel"]').hide();
@@ -175,7 +182,7 @@
                         $('#mrTitol').html('Actualització correcte');
                         if (dades.quantitat > 0) {
                             $('#mrText').html("<p>{{ etiquetes.correcte }}</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
-                        }else if (dades.quantitat == 0) {
+                        } else if (dades.quantitat == 0) {
                             $('#mrText').html('<p>{{ etiquetes.correcte }}</p><p class="text-danger">No hi ha cap alumne que cumpleixi les condicions de l\'oferta . Miri de posar un any anterior.</p>');
                         } else {
                             $('#mrText').html("<p>{{ etiquetes.correcte }}</p>");
@@ -305,7 +312,7 @@
 
                     if (dades.quantitat > 0) {
                         $('#mrText').html("<p>Les dades dels estudis <em>" + estudisElegits.nomGrau + "</em> s'han modificat correctament.</p><p>Amb aquestes condicions l'oferta s'enviaria a " + dades.quantitat + " alumnes.</p>");
-                    }else if (dades.quantitat == 0) {
+                    } else if (dades.quantitat == 0) {
                         $('#mrText').html('<p>{{ etiquetes.correcte }}</p><p  class="text-danger">No hi ha cap alumne que cumpleixi les condicions de l\'oferta . Miri de posar un any anterior.</p>');
                     } else {
                         $('#mrText').html("<p>Les dades dels estudis s'han modificat correctament.</p>");
@@ -342,33 +349,21 @@
                 method: 'GET',
                 url: "../cicles/" + $('#familia').val()
             }).done(function (dades) {
-                var opcions = '<option value="">Escull uns estudis</option>';
-                var xifra = '';
-                for (var index in dades) {
-                    if (xifra != dades[index].codi.charAt(3)) {
-                        if (xifra !== '') {
+                let opcions = '<option value="">Escull uns estudis</option>';
+                let tipusActual = '';
+                for (let cicle of dades) {
+                    if (tipusActual != cicle.tipusEstudis) {
+                        if (tipusActual !== '') {
                             opcions = opcions + '</optgroup>';
                         }
-                        xifra = dades[index].codi.charAt(3);
-                        var indicador = '';
-                        if (xifra === '1') {
-                            indicador = 'FP bàsica';
-                        } else if (xifra === '2') {
-                            indicador = 'Grau mitjà';
-                        } else  if (xifra === '3'){
-                            indicador = 'Grau superior';
-                        } else  if (xifra === 'E'){
-                            indicador = 'Curs d\'especialització';
-                        } else  if (xifra === 'D'){
-                            indicador = 'Certificat de professionalitat';
-                        }else{
-                            indicador = 'Altres';
-                        }
+                        tipusActual = cicle.tipusEstudis;
+                        let indicador = te.get(cicle.tipusEstudis);
+
                         opcions = opcions + '<optgroup label="' + indicador + '">';
                     }
-                    opcions = opcions + '</optgroup>';
-                    opcions = opcions + '<option value="' + dades[index].codi + '"> ' + dades[index].codi + ' - ' + dades[index].nom + '</option>';
+                    opcions = opcions + '<option value="' + cicle.codi + '"> ' + cicle.codi + ' - ' + cicle.nom + '</option>';
                 }
+                opcions = opcions + '</optgroup>';
                 $("#graus").html(opcions);
             });
         });

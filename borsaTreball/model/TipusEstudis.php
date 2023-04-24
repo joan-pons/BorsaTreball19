@@ -11,22 +11,15 @@ namespace Borsa;
 use \Illuminate\Database\Eloquent\Model as Model;
 
 /**
- * Description of Contacte
+ * Description of TipusEstudis
  *
  * @author joan
  */
-class Familia extends Model {
+class TipusEstudis extends Model {
 
-    protected $table = 'familiesProfessionals';
-    protected $primaryKey = "id";
+    protected $table = 'TipusEstudis';
+    protected $primaryKey = "idTipus";
     public $timestamps = false;
     public $incrementing = false; //Si no, tracta la clau primaria com a integer
-
-    public function cicles() {
-        return $this->hasMany('Borsa\Estudis', 'familia', 'id')->where('actiu',1);
-    }
-    public function ciclesTots() {
-        return $this->hasMany('Borsa\Estudis', 'familia', 'id');
-    }
 
 }

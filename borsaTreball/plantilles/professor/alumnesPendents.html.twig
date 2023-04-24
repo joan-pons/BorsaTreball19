@@ -50,11 +50,11 @@
 
             $("form").on('submit', function (event) {
                 event.preventDefault();
-                dades=[];
-                $('input[name*="rb"]').each(function(index){
-                    if(this.checked==true){
+                dades = [];
+                $('input[name*="rb"]').each(function (index) {
+                    if (this.checked == true) {
                         let alumne = {};
-                        const ident=this.getAttribute("id");
+                        const ident = this.getAttribute("id");
                         alumne.idAlumne = this.getAttribute("id").substr(3);
                         alumne.validat = this.getAttribute("id").charAt(2);
                         dades.push(alumne);
@@ -69,14 +69,9 @@
 {% endblock %}
 
 {% block navegacio %}
-<a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-<ul class="nav navbar-nav">
-            <li class="active"><a href="#">Alumnes pendents</a></li>
-            <li><a href="llistaAlumnesValidats">Alumnes validats</a></li>
-</ul>
-    {% endblock %}
+    {% set actiu=121 %}
+    {{ parent() }}
+{% endblock %}
 
     {% block contingut %}
         <h2>Validar alumnes pendents</h2>
@@ -85,35 +80,43 @@
                 <p> No hi ha alumnes pendents de validació.</p>
             </div>
         {% else %}
-                <form id="alumnes">
-            {% for alumne in alumnes %}
+            <form id="alumnes">
+                {% for alumne in alumnes %}
                     <div class="well">
-                        <input type="hidden" name="idAlumne" id="idA{{ alumne.idAlumne }}" value="{{ alumne.idAlumne }}">
-                        <div class="row" >
+                        <input type="hidden" name="idAlumne" id="idA{{ alumne.idAlumne }}"
+                               value="{{ alumne.idAlumne }}">
+                        <div class="row">
                             <div class='col-md-6'>
                                 <div class="form-group">
-                                   <p><label  class="control-label">Nom: &nbsp;</label>{{ alumne.llinatges }}, {{ alumne.nom }} ({{ alumne.estudisAlta }})</p>
-{#                                   <p><label  class="control-label">Estudis d'alta: &nbsp;</label>{{ alumne.nomEstudisAlta }}</p>#}
+                                    <p><label class="control-label">Nom: &nbsp;</label>{{ alumne.llinatges }}
+                                        , {{ alumne.nom }} ({{ alumne.estudisAlta }})</p>
+                                    {# <p><label  class="control-label">Estudis d'alta: &nbsp;</label>{{ alumne.nomEstudisAlta }}</p> #}
                                 </div>
                             </div>
-                             <div class='col-md-2'>
+                            <div class='col-md-2'>
                                 <div class="form-group">
-                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="1" id="rb1{{ alumne.idAlumne }}"> <label for="rb1{{ alumne.idAlumne }}"> Validat</label>
+                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="1"
+                                           id="rb1{{ alumne.idAlumne }}"> <label for="rb1{{ alumne.idAlumne }}">
+                                        Validat</label>
                                 </div>
-                             </div>
-                             <div class='col-md-2'>
+                            </div>
+                            <div class='col-md-2'>
                                 <div class="form-group">
-                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="2" id="rb2{{ alumne.idAlumne }}"> <label for="rb2{{ alumne.idAlumne }}"> Rebutjat</label>
+                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="2"
+                                           id="rb2{{ alumne.idAlumne }}"> <label for="rb2{{ alumne.idAlumne }}">
+                                        Rebutjat</label>
                                 </div>
-                             </div>
-                             <div class='col-md-2'>
+                            </div>
+                            <div class='col-md-2'>
                                 <div class="form-group">
-                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="0" id="rb0{{ alumne.idAlumne }}" checked="checked"> <label for="rb0{{ alumne.idAlumne }}"> Posposat</label>
+                                    <input type="radio" name="rb{{ alumne.idAlumne }}" value="0"
+                                           id="rb0{{ alumne.idAlumne }}" checked="checked"> <label
+                                            for="rb0{{ alumne.idAlumne }}"> Posposat</label>
                                 </div>
-                             </div>
+                            </div>
                         </div>
                     </div>
-            {% endfor %}
+                {% endfor %}
                 <div class="row">
                     <div class="col-md-4">
                         <button type="submit" class="btn btn-success">Guardar els canvis</button>

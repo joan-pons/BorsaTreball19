@@ -45,16 +45,25 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{professor.nom}} {{professor.llinatges}}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
-        <li><a href="modificarDades">Actualitzar dades</a></li>
-        <li class="active"><a href="#">Canviar contrasenya</a></li>
+        <li><a href="modificarDades" id="mActualitza">Actualitzar dades</a></li>
+        <li class="active"><a>Canviar contrasenya</a></li>
+        {% if professor.actiu %}
+            <li><a href="estudis" id="mEstudis">Estudis</a></li>
+            {% if not professor.estudis is empty %}
+                <li><a href="ofertes">Ofertes</a></li>
+            {% endif %}
+            {#             {% if not alumnes is empty %}#}
+            <li><a href="alumnesPendents">Alumnes</a></li>
+            {#             {% endif %}#}
+            <li><a href="empresesPendents">Empreses</a></li>
+            {% if usuari.teRol(40) %}
+                <li><a href="../administrador/usuaris">Administrador</a></li>
+                {#                <li><a href="../administrador/obrirAlumnes">Obrir alumnes</a></li>#}
+            {% endif %}
+        {% endif %}
     </ul>
-
-
-{% endblock %}                     
+    {% endblock %}
 
 {% block contingut %}
 

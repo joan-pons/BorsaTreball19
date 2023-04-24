@@ -1,28 +1,17 @@
 {% extends "auxiliars/baseDins.html.twig" %}
 
 {% block head %}
-    <title>Borsa de treball: Estudis {{ entitat.nom }} {{entitat.llinatges }}</title>
+    <title>Borsa de treball: Estudis {{ entitat.nom }} {{ entitat.llinatges }}</title>
     <script src="../js/dirtyForms.js"></script>
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{ entitat.nom }} {{entitat.llinatges }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="modificarDades">Actualitzar dades</a></li>
-        <li><a href="canviarContrasenya">Canviar contrasenya</a></li>
-        <li class="active"><a href="#">Estudis acabats</a></li>
-        <li><a href="idiomes" id="mIdiomes">Idiomes</a></li>
-        <li><a href="estatLaboral" id="mEstats">Jornada laboral</a></li>
-        <!--<li><a href="formacio">Altra formació</a></li>-->
-    </ul>
-
-
-{% endblock %}                     
+    {% set actiu = 303 %}
+    {{ parent() }}
+{% endblock %}
 
 {% block contingut %}
 
-    {{include('auxiliars/formEstudis.html.twig')}}
+    {{ include('auxiliars/formEstudis.html.twig') }}
 
 {% endblock %}  

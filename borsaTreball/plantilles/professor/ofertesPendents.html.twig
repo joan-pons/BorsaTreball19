@@ -10,13 +10,13 @@
 
                 var id = $(event.target).closest('form').attr('id').replace('f', '');
                 var alumnes = [];
-                $.each($(event.target).closest('form').find(':checkbox'),function(index, value){
-                    if($(value).is(':checked')) {
+                $.each($(event.target).closest('form').find(':checkbox'), function (index, value) {
+                    if ($(value).is(':checked')) {
                         alumnes.push(parseInt($(value).attr('value')));
                     }
                 });
                 console.log(alumnes);
-                var dades = {idProfessor:{{ professor.idProfessor }}, validada: 1, alumnes:alumnes};
+                var dades = {idProfessor:{{ professor.idProfessor }}, validada: 1, alumnes: alumnes};
                 $('#mdEspera').on('shown.bs.modal', function (e) {
                     $.ajax({
                         method: 'PUT',
@@ -127,42 +127,35 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
-    </div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Validar ofertes pendents</a></li>
-        <li><a href="ofertesValidades">Ofertes validades</a></li>
-        <!--<li><a href="empreses">Activar / validar empresa</a></li>-->
-    </ul>
-
-
-    {% endblock %}
+    {% set actiu=111 %}
+    {{ parent() }}
+{% endblock %}
 
     {% block contingut %}
-    <h2>Validar / Rebutjar ofertes pendents</h2>
-    {% for oferta in ofertes %}
-    <div class="well" id="of{{ oferta.idOferta }}">
-        {{ include('auxiliars/ofertaCompleta.html.twig') }}
+        <h2>Validar / Rebutjar ofertes pendents</h2>
+        {% for oferta in ofertes %}
+            <div class="well" id="of{{ oferta.idOferta }}">
+                {{ include('auxiliars/ofertaCompleta.html.twig') }}
 
-        <form id="f{{ oferta.idOferta }}">
-            <div id="dA{{ oferta.idOferta }}" class="collapse">
-                <h3>Filtrar alumnes</h3>
-                <div class="well" id="l{{ oferta.idOferta }}"></div>
+                <form id="f{{ oferta.idOferta }}">
+                    <div id="dA{{ oferta.idOferta }}" class="collapse">
+                        <h3>Filtrar alumnes</h3>
+                        <div class="well" id="l{{ oferta.idOferta }}"></div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-info" data-toggle="collapse"
+                                data-target="#dA{{ oferta.idOferta }}"
+                                id="i{{ oferta.idOferta }}">Filtrar alumnes
+                        </button>
+                        <button type="button" class="btn btn-warning" data-toggle="collapse"
+                                data-target="#dA{{ oferta.idOferta }}" id="w{{ oferta.idOferta }}">No filtrar alumnes
+                        </button>
+                        <button type='button' class="btn btn-success" type="button">Validar</button>
+                        <button type='button' class="btn btn-danger" type="button">Rebutjar</button>
+                </form>
             </div>
-            <div>
-                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#dA{{ oferta.idOferta }}"
-                        id="i{{ oferta.idOferta }}">Filtrar alumnes
-                </button>
-                <button type="button" class="btn btn-warning" data-toggle="collapse"
-                        data-target="#dA{{ oferta.idOferta }}" id="w{{ oferta.idOferta }}">No filtrar alumnes
-                </button>
-                <button type='button' class="btn btn-success" type="button">Validar</button>
-                <button type='button' class="btn btn-danger" type="button">Rebutjar</button>
-        </form>
-    </div>
-{#</div>#}
-    {% endfor %}
+            {# </div> #}
+        {% endfor %}
         {% if ofertes is empty %}
             <div class="well">
                 <p>No hi ha cap oferta pendent de validar.</p>

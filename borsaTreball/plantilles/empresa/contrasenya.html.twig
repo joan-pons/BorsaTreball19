@@ -69,15 +69,8 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{empresa.nom}}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="modificarDades" id="mActualitza">Actualitzar dades</a></li>
-        <li class="active"><a href="#">Canviar contrasenya</a></li>
-    </ul>
-
-
+    {% set actiu=202 %}
+    {{ parent() }}
 {% endblock %}                     
 
 {% block contingut %}

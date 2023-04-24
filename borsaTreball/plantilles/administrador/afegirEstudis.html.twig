@@ -1,0 +1,142 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Alta d'estudis</title>
+
+    <script>
+
+
+        $(document).ready(function () {
+            let dades={};
+
+            document.getElementById("actiu").indeterminate=true;
+
+            $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#bmDacord').on('click', function () {
+                $('#mdResultat').modal('hide');
+            });
+            $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
+            $('#mEsperaTitol').html('Realitzant les modificacions');
+            $('#mdEspera').on('shown.bs.modal', function (e) {
+                    $.ajax({
+                        method: 'POST',
+                        url: "afegirEstudis",
+                        data: dades
+                    }).done(function () {
+                        $('#mrTitol').html('Inserció correcte')
+                        $('#mrText').html("<p>S'ha afegit correctament el nou cicle.</p>");
+                        $('#bmDacord').on('click', function () {
+                            window.location.href = "afegirEstudis";
+                        });
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
+                        $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
+                        $('#bmDacord').on('click', function () {
+                            $('#mdResultat').modal('hide');
+                        });
+                    }).always(function () {
+                        $('#mdEspera').modal('hide');
+                        $('#mdResultat').modal('show');
+                    });
+            });
+
+
+            $("#fCicle").on('submit', function (event) {
+                event.preventDefault();
+                dades.codi = document.getElementById("id").value.trim().toUpperCase();
+                dades.nom = document.getElementById("nom").value.trim();
+                dades.actiu = document.getElementById("actiu").checked;
+                dades.familia = document.getElementById("familia").value;
+                dades.tipusEstudis =  document.getElementById("tipusEstudis").value;
+                $('#mdEspera').modal('show');
+            });
+
+
+        });
+    </script>
+    <script src="../js/dirtyForms.js"></script>
+
+{% endblock %}
+
+{% block navegacio %}
+    {% set actiu=152 %}
+    {{ parent() }}
+{% endblock %}                     
+
+{% block contingut %}
+    <h2>Alta d'estudis</h2>
+    <div class="well">
+        <form id="fCicle">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group required">
+                        <label class='control-label' for="id">Codi:</label>
+                        <input type="text" required="required" class="form-control " id="id" name="id" autocapitalize="characters">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group required">
+                        <label class='control-label' for="nom">Nom:</label>
+                        <input type="text" required="required" class="form-control " id="nom" name="nom">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1">
+                    <div class="form-group required">
+                        <label class='control-label' for="actiu">Actiu:</label>
+                        <input type="checkbox"  class="form-control " id="actiu" name="actiu" >
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-12">
+                    <div class="form-group required">
+                        <label class="control-label" for="familia">Família professional:</label>
+                        <select class="form-control" id="familia" name="familia" required>
+                            <option>Tria una família professional</option>
+                            {% for familia in families %}
+                                <option value="{{ familia.id }}">{{ familia.id }} - {{ familia.nom }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-12">
+                    <div class="form-group required required">
+                        <label class="control-label" for="familia">Tipus d'estudis:</label>
+                        <select class="form-control" id="tipusEstudis" name="tipusEstudis">
+                            <option>Tria un tipus d'estudis</option>
+                            {% for tipus in tipusEstudis %}
+                                <option value="{{ tipus.idTipus }}">{{ tipus.nomTipus }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <button id="bSubmit" type="submit" class="btn btn-success">D'acord</button>
+                        <button id="bReset" class="btn btn-default" type="reset">Cancel·lar</button>
+                    </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-md-12">
+                    <p>Tots els camps són obligatoris</p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="well" id="mostrador">
+
+    </div>
+    {{ include('auxiliars/modals.html.twig') }}
+{% endblock %}  

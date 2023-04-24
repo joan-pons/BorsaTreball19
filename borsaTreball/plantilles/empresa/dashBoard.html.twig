@@ -5,7 +5,7 @@
     <script>
         $(document).ready(function () {
             $("#dEmpresa").click(function () {
-                $("#mActualitza")[0].click();
+                location.href="modificarDades"
             });
             $('#contactes > .click').on('click', function (event) {
                 var id = event.currentTarget.id;
@@ -23,18 +23,8 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="#">{{empresa.nom}}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="modificarDades" id="mActualitza">Actualitzar dades</a></li>
-        <li><a href="canviarContrasenya" id="mActualitza">Canviar contrasenya</a></li>
-            {% if empresa.activa %}
-            <li><a href="contactes" id="mContactes">Contactes</a></li>
-            <li><a href="ofertes" >Ofertes</a></li>
-            {% endif %}
-    </ul>
-
+    {% set  actiu=0 %}
+    {{ parent() }}
 {% endblock %}          
 {% block contingut %}
     <div class="row">

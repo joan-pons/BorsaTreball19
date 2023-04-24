@@ -53,7 +53,7 @@
                     $("#telefon").html(professor.telefon);
 
                     $('#idProfessor').val(professor.idProfessor);
-                    if (professor.validat==1) {
+                    if (professor.validat == 1) {
                         $("#validat").prop('checked', 'checked');
                         $("#actiu").prop('disabled', false);
                     } else {
@@ -119,20 +119,9 @@
 {% endblock %}
 
 {% block navegacio %}
-<a class="navbar-brand" href="../professor/dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="usuarisPendents">Validar usuaris pendents</a></li>
-        <li class="active"><a href="#">Activar / validar usuari</a></li>
-        <li><a href="administrador">Rol administrador</a></li>
-{#        <li><a href="obrirAlumnes">Obrir alumnes</a>#}
-        <li><a href="logs">Logs</a>
-        <li><a href="estadistiques">Estadístiques</a>
-    </ul>
-
-
-    {% endblock %}
+    {% set actiu=142 %}
+    {{ parent() }}
+{% endblock %}
 
     {% block contingut %}
         <h2>Validar / Activar usuaris</h2>

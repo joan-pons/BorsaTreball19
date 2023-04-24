@@ -5,17 +5,21 @@
 
     <script>
         $(document).ready(function () {
+            var te = new Map();
+
+            {% for tipus in tipusEstudis %}
+            te.set({{ tipus.idTipus }}, '{{ tipus.nomTipus }}');
+            {% endfor %}
 
             $('#mdResultat').modal({backdrop: 'static', keyboard: false, show: false});
             $('#bmDacord').on('click', function () {
                 $('#mdResultat').modal('hide');
             });
             $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
-           
 
 
             $('#bAfegir').on('click', function () {
-                 $('#mEsperaTitol').html('Afegint els estudis');
+                $('#mEsperaTitol').html('Afegint els estudis');
                 var val = $('#graus').val();
                 if (val != "") {
                     $('#mdEspera').on('shown.bs.modal', function (e) {
@@ -33,7 +37,7 @@
                             });
                         }).fail(function (jqXHR, textStatus, errorThrown) {
                             $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
-                            $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                            $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
                             $('#bmDacord').on('click', function () {
                                 $('#mdResultat').modal('hide');
                             });
@@ -48,7 +52,7 @@
 
             //bEsborrar
             $('.btn-danger').on('click', function (event) {
-             $('#mEsperaTitol').html('Esborrant els estudis');
+                $('#mEsperaTitol').html('Esborrant els estudis');
                 var val = event.currentTarget.id.replace('b', '')
                 $('#mdEspera').on('shown.bs.modal', function (e) {
                     var estudisProfessor = {codiEstudis: val, idProfessor:{{ professor.idProfessor }} };
@@ -65,9 +69,9 @@
                         });
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'eliminació');
-                        $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                        $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
                         $('#bmDacord').on('click', function () {
-                           $('#mdResultat').modal('hide');
+                            $('#mdResultat').modal('hide');
                         });
                     }).always(function () {
                         $('#mdEspera').modal('hide');
@@ -76,58 +80,55 @@
                 });
                 $('#mdEspera').modal('show');
             });
-             $("#familia").on("change", function () {
+            $("#familia").on("change", function () {
                 $.ajax({
-                 method: 'GET',
-                  url: "../cicles/" + $('#familia').val()
-                 }).done(function (dades) {
-                     var opcions = '<option value="">Escull uns estudis</option>';
-                     var xifra='';
-                    for (var index in dades) {
-                        if(xifra!=dades[index].codi.charAt(3)){
-                            if(xifra!==''){
-                                opcions=opcions+'</optgroup>';
+                    method: 'GET',
+                    url: "../cicles/" + $('#familia').val()
+                }).done(function (dades) {
+                    let opcions = '<option value="">Escull uns estudis</option>';
+                    let tipusActual = '';
+                    for (cicle of dades) {
+                        if (tipusActual != cicle.tipusEstudis) {
+                            if (tipusActual !== '') {
+                                opcions = opcions + '</optgroup>';
                             }
-                            xifra=dades[index].codi.charAt(3);
-                            var indicador='';
-                            if(xifra==='1'){
-                                indicador='FP bàsica';
-                            }else if(xifra==='2'){
-                                indicador='Grau mitjà';
-                            } else  if (xifra === '3'){
-                                indicador = 'Grau superior';
-                            } else  if (xifra === 'E'){
-                                indicador = 'Curs d\'especialització';
-                            } else  if (xifra === 'D'){
-                                indicador = 'Certificat de professionalitat';
-                            }else{
-                                indicador = 'Altres';
-                            }
-                            opcions=opcions+'<optgroup label="'+indicador+'">';
+                            tipusActual = cicle.tipusEstudis;
+                            let indicador = te.get(cicle.tipusEstudis);
+                            opcions = opcions + '<optgroup label="' + indicador + '">';
                         }
-                        opcions=opcions+'</optgroup>';
-                        opcions = opcions + '<option value="' + dades[index].codi + '"> ' + dades[index].codi + ' - ' + dades[index].nom + '</option>';
+                        opcions = opcions + '<option value="' + cicle.codi + '"> ' + cicle.codi + ' - ' + cicle.nom + '</option>';
                     }
+                    opcions = opcions + '</optgroup>';
                     $("#graus").html(opcions);
                 });
-            });   
+            });
         });
     </script>
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{professor.llinatges }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Estudis dels que és responsable</a></li>
+        <li><a href="modificarDades" id="mActualitza">Actualitzar dades</a></li>
+        <li><a href="canviarContrasenya" id="mContrasenya">Canviar contrasenya</a></li>
+        {% if professor.actiu %}
+            <li class="active"><a>Estudis</a></li>
+            {% if not professor.estudis is empty %}
+                <li><a href="ofertes">Ofertes</a></li>
+            {% endif %}
+            {# {% if not alumnes is empty %} #}
+            <li><a href="alumnesPendents">Alumnes</a></li>
+            {# {% endif %} #}
+            <li><a href="empresesPendents">Empreses</a></li>
+            {% if usuari.teRol(40) %}
+                <li><a href="../administrador/usuaris">Administrador</a></li>
+                {# <li><a href="../administrador/obrirAlumnes">Obrir alumnes</a></li> #}
+            {% endif %}
+        {% endif %}
     </ul>
+{% endblock %}
 
+    {% block contingut %}
 
-{% endblock %}                     
+        {{ include('auxiliars/formEstudisProfessor.html.twig') }}
 
-{% block contingut %}
-
-    {{include('auxiliars/formEstudisProfessor.html.twig')}}
-
-{% endblock %}  
+    {% endblock %}

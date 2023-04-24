@@ -145,79 +145,93 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{ empresa.nom }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="#"><span class="glyphicon glyphicon-list"></span> Llista</a></li>
-        <li><a href="afegirContacte"><span class="glyphicon glyphicon-plus"></span> Afegir</a></li>
-    </ul>
-
+    {# <a class="navbar-brand" href="dashBoard">{{ empresa.nom }}</a> #}
+    {# </div> #}
+    {# <div class="collapse navbar-collapse" id="myNavbar"> #}
+    {# <ul class="nav navbar-nav"> #}
+    {# <li class="active"><a href="#"><span class="glyphicon glyphicon-list"></span> Llista</a></li> #}
+    {# <li><a href="afegirContacte"><span class="glyphicon glyphicon-plus"></span> Afegir</a></li> #}
+    {# </ul> #}
+    {% set actiu = 211 %}
+    {{ parent() }}
 {% endblock %}          
 {% block contingut %}
 
     <h2>Contactes </h2>
     {% if empresa.contactes is empty %}
         <div class='well'>
-            <p> L'empresa encara no té definida cap persona de contacte.</p>                 
+            <p> L'empresa encara no té definida cap persona de contacte.</p>
         </div>
     {% else %}
         {% for contacte in empresa.contactes %}
-            <div class='well' id="cont{{contacte.idContacte}}">
-                <form id="f{{contacte.idContacte}}">
-                    <input type="hidden" name="idContacte" value="{{contacte.idContacte}}">
-                    <input type="hidden" name="idEmpresa" value="{{contacte.Empreses_idEmpresa}}">
+            <div class='well' id="cont{{ contacte.idContacte }}">
+                <form id="f{{ contacte.idContacte }}">
+                    <input type="hidden" name="idContacte" value="{{ contacte.idContacte }}">
+                    <input type="hidden" name="idEmpresa" value="{{ contacte.Empreses_idEmpresa }}">
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="form-group required" >
+                            <div class="form-group required">
                                 <label for="nom" class='control-label'>Nom:</label>
-                                <input type="text" class="form-control" id="nom" name="nom"  required="required" readonly="readonly" value="{{contacte.nom}}">
+                                <input type="text" class="form-control" id="nom" name="nom" required="required"
+                                       readonly="readonly" value="{{ contacte.nom }}">
                             </div>
                         </div><!--col-->
                         <div class="col-md-4">
                             <div class="form-group required">
                                 <label for="llinatges" class='control-label'>Llinatges:</label>
-                                <input type="text" class="form-control" id="llinatges" name="llinatges"  readonly="readonly"  required="required" value="{{contacte.llinatges}}">
+                                <input type="text" class="form-control" id="llinatges" name="llinatges"
+                                       readonly="readonly" required="required" value="{{ contacte.llinatges }}">
                             </div>
                         </div><!--col-->
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="carrec"  class='control-label'>Càrrec: </label>
-                                <input type="text" class="form-control" id="carrec" name="carrec" readonly="readonly"  value="{{contacte.carrec}}">
+                                <label for="carrec" class='control-label'>Càrrec: </label>
+                                <input type="text" class="form-control" id="carrec" name="carrec" readonly="readonly"
+                                       value="{{ contacte.carrec }}">
                             </div>
                         </div><!--col-->
                     </div><!--row-->
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group required">
-                                <label for="email"  class='control-label'>Correu electrònic:</label>
-                                <input type="email" class="form-control" id="email" name="email" readonly="readonly" required="required" value="{{contacte.email}}">
+                                <label for="email" class='control-label'>Correu electrònic:</label>
+                                <input type="email" class="form-control" id="email" name="email" readonly="readonly"
+                                       required="required" value="{{ contacte.email }}">
                             </div>
                         </div><!--col-->
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="telefon"  class='control-label'>Telèfon:</label>
-                                <input type="text" class="form-control" id="telefon" name="telefon" readonly="readonly" maxlength="9" value="{{contacte.telefon}}">
+                                <label for="telefon" class='control-label'>Telèfon:</label>
+                                <input type="text" class="form-control" id="telefon" name="telefon" readonly="readonly"
+                                       maxlength="9" value="{{ contacte.telefon }}">
                             </div>
                         </div><!--col-->
                         <div class="col-md-4">
 
-                            <div >
+                            <div>
                                 <label for="email">&nbsp;</label>
                                 <div>
-                                    <button class="btn btn-primary" type="button" name="bEditar" id="bEd{{contacte.idContacte}}">Editar</button>
-                                    <button class="btn btn-danger" type="button" name="bSuprimir" id="bSup{{contacte.idContacte}}">Suprimir</button>
-                                    <button class="btn btn-success" type="submit" name="bGuardar" id="bGuar{{contacte.idContacte}}">Guardar</button>
-                                    <button class="btn btn-default" type="reset"  name="bCancel" id="bCan{{contacte.idContacte}}">Cancel·lar</button>
+                                    <button class="btn btn-primary" type="button" name="bEditar"
+                                            id="bEd{{ contacte.idContacte }}">Editar
+                                    </button>
+                                    <button class="btn btn-danger" type="button" name="bSuprimir"
+                                            id="bSup{{ contacte.idContacte }}">Suprimir
+                                    </button>
+                                    <button class="btn btn-success" type="submit" name="bGuardar"
+                                            id="bGuar{{ contacte.idContacte }}">Guardar
+                                    </button>
+                                    <button class="btn btn-default" type="reset" name="bCancel"
+                                            id="bCan{{ contacte.idContacte }}">Cancel·lar
+                                    </button>
                                 </div>
                             </div>
                         </div><!--col-->
                     </div><!--row-->
-{#                    {% include 'auxiliars/obligatoris.html.twig' %}#}
+                    {# {% include 'auxiliars/obligatoris.html.twig' %} #}
                 </form>
             </div><!--well-->
         {% endfor %}
     {% endif %}
 
-    {{include('auxiliars/modals.html.twig')}}
+    {{ include('auxiliars/modals.html.twig') }}
 {% endblock %} 

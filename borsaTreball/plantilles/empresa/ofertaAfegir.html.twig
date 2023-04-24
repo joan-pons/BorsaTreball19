@@ -14,19 +14,10 @@
     </script>
 {% endblock %}
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{empresa.nom}}</a>                    
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Afegir oferta</a></li>
-        <li class="disabled"><a href="#">Estudis</a></li>
-        <li class="disabled"><a href="#">Idiomes</a></li>
-        <li class="disabled"><a href="#">Jornada laboral</a></li>
-        <li class="disabled"><a href="#">Persones de contacte</a></li>
-    </ul>
-
+    {% set actiu = 222 %}
+    {{ parent() }}
 {% endblock %}
 {% block contingut %}
 
-    {{include('auxiliars/formOferta.html.twig')}}
+    {{ include('auxiliars/formOferta.html.twig') }}
 {% endblock %}

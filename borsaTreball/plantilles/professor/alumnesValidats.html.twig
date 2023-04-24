@@ -50,11 +50,11 @@
 
             $("form").on('submit', function (event) {
                 event.preventDefault();
-                dades=[];
-                $('input[name*="rb"]').each(function(index){
-                    if(this.checked==true){
+                dades = [];
+                $('input[name*="rb"]').each(function (index) {
+                    if (this.checked == true) {
                         let alumne = {};
-                        const ident=this.getAttribute("id");
+                        const ident = this.getAttribute("id");
                         alumne.idAlumne = this.getAttribute("id").substr(3);
                         alumne.validat = this.getAttribute("id").charAt(2);
                         dades.push(alumne);
@@ -69,14 +69,9 @@
 {% endblock %}
 
 {% block navegacio %}
-<a class="navbar-brand" href="dashBoard">{{ professor.nom }} {{ professor.llinatges }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-<ul class="nav navbar-nav">
-            <li><a href="alumnesPendents">Alumnes pendents</a></li>
-            <li class="active"><a href="#">Alumnes validats</a></li>
-</ul>
-    {% endblock %}
+    {% set actiu=122 %}
+    {{ parent() }}
+{% endblock %}
 
     {% block contingut %}
         <h2>Alumnes validats</h2>
@@ -85,40 +80,42 @@
                 <p> No hi ha alumnes validats dels estudis que té assignats.</p>
             </div>
         {% else %}
-{#                <form id="alumnes">#}
+            {# <form id="alumnes"> #}
             {% for alumne in alumnes %}
-                    <div class="well">
-                        <input type="hidden" name="idAlumne" id="idA{{ alumne.idAlumne }}" value="{{ alumne.idAlumne }}">
-                        <div class="row" >
-                            <div class='col-md-6'>
-                                   <p><label  class="control-label">Nom: &nbsp;</label>{{ alumne.llinatges }}, {{ alumne.nom }} ({{ alumne.estudisAlta }})</p>
-                           {% for cicle in alumne.estudis %}
+                <div class="well">
+                    <input type="hidden" name="idAlumne" id="idA{{ alumne.idAlumne }}" value="{{ alumne.idAlumne }}">
+                    <div class="row">
+                        <div class='col-md-6'>
+                            <p><label class="control-label">Nom: &nbsp;</label>{{ alumne.llinatges }}, {{ alumne.nom }}
+                                ({{ alumne.estudisAlta }})</p>
+                            {% for cicle in alumne.estudis %}
                                 <div class="row">
                                     <div class='col-md-12'>
-                                        <p><label  class="control-label">{{ cicle.codi }}:&nbsp;</label> {{ cicle.nom }} - {{ cicle.pivot.any }}</p>
+                                        <p><label class="control-label">{{ cicle.codi }}:&nbsp;</label> {{ cicle.nom }}
+                                            - {{ cicle.pivot.any }}</p>
                                     </div>
                                 </div>
-                           {% endfor %}
-                            </div>
-                            <div class='col-md-3'>
-                                   <p><label  class="control-label">Email: &nbsp;</label>{{ alumne.email }}</p>
-                            </div>
-                            <div class='col-md-3'>
-                                   <p><label  class="control-label">Telèfon: &nbsp;</label>{{ alumne.telefon }}</p>
-                            </div>
+                            {% endfor %}
                         </div>
-                        <div class="row">
+                        <div class='col-md-3'>
+                            <p><label class="control-label">Email: &nbsp;</label>{{ alumne.email }}</p>
                         </div>
-
+                        <div class='col-md-3'>
+                            <p><label class="control-label">Telèfon: &nbsp;</label>{{ alumne.telefon }}</p>
+                        </div>
                     </div>
+                    <div class="row">
+                    </div>
+
+                </div>
             {% endfor %}
-{#                <div class="row">#}
-{#                    <div class="col-md-4">#}
-{#                        <button type="submit" class="btn btn-success">Guardar els canvis</button>#}
-{#                        <button type="reset" class="btn btn-default">Netejar el formulari</button>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </form>#}
+            {# <div class="row"> #}
+            {# <div class="col-md-4"> #}
+            {# <button type="submit" class="btn btn-success">Guardar els canvis</button> #}
+            {# <button type="reset" class="btn btn-default">Netejar el formulari</button> #}
+            {# </div> #}
+            {# </div> #}
+            {# </form> #}
             <div><p></p></div>
         {% endif %}
         {{ include('auxiliars/modals.html.twig') }}

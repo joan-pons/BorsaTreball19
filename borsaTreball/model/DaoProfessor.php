@@ -5,6 +5,9 @@ namespace Borsa;
 use Borsa\Alumne as Alumne;
 use Borsa\Empresa as Empresa;
 use Borsa\Professor as Professor;
+use Borsa\Estudis as Estudis;
+use Borsa\Familia as Familia;
+use Borsa\TipusEstudis as TipusEstudis;
 use Correu\Bustia as Bustia;
 use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -258,7 +261,7 @@ class DaoProfessor extends Dao
                 $data = $request->getParsedBody();
                 $idrol = filter_var($data['idRol'], FILTER_SANITIZE_NUMBER_INT);
                 $usuari->rols()->sync([$idrol], false);
-                Bustia::enviarUnic($professor->email, 'Rol administrador', "/email/administrador.twig", ['administrador' => true], $container,false);
+                Bustia::enviarUnic($professor->email, 'Rol administrador', "/email/administrador.twig", ['administrador' => true], $container, false);
 
                 return $response->withJSON($professor);
             } else {
@@ -556,4 +559,299 @@ class DaoProfessor extends Dao
             return $response->withJson($missatge, 422);
         }
     }
+
+    public static function insertarEstudis(Request $request, Response $response, \Slim\Container $container)
+    {
+
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $estudis = new Estudis;
+            $estudis->codi = filter_var($data['codi'], FILTER_SANITIZE_STRING);
+            $estudis->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $actiu = filter_var($data['actiu'], FILTER_SANITIZE_STRING);
+            $estudis->familia = filter_var($data['familia'], FILTER_SANITIZE_STRING);
+            $estudis->tipusEstudis = filter_var($data['tipusEstudis'], FILTER_SANITIZE_STRING);
+            if ($actiu == "true") {
+                $estudis->actiu = 1;
+            } else {
+                $estudis->actiu = 0;
+            }
+            $estudis->save();
+            return $response->withJSON($estudis);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades del professor no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function modificarEstudis(Request $request, Response $response, \Slim\Container $container)
+    {
+
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $estudis = Estudis::find(filter_var($data['codi'], FILTER_SANITIZE_STRING));
+//            $estudis->codi = filter_var($data['codi'], FILTER_SANITIZE_STRING);
+            $estudis->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $actiu = filter_var($data['actiu'], FILTER_SANITIZE_STRING);
+            $estudis->familia = filter_var($data['familia'], FILTER_SANITIZE_STRING);
+            $estudis->tipusEstudis = filter_var($data['tipusEstudis'], FILTER_SANITIZE_STRING);
+            if ($actiu == "true") {
+                $estudis->actiu = 1;
+            } else {
+                $estudis->actiu = 0;
+            }
+            $estudis->save();
+            $missatge = array("missatge" => "Professor modificat.");
+            return $response->withJSON($missatge);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades del professor no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function eliminarEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $cicle = Estudis::find(filter_var($args['idCicle'], FILTER_SANITIZE_STRING));
+
+            if ($cicle != null) {
+                $res = $cicle->delete();
+                if ($res) {
+                    $missatge = '{"missatge":"El cicle s\'ha eliminat correctament"}';
+                } else {
+                    $missatge = '{"missatge":"El cicle no s\'ha pogut eliminar"}';
+                }
+                return $response->withJSON($missatge);
+            } else {
+                $missatge = array("missatge" => "No s'ha trobat el cicle que es vol eliminar.");
+                return $response->withJson($missatge, 422);
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "<p>No es pot eliminar el cicle. Té dades associades: alumnes, ofertes, ... </p><p>Si vol que no aparegui als usuaris modifiqui'l i marqui'l com a no actiu.</p>", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la seva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function insertarFamilia(Request $request, Response $response, \Slim\Container $container)
+    {
+
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $familia = new Familia;
+            $familia->id = filter_var($data['id'], FILTER_SANITIZE_STRING);
+            $familia->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $familia->save();
+            return $response->withJSON($familia);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que l'identificador ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades de la familia no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function modificarFamilia(Request $request, Response $response, \Slim\Container $container)
+    {
+
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $familia = Familia::find(filter_var($data['id'], FILTER_SANITIZE_STRING));
+            $familia->id = filter_var($data['id'], FILTER_SANITIZE_STRING);
+            $familia->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $familia->save();
+            $missatge = array("missatge" => "Familia professional modificada correctament.");
+            return $response->withJSON($missatge);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que l'identificador ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades de la familia professional no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+
+    public static function eliminarFamilia(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $familia = Familia::find(filter_var($args['idFamilia'], FILTER_SANITIZE_STRING));
+
+            if ($familia != null) {
+                $res = $familia->delete();
+                if ($res) {
+                    $missatge = '{"missatge":"La família professional s\'ha eliminat correctament"}';
+                } else {
+                    $missatge = '{"missatge":"La família professional no s\'ha pogut eliminar"}';
+                }
+                return $response->withJSON($missatge);
+            } else {
+                $missatge = array("missatge" => "No s'ha trobat la família professinal que es vol eliminar.");
+                return $response->withJson($missatge, 422);
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "<p>No es pot eliminar la família. Té dades associades: estudis, ofertes, ... </p>", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Els estudis no s'han pogut afegir correctament a la seva llista.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function insertarTipusEstudis(Request $request, Response $response, \Slim\Container $container)
+    {
+
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $tipusEstudis = new TipusEstudis;
+            $tipusEstudis->idTipus = filter_var($data['id'], FILTER_SANITIZE_STRING);
+            $tipusEstudis->nomTipus = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $tipusEstudis->save();
+            return $response->withJSON($tipusEstudis);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que l'identificador ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades del tipus d'estudis no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function modificarTipusEstudis(Request $request, Response $response, \Slim\Container $container)
+    {
+
+        try {
+            $container->dbEloquent;
+            $data = $request->getParsedBody();
+            $tipusEstudis = TipusEstudis::find(filter_var($data['idTipus'], FILTER_SANITIZE_STRING));
+            $tipusEstudis->nomTipus = filter_var($data['nomTipus'], FILTER_SANITIZE_STRING);
+            $tipusEstudis->save();
+            $missatge = array("missatge" => "Tipus d'estudis modificada correctament.");
+            return $response->withJSON($missatge);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que l'identificador ja està registrat.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "Les dades del tipus d'estudis no s'han pogut modificar correctament.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+
+    public static function eliminarTipusEstudis(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $tipusEstudis = TipusEstudis::find(filter_var($args['idTipus'], FILTER_SANITIZE_STRING));
+
+            if ($tipusEstudis != null) {
+                $res = $tipusEstudis->delete();
+                if ($res) {
+                    $missatge = '{"missatge":"El tipus d\'estudis s\'ha eliminat correctament"}';
+                } else {
+                    $missatge = '{"missatge":"El tipus d\'estudis no s\'ha pogut eliminar"}';
+                }
+                return $response->withJSON($missatge);
+            } else {
+                $missatge = array("missatge" => "No s'ha trobat el tipus d\'estudis  que es vol eliminar.");
+                return $response->withJson($missatge, 422);
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "<p>No es pot eliminar el tipus d'estudis. Té dades associades: estudis, ofertes, ... </p>", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "<p>No es pot eliminar el tipus d'estudis. Té dades associades: estudis, ofertes, ... </p>", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+
 }

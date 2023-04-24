@@ -361,6 +361,24 @@ class Dao
         }
     }
 
+
+    public static function ciclesFamiliaTots(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $familia = Familia::find($args['idFamilia']);
+            if ($familia != null) {
+                return $response->withJson($familia->ciclesTots, 200);
+
+            } else {
+                return $response->withJson(array("missatge" => "No es troba la familia demanada."), 422);
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+
+            return $response->withJson(array("missatge" => "No es troba la familia demanada."), 422);
+        }
+    }
+
     public static function altaMail($destinataris, $text, \Slim\Container $container)
     {
         $container->dbEloquent;

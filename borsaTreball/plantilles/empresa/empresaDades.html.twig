@@ -38,7 +38,7 @@
                     });
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $('#mrTitol').html('<span class="glyphicon glyphicon-alert"></span>&nbsp; Problemes amb l\'actualització');
-                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON==='undefined'?errorThrown:jqXHR.responseJSON.missatge) + "</p>");
+                    $('#mrText').html("<p>" + (typeof jqXHR.responseJSON === 'undefined' ? errorThrown : jqXHR.responseJSON.missatge) + "</p>");
                     $('#bmDacord').on('click', function () {
                         $('#mdResultat').modal('hide');
                     });
@@ -60,19 +60,11 @@
 {% endblock %}
 
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{objEmpresa.nom}}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Actualitzar dades</a></li>
-        <li><a href="canviarContrasenya" id="mActualitza">Canviar contrasenya</a></li>
-
-    </ul>
-
-
+    {% set actiu=201 %}
+    {{ parent() }}
 {% endblock %}                     
 
 {% block contingut %}
 
-    {{include('auxiliars/formEmpresa.html.twig')}}
+    {{ include('auxiliars/formEmpresa.html.twig') }}
 {% endblock %}

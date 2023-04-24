@@ -1,0 +1,27 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Logs</title>
+
+
+{% endblock %}
+
+{% block navegacio %}
+    {% set actiu=144 %}
+    {{ parent() }}
+{% endblock %}
+
+    {% block contingut %}
+        <h2>Logs</h2>
+        <div class="well">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for linea in logs %}
+                        <p>{{ linea }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+    {% endblock %}

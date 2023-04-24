@@ -1,21 +1,21 @@
 {% extends "auxiliars/baseDins.html.twig" %}
 
 {% block head %}
-    <title> Borsa de treball: {{ alumne.nom }} {{ alumne.llinatges }}</title>
+    <title> Borsa de treball: {{ actor.nom }} {{ actor.llinatges }}</title>
     <script>
         $(function () {
             $("#dAlumne").click(function () {
-                $("#mActualitza")[0].click();
+                location.href="modificarDades"
             });
             $("#dEstudis").click(function () {
-                $("#mEstudis")[0].click();
+                location.href="estudis"
             });
-            $("#dIdiomes").click(function () {
-                $("#mIdiomes")[0].click();
-            });
-            $("#dEstats").click(function () {
-                $("#mEstats")[0].click();
-            });
+            // $("#dIdiomes").click(function () {
+            //     $("#mIdiomes")[0].click();
+            // });
+            // $("#dEstats").click(function () {
+            //     $("#mEstats")[0].click();
+            // });
             $('#dOfertes > .click').on('click', function (event) {
                 var id = event.currentTarget.id;
                 window.location.href = "ofertes#" + id;
@@ -27,112 +27,94 @@
     </script>
 {% endblock %}
 
-{% block navegacio %}
-<a class="navbar-brand" href="#">{{ alumne.nom }} {{ alumne.llinatges }}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <li><a href="modificarDades" id="mActualitza">Actualitzar dades</a></li>
-        <li><a href="canviarContrasenya">Canviar contrasenya</a></li>
-        <li><a href="estudis" id="mEstudis">Estudis</a></li>
-        <li><a href="idiomes" id="mIdiomes">Idiomes</a></li>
-        <li><a href="estatLaboral" id="mEstats">Jornada laboral</a></li>
-        <!--<li><a href="formacio">Altra formació</a></li>-->
-        {% if alumne.actiu==1 %}
-            <li><a href="ofertes">Ofertes</a></li>
-            <li><a href="empreses">Empreses</a></li>
-        {% endif %}
-    </ul>
+{% block contingut %}
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Les teves dades</h3>
+            <div class="well click" id="dAlumne">
+                <p><label>Nom:&nbsp;</label>{{ actor.nom }}</p>
+                <p><label>Llinatges:&nbsp;</label>{{ actor.llinatges }}</p>
+                <p><label>Telefon:&nbsp;</label>{{ actor.telefon }}</p>
+                <p><label>Correu electrònic:&nbsp;</label>{{ actor.email }}</p>
+                <p><label>url:&nbsp;</label><a
+                            href="{% if not(actor.url starts with 'http') %}{{ 'http://' }}{% endif %}{{ actor.url }}"
+                            target="_blank">{{ actor.url }}</a></p>
+                <p>&nbsp;</p>
+                <p><label>Adreça:&nbsp;</label>{{ actor.adreca }}</p>
+                <p><label>Codi postal:&nbsp;</label>{{ actor.codiPostal }}</p>
+                <p><label>Localitat:&nbsp;</label>{{ actor.localitat }}</p>
+                <p><label>Província:&nbsp;</label>{{ actor.provincia }}</p>
+                <p><label>Actiu: &nbsp;</label><span
+                            class="glyphicon {% if actor.actiu %}glyphicon-ok{% else %}glyphicon-remove{% endif %}"></span>
+                </p>
+            </div>
+        </div><!--col-->
 
-    {% endblock %}
-    {% block contingut %}
-        <div class="row">
-            <div class="col-md-4">
-                <h3>Les teves dades</h3>
-                <div class="well click" id="dAlumne">
-                    <p><label>Nom:&nbsp;</label>{{ alumne.nom }}</p>
-                    <p><label>Llinatges:&nbsp;</label>{{ alumne.llinatges }}</p>
-                    <p><label>Telefon:&nbsp;</label>{{ alumne.telefon }}</p>
-                    <p><label>Correu electrònic:&nbsp;</label>{{ alumne.email }}</p>
-                    <p><label>url:&nbsp;</label><a
-                                href="{% if not(alumne.url starts with 'http') %}{{ 'http://' }}{% endif %}{{ alumne.url }}"
-                                target="_blank">{{ alumne.url }}</a></p>
-                    <p>&nbsp;</p>
-                    <p><label>Adreça:&nbsp;</label>{{ alumne.adreca }}</p>
-                    <p><label>Codi postal:&nbsp;</label>{{ alumne.codiPostal }}</p>
-                    <p><label>Localitat:&nbsp;</label>{{ alumne.localitat }}</p>
-                    <p><label>Província:&nbsp;</label>{{ alumne.provincia }}</p>
-                    <p><label>Actiu: &nbsp;</label><span
-                                class="glyphicon {% if alumne.actiu %}glyphicon-ok{% else %}glyphicon-remove{% endif %}"></span>
-                    </p>
-                </div>
-            </div><!--col-->
-
-            <div class="col-md-4">
-                <h3>Estudis acabats</h3>
-                {% if alumne.estudis is empty %}
-                    <div class="well"><p> Encara no té cap estudis registrats </p></div>
-                {% else %}
-                    <div class="well click" id="dEstudis">
-                        <ul>
-                            {% for grau in alumne.estudis %}
-                                <li><p>{{ grau.nom }}</p></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-                <h3>Idiomes</h3>
-                {% if alumne.idiomes is empty %}
-                    <div class="well"><p> Encara no tens cap idioma registrat </p></div>
-                {% else %}
-                    <div class="well click" id="dIdiomes">
-                        <ul>
-                            {% for idioma in alumne.idiomes %}
-                                {% set level='Gens' %}
-                                {% for nivell in nivellsIdioma %}
-                                    {% if nivell.idNivellIdioma==idioma.pivot.NivellsIdioma_idNivellIdioma %}
-                                        {% set level=nivell.nivell %}
-                                    {% endif %}
-                                {% endfor %}
-                                <li><p>{{ idioma.idioma }}: {{ level }}</p></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-                <h3>Jornada laboral</h3>
-                {% if alumne.estatsLaborals is empty %}
-                    <div class="well"><p> Encara no tens cap jornada laboral registrada </p></div>
-                {% else %}
-                    <div class="well click" id="dEstats">
-                        <ul>
-                            {% for estat in alumne.estatsLaborals %}
-                                <li>{{ estat.nomEstatLaboral }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-            </div><!--col-->
-            <div class="col-md-4" id="dOfertes">
-                <h3>Ofertes actives</h3>
-                {% if alumne.actiu==1 %}
-                    {% if alumne.ofertesActives() is empty %}
-                        <div class="well"><p> No hi ha cap oferta en vigor. </p></div>
-                    {% else %}
-                        {% for oferta in alumne.ofertesActives() %}
-                            <div class="well click" id="of{{ oferta.idOferta }}">
-                                <p><label>Títol: &nbsp;</label>{{ oferta.titol }}</p>
-                                <p><label>Data de publicació:
-                                        &nbsp;</label>{{ oferta.dataPublicacio|date('d / m / Y') }}</p>
-                                <p><label>Data de finalització: &nbsp;</label>{{ oferta.dataFinal|date('d / m / Y') }}
-                                </p>
-                            </div>
+        <div class="col-md-4">
+            <h3>Estudis acabats</h3>
+            {% if actor.estudis is empty %}
+                <div class="well"><p> Encara no té cap estudis registrats </p></div>
+            {% else %}
+                <div class="well click" id="dEstudis">
+                    <ul>
+                        {% for grau in actor.estudis %}
+                            <li><p>{{ grau.nom }}</p></li>
                         {% endfor %}
-                    {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+{#            <h3>Idiomes</h3>#}
+{#            {% if actor.idiomes is empty %}#}
+{#                <div class="well"><p> Encara no tens cap idioma registrat </p></div>#}
+{#            {% else %}#}
+{#                <div class="well click" id="dIdiomes">#}
+{#                    <ul>#}
+{#                        {% for idioma in actor.idiomes %}#}
+{#                            {% set level='Gens' %}#}
+{#                            {% for nivell in nivellsIdioma %}#}
+{#                                {% if nivell.idNivellIdioma==idioma.pivot.NivellsIdioma_idNivellIdioma %}#}
+{#                                    {% set level=nivell.nivell %}#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                            <li><p>{{ idioma.idioma }}: {{ level }}</p></li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#            <h3>Jornada laboral</h3>#}
+{#            {% if actor.estatsLaborals is empty %}#}
+{#                <div class="well"><p> Encara no tens cap jornada laboral registrada </p></div>#}
+{#            {% else %}#}
+{#                <div class="well click" id="dEstats">#}
+{#                    <ul>#}
+{#                        {% for estat in actor.estatsLaborals %}#}
+{#                            <li>{{ estat.nomEstatLaboral }}</li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                </div>#}
+{#            {% endif %}#}
+        </div><!--col-->
+        <div class="col-md-4" id="dOfertes">
+            <h3>Ofertes actives</h3>
+            {% if actor.actiu==1 %}
+                {% if actor.ofertesActives() is empty %}
+                    <div class="well"><p> No hi ha cap oferta en vigor. </p></div>
                 {% else %}
-                    <div class="well"><p> Has d'activar el teu usuari, a l'apartat <em>Actualitzar dades</em>, per poder
-                            veure les ofertes. </p></div>
+                    {% for oferta in actor.ofertesActives() %}
+                        <div class="well click" id="of{{ oferta.idOferta }}">
+                            <p><label>Títol: &nbsp;</label>{{ oferta.titol }}</p>
+                            <p><label>Data de publicació:
+                                    &nbsp;</label>{{ oferta.dataPublicacio|date('d / m / Y') }}</p>
+                            <p><label>Data de finalització: &nbsp;</label>{{ oferta.dataFinal|date('d / m / Y') }}
+                            </p>
+                        </div>
+                    {% endfor %}
                 {% endif %}
-            </div><!--col-->
-        </div><!--row-->
+            {% else %}
+                <div class="well"><p> Has d'activar el teu usuari, a l'apartat <em>Actualitzar dades</em>, per poder
+                        veure les ofertes. </p></div>
+            {% endif %}
+        </div><!--col-->
+    </div><!--row-->
 
-    {% endblock %}
+{% endblock %}

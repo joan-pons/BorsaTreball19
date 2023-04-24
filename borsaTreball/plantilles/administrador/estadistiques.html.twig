@@ -1,0 +1,119 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Estadístiques</title>
+
+
+{% endblock %}
+
+{% block navegacio %}
+    {% set actiu=145 %}
+    {{ parent() }}
+{% endblock %}
+
+    {% block contingut %}
+        <h2>Estadístiques</h2>
+
+        <div class="well">
+            <h3>Empreses per familia</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Familia</th>
+                            <th>Empreses</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registre in resultats.empreses %}
+                            <tr>
+                                <td>{{ registre.familia }}</td>
+                                <td>{{ registre.empreses }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="well">
+            <h3>Ofertes per familia</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Familia</th>
+                            <th>Ofertes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registre in resultats.ofertes %}
+                            <tr>
+                                <td>{{ registre.familia }}</td>
+                                <td>{{ registre.ofertes }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="well">
+            <h3>Alumnes per familia</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Familia</th>
+                            <th>Alumnes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registre in resultats.alumnes %}
+                            <tr>
+                                <td>{{ registre.familia }}</td>
+                                <td>{{ registre.alumnes }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="well">
+            <h3>Alumnes per estudis i any</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Codi</th>
+                            <th>Nom</th>
+                            <th>Any</th>
+                            <th>Alumnes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registre in resultats.alumnesAny %}
+                            <tr>
+                                <td>{{ registre.codi }}</td>
+                                <td>{{ registre.nom }}</td>
+                                <td>{{ registre.year }}</td>
+                                <td>{{ registre.alumnes }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

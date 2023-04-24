@@ -4,25 +4,20 @@
     <title>Borsa de treball: Ofertes</title>
 {% endblock %}
 {% block navegacio %}
-    <a class="navbar-brand" href="dashBoard">{{actor.nom}} {{actor.llinatges}}</a>
-</div>
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-        <!--<li><a href="formacio">Altra formació</a></li>-->
-        <li class='active'><a href="#">Ofertes</a></li>
-    </ul>
 
+    {% set actiu = 304 %}
+    {{ parent() }}
 {% endblock %}
 {% block contingut %}
     <h2>Ofertes que t'han arribat</h2>
-     {% if alumne.idiomes is empty %}
-                    <div class="well"><p> Encara no has rebut cap oferta. </p></div>
+    {% if alumne.idiomes is empty %}
+        <div class="well"><p> Encara no has rebut cap oferta. </p></div>
     {% else %}
         {% for oferta in actor.ofertes %}
-            <div class="well" id="of{{oferta.idOferta}}">
-                {{include('auxiliars/ofertaCompleta.html.twig')}}
+            <div class="well" id="of{{ oferta.idOferta }}">
+                {{ include('auxiliars/ofertaCompleta.html.twig') }}
             </div>
         {% endfor %}
     {% endif %}
-    {{include('auxiliars/modals.html.twig')}}
+    {{ include('auxiliars/modals.html.twig') }}
 {% endblock %}
