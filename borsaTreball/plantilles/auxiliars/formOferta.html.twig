@@ -7,14 +7,11 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="idOferta">Codi oferta:</label>
-                    <input type="text" maxlength="11" class="form-control" id="idOferta" name="idOferta" readonly="readonly" value="{{ oferta.idOferta }}">
+                    <input type="text" maxlength="11" class="form-control" id="idOferta" name="idOferta"
+                           readonly="readonly" value="{{ oferta.idOferta }}">
                 </div>
             </div><!--col-->
-            <div class="col-md-6">
-                <div class="alert alert-danger">
-                    <p><strong>Molt important!</strong> Una vegada emplenat i guardat aquest formulari ha d'anar a l'opció <em>Estudis</em> del menú per escollir al manco un cicle al que vulgui dirigir l'oferta. Fins que no ho faci <strong>no la podrà publicar</strong>.</p>
-                </div>
-            </div><!--col-->
+
         </div><!--row-->
         <div class="row">
             <div class="col-md-12">
@@ -49,7 +46,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="tContracte">Tipus de contracte:</label>
-                    <input type="text"  maxlength="45" class="form-control" id="tContracte" name="tContracte"
+                    <input type="text" maxlength="45" class="form-control" id="tContracte" name="tContracte"
                            value="{{ oferta.tipusContracte }}">
                 </div>
             </div><!--col-->
@@ -66,7 +63,8 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="horari">Horari:</label>
-                    <input type="text" maxlength="60" class="form-control" id="horari" name="horari" value="{{ oferta.horari }}">
+                    <input type="text" maxlength="60" class="form-control" id="horari" name="horari"
+                           value="{{ oferta.horari }}">
                 </div>
             </div><!--col-->
         </div><!--row-->
@@ -80,7 +78,58 @@
                     </div>
                 </div>
             </div><!--col-->
-            <div class="col-md-3">
+        </div> <!--row-->
+
+        <h3>Estudis als que va dirigida l'oferta</h3>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <label for="familia">Família professional</label>
+
+                            <select class="form-control" id="familia">
+                                <option value="">Escull una família professional</option>
+                                {% for familia in families %}
+                                    <option value="{{ familia.id }}">{{ familia.nom }} ({{ familia.id }} )</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+                    </div>
+                </div><!--row-->
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <label for="graus">Estudis oficials disponibles:</label>
+
+                            <select class="form-control" id="graus">
+                                <option value="">Escull uns estudis</option>
+                                {% for grau in estudis %}
+                                    <option value="{{ grau.codi }}">{{ grau.codi }} - {{ grau.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div><!--row-->
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <p><label>Estudis seleccionats (Com a mínim n'hi ha d'haver 1):</label></p>
+                            <ul id="seleccionats">
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
                 <div class="form-group">
                     <label>&nbsp;</label>
                     <div>
@@ -118,16 +167,18 @@
         $('#fOferta').on('submit', function (event) {
             event.preventDefault();
             var errors = "";
-            /*f ($("#nom").val().trim().length < 1) {
-             errors += "<p>El camp nom no pot ser buid.</p>";
-             }
-             if ($("#llinatges").val().trim().length < 1) {
-             errors += "<p>El camp Llinatges no pot ser buid.</p>";
-             }
-             if ($("#email").val().trim().length < 1) {
-             errors += "<p>El camp correu electrònic no pot ser buid.</p>";
-             }
-             */
+/*            if ($("#nom").val().trim().length < 1) {
+                errors += "<p>El camp nom no pot ser buid.</p>";
+            }
+            if ($("#llinatges").val().trim().length < 1) {
+                errors += "<p>El camp Llinatges no pot ser buid.</p>";
+            }
+            if ($("#email").val().trim().length < 1) {
+                errors += "<p>El camp correu electrònic no pot ser buid.</p>";
+            }*/
+            if(document.getElementsByName('grau').length<1){
+                errors+="<p>Al manco ha de seleccionar uns estudis.</p>"
+            }
             if (errors === "") {
                 $('#mdEspera').modal('show');
             } else {
@@ -148,6 +199,12 @@
             $.each($('#fOferta [name]'), function (i, obj) {
                 oferta[obj.name] = obj.value;
             });
+            oferta.estudis = [];
+            const graus = document.getElementsByName("grau");
+            graus.forEach(grau => {
+                oferta.estudis.push({id: grau.value});
+            });
+            console.log(oferta);
             oferta.descripcio = $('#textOferta').summernote('code');
             {% if oferta is empty %}
             $.ajax({
@@ -157,8 +214,7 @@
             }).done(function (ofertaRebuda) {
                 $('#mrTitol').html('Alta correcta')
                 $('#mrText').html("<p>L'oferta s'ha donat d'alta correctament.</p>" +
-                    "<p>Heu de posar com a mínim uns estudis als que va dirigida la oferta.</p>" +
-                    "<p>En tenir al manco uns estudis assignats podreu publicar la oferta, un professor la validarà i llavors arribarà als alumnes.</p>");
+                    "<p>En estar segur que l'oferta és correcta la podreu publicar, un professor la validarà i llavors arribarà als alumnes.</p>");
                 $('#bmDacord').on('click', function () {
                     window.location.href = "modificarOferta?idOferta=" + ofertaRebuda.idOferta;
                 });
@@ -195,5 +251,101 @@
             });
             {% endif %}
         });
+
+        var te = new Map();
+
+        {% for tipus in tipusEstudis %}
+        te.set({{ tipus.idTipus }}, '{{ tipus.nomTipus }}');
+        {% endfor %}
+
+
+
+        document.getElementById("familia").addEventListener("change", (e) => {
+            const familia = e.target.value;
+            if (familia != null && familia != '') {
+                fetch(`../cicles/${familia}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(response => response.json())
+                    .then(dades => {
+                        let opcions = '<option value="">Escull uns estudis</option>';
+                        let tipusActual = '';
+                        for (let cicle of dades) {
+                            if (tipusActual != cicle.tipusEstudis) {
+                                if (tipusActual !== '') {
+                                    opcions = opcions + '</optgroup>';
+                                }
+                                tipusActual = cicle.tipusEstudis;
+                                let indicador = te.get(cicle.tipusEstudis);
+
+                                opcions = opcions + '<optgroup label="' + indicador + '">';
+                            }
+                            opcions = opcions + '<option value="' + cicle.codi + '"> ' + cicle.codi + ' - ' + cicle.nom + '</option>';
+                        }
+                        opcions = opcions + '</optgroup>';
+                        $("#graus").html(opcions);
+                    })
+
+            }
+        });
+
+        function creaEstudi(ul, id, text) {
+            const li = document.createElement("li");
+            ul.appendChild(li);
+            const p = document.createElement("p");
+            li.appendChild(p);
+            p.appendChild(document.createTextNode(text + " "));
+            const boto = document.createElement("button");
+            p.appendChild(boto);
+            boto.className = "btn btn-xs btn-danger";
+            const span = document.createElement("span");
+            span.className = "glyphicon glyphicon-trash";
+            boto.appendChild(span);
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.value = id;
+            input.name = "grau";
+            p.appendChild(input);
+            boto.addEventListener("click", (e) => {
+                ul.removeChild(e.currentTarget.parentNode.parentNode);
+            });
+        }
+
+        function jaHiEs(cicle) {
+            const graus = document.getElementsByName("grau");
+            let trobat = false;
+            graus.forEach(grau => {
+                if (grau.value === cicle) {
+                    trobat = true;
+                }
+            });
+            return trobat;
+        }
+
+        document.getElementById("graus").addEventListener("change", (e) => {
+            const select = e.target;
+            if (select.value != 'null' && !jaHiEs(select.value)) {
+                const ul = document.getElementById("seleccionats");
+                creaEstudi(ul, select.value, select.options[select.selectedIndex].text);
+            }
+        });
+
+        const ul = document.getElementById("seleccionats");
+
+        function mostraEstudis() {
+            {% for cicle in oferta.estudis %}
+            creaEstudi(ul, '{{ cicle.codi }}', '{{ cicle.nom | escape('js') }}');
+            {# te.set({{ tipus.idTipus }}, '{{ tipus.nomTipus }}'); #}
+            {% endfor %}
+        }
+
+        document.getElementById("fOferta").addEventListener("reset", (e) => {
+            ul.innerHTML = '';
+            mostraEstudis();
+        })
+
+        mostraEstudis();
     });
 </script>

@@ -10,11 +10,11 @@ use Borsa\EstatLaboral as EstatLaboral;
 use Borsa\Estudis as Estudis;
 use Borsa\Familia as Familia;
 use Borsa\Idioma as Idioma;
+use Borsa\MenuItem as MenuItem;
 use Borsa\NivellIdioma as NivellIdioma;
 use Borsa\Oferta as Oferta;
 use Borsa\Professor as Professor;
 use Borsa\TipusEstudis as TipusEstudis;
-use Borsa\MenuItem as MenuItem;
 use Borsa\Token as Token;
 use Borsa\Usuari as Usuari;
 use Correu\Bustia as Bustia;
@@ -416,7 +416,10 @@ $app->group('/empresa', function () {
         if ($usuari != null) {
             $empresa = $usuari->getEntitat();
             $menuItems = \Borsa\MenuItem::where('idMenu', 220)->orderBy('idItem', 'ASC')->get();
-            return $this->view->render($response, 'empresa/ofertaAfegir.html.twig', ['menuItems' => $menuItems, 'actor' => $empresa, 'empresa' => $empresa]);
+            $estudis = Estudis::where('actiu', 1)->orderBy('codi', 'ASC')->get();
+            $families = Familia::orderBy('nom', 'ASC')->get();
+            $tipusEstudis = TipusEstudis::orderBy('idTipus', 'ASC')->get();
+            return $this->view->render($response, 'empresa/ofertaAfegir.html.twig', ['menuItems' => $menuItems, 'actor' => $empresa, 'empresa' => $empresa, 'estudis' => $estudis, 'families' => $families, 'tipusEstudis' => $tipusEstudis]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
@@ -434,7 +437,10 @@ $app->group('/empresa', function () {
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
             $menuItems = \Borsa\MenuItem::where('idMenu', 230)->orderBy('idItem', 'ASC')->get();
-            return $this->view->render($response, 'empresa/ofertaDades.html.twig', ['menuItems' => $menuItems, 'actor' => $empresa, 'empresa' => $empresa, 'oferta' => $oferta]);
+            $estudis = Estudis::where('actiu', 1)->orderBy('codi', 'ASC')->get();
+            $families = Familia::orderBy('nom', 'ASC')->get();
+            $tipusEstudis = TipusEstudis::orderBy('idTipus', 'ASC')->get();
+            return $this->view->render($response, 'empresa/ofertaDades.html.twig', ['menuItems' => $menuItems, 'actor' => $empresa, 'empresa' => $empresa, 'estudis'=>$estudis,  'families' => $families, 'tipusEstudis' => $tipusEstudis, 'oferta' => $oferta]);
         } else {
             return $response->withJSON('Errada: ', 404);
         }
@@ -1331,7 +1337,6 @@ $app->group('/administrador', function () {
     });
 
 
-
     $this->delete('/families/{idFamilia}', function ($request, $response, $args) {
         return DaoProfessor::eliminarFamilia($request, $response, $args, $this);
     });
@@ -1381,7 +1386,6 @@ $app->group('/administrador', function () {
     $this->put('/modificarTipusEstudis', function ($request, $response, $args) {
         return DaoProfessor::modificarTipusEstudis($request, $response, $this);
     });
-
 
 
     $this->delete('/tipusEstudis/{idTipus}', function ($request, $response, $args) {

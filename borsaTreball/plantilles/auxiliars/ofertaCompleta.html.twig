@@ -23,7 +23,8 @@
     <p>Es seleccionaran estudiants que hagin acabat <strong>qualsevol</strong> dels estudis demanats a l'oferta.</p>
     <ul>
         {% for grau in oferta.estudis %}
-            <li><p>{{ grau.nom }} - {{ grau.pivot.any }}</p></li>
+{#            <li><p>{{ grau.nom }} - {{ grau.pivot.any }}</p></li>#}
+            <li><p>{{ grau.nom }}</p></li>
         {% endfor %}
     </ul>
 </div>

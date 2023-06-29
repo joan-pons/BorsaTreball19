@@ -302,8 +302,14 @@ class DaoEmpresa extends Dao
             $oferta->professorValidada = null;
             $oferta->validada = false;
             $oferta->Empreses_idEmpresa = filter_var($data['idEmpresa'], FILTER_SANITIZE_NUMBER_INT);
-            //$empresa->DataAlta= \Carbon::now();
+            $cicles = array();
+            if ($data['estudis'] != null) {
+                foreach ($data['estudis'] as $cicle){
+                    $cicles[$cicle['id']]=array('any'=>1900,'nota'=>5);
+                }
+            }
             $oferta->save();
+            $oferta->estudis()->sync($cicles);
             return $response->withJson($oferta);
         } catch (\Illuminate\Database\QueryException $ex) {
             $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
@@ -343,8 +349,14 @@ class DaoEmpresa extends Dao
             $oferta->professorValidada = null;
             $oferta->validada = false;
             $oferta->Empreses_idEmpresa = filter_var($data['idEmpresa'], FILTER_SANITIZE_NUMBER_INT);
-            //$empresa->DataAlta= \Carbon::now();
+            $cicles = array();
+            if ($data['estudis'] != null) {
+                foreach ($data['estudis'] as $cicle){
+                    $cicles[$cicle['id']]=array('any'=>1900,'nota'=>5);
+                }
+            }
             $oferta->save();
+            $oferta->estudis()->sync($cicles);
             return $response->withJson($oferta);
         } catch (\Illuminate\Database\QueryException $ex) {
             $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
