@@ -26,6 +26,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="f9af9f55-b3e7-4126-8fd2-43e47e19f9e7" name="MVIntranet">
+        <fileTransfer accessType="SFTP" host="192.168.56.101" port="22" sshConfigId="645e2ee7-f0ce-4977-9dae-ad881ae3b91b" sshConfig="webadmin@192.168.56.101:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
