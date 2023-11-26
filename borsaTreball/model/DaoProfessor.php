@@ -30,7 +30,7 @@ class DaoProfessor extends Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             $professor = new Professor;
-            $professor->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $professor->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $professor->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $professor->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
             $professor->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
@@ -71,8 +71,8 @@ class DaoProfessor extends Dao
             $data = $request->getParsedBody();
             $professor = Professor::find(filter_var($args['idProfessor'], FILTER_SANITIZE_NUMBER_INT));
             if ($professor != null) {
-                $professor->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
-                $professor->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING);
+                $professor->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                $professor->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $professor->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
                 $professor->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
                 $professor->save();
@@ -568,7 +568,7 @@ class DaoProfessor extends Dao
             $data = $request->getParsedBody();
             $estudis = new Estudis;
             $estudis->codi = filter_var($data['codi'], FILTER_SANITIZE_STRING);
-            $estudis->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $estudis->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $actiu = filter_var($data['actiu'], FILTER_SANITIZE_STRING);
             $estudis->familia = filter_var($data['familia'], FILTER_SANITIZE_STRING);
             $estudis->tipusEstudis = filter_var($data['tipusEstudis'], FILTER_SANITIZE_STRING);
@@ -604,7 +604,7 @@ class DaoProfessor extends Dao
             $data = $request->getParsedBody();
             $estudis = Estudis::find(filter_var($data['codi'], FILTER_SANITIZE_STRING));
 //            $estudis->codi = filter_var($data['codi'], FILTER_SANITIZE_STRING);
-            $estudis->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $estudis->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $actiu = filter_var($data['actiu'], FILTER_SANITIZE_STRING);
             $estudis->familia = filter_var($data['familia'], FILTER_SANITIZE_STRING);
             $estudis->tipusEstudis = filter_var($data['tipusEstudis'], FILTER_SANITIZE_STRING);
@@ -676,7 +676,7 @@ class DaoProfessor extends Dao
             $data = $request->getParsedBody();
             $familia = new Familia;
             $familia->id = filter_var($data['id'], FILTER_SANITIZE_STRING);
-            $familia->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $familia->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $familia->save();
             return $response->withJSON($familia);
         } catch (\Illuminate\Database\QueryException $ex) {
@@ -704,7 +704,7 @@ class DaoProfessor extends Dao
             $data = $request->getParsedBody();
             $familia = Familia::find(filter_var($data['id'], FILTER_SANITIZE_STRING));
             $familia->id = filter_var($data['id'], FILTER_SANITIZE_STRING);
-            $familia->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $familia->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $familia->save();
             $missatge = array("missatge" => "Familia professional modificada correctament.");
             return $response->withJSON($missatge);
@@ -769,7 +769,7 @@ class DaoProfessor extends Dao
             $data = $request->getParsedBody();
             $tipusEstudis = new TipusEstudis;
             $tipusEstudis->idTipus = filter_var($data['id'], FILTER_SANITIZE_STRING);
-            $tipusEstudis->nomTipus = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+            $tipusEstudis->nomTipus = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $tipusEstudis->save();
             return $response->withJSON($tipusEstudis);
         } catch (\Illuminate\Database\QueryException $ex) {
@@ -796,7 +796,7 @@ class DaoProfessor extends Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             $tipusEstudis = TipusEstudis::find(filter_var($data['idTipus'], FILTER_SANITIZE_STRING));
-            $tipusEstudis->nomTipus = filter_var($data['nomTipus'], FILTER_SANITIZE_STRING);
+            $tipusEstudis->nomTipus = filter_var($data['nomTipus'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $tipusEstudis->save();
             $missatge = array("missatge" => "Tipus d'estudis modificada correctament.");
             return $response->withJSON($missatge);

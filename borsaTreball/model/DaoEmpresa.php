@@ -127,11 +127,11 @@ class DaoEmpresa extends Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             $contacte = new Contacte;
-            $contacte->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
-            $contacte->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING);
+            $contacte->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $contacte->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $contacte->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
             $contacte->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
-            $contacte->carrec = filter_var($data['carrec'], FILTER_SANITIZE_STRING);
+            $contacte->carrec = filter_var($data['carrec'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $contacte->Empreses_idEmpresa = filter_var($data['idEmpresa'], FILTER_SANITIZE_NUMBER_INT);
             $contacte->save();
             return $response->withJson($contacte);
@@ -159,10 +159,10 @@ class DaoEmpresa extends Dao
             $data = $request->getParsedBody();
             $contacte = Contacte::find(filter_var($args['idContacte'], FILTER_SANITIZE_NUMBER_INT));
             if ($contacte != null) {
-                $contacte->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
-                $contacte->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING);
+                $contacte->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                $contacte->llinatges = filter_var($data['llinatges'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $contacte->telefon = filter_var($data['telefon'], FILTER_SANITIZE_STRING);
-                $contacte->carrec = filter_var($data['carrec'], FILTER_SANITIZE_STRING);
+                $contacte->carrec = filter_var($data['carrec'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $contacte->email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
                 $contacte->Empreses_idEmpresa = filter_var($data['idEmpresa'], FILTER_SANITIZE_NUMBER_INT);
                 $contacte->save();
@@ -288,7 +288,8 @@ class DaoEmpresa extends Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             $oferta = new Oferta;
-            $oferta->titol = filter_var($data['titol'], FILTER_SANITIZE_STRING);
+
+            $oferta->titol = filter_var($data['titol'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $oferta->descripcio = $data['descripcio'];
             if ($data['dPublicacio'] == '') {
                 $oferta->dataPublicacio = null;
@@ -296,9 +297,9 @@ class DaoEmpresa extends Dao
                 $oferta->dataPublicacio = filter_var($data['dPublicacio'], FILTER_SANITIZE_STRING);
             }
             $oferta->dataFinal = filter_var($data['dFinal'], FILTER_SANITIZE_STRING);
-            $oferta->localitat = filter_var($data['localitat'], FILTER_SANITIZE_STRING);
-            $oferta->tipusContracte = filter_var($data['tContracte'], FILTER_SANITIZE_STRING);
-            $oferta->horari = filter_var($data['horari'], FILTER_SANITIZE_STRING);
+            $oferta->localitat = filter_var($data['localitat'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $oferta->tipusContracte = filter_var($data['tContracte'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $oferta->horari = filter_var($data['horari'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $oferta->professorValidada = null;
             $oferta->validada = false;
             $oferta->Empreses_idEmpresa = filter_var($data['idEmpresa'], FILTER_SANITIZE_NUMBER_INT);
@@ -335,7 +336,7 @@ class DaoEmpresa extends Dao
             $container->dbEloquent;
             $data = $request->getParsedBody();
             $oferta = Oferta::find(filter_var($args['idOferta'], FILTER_SANITIZE_NUMBER_INT));
-            $oferta->titol = filter_var($data['titol'], FILTER_SANITIZE_STRING);
+            $oferta->titol = filter_var($data['titol'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $oferta->descripcio = $data['descripcio'];
             if ($data['dPublicacio'] == '') {
                 $oferta->dataPublicacio = null;
@@ -343,9 +344,9 @@ class DaoEmpresa extends Dao
                 $oferta->dataPublicacio = filter_var($data['dPublicacio'], FILTER_SANITIZE_STRING);
             }
             $oferta->dataFinal = filter_var($data['dFinal'], FILTER_SANITIZE_STRING);
-            $oferta->localitat = filter_var($data['localitat'], FILTER_SANITIZE_STRING);
-            $oferta->tipusContracte = filter_var($data['tContracte'], FILTER_SANITIZE_STRING);
-            $oferta->horari = filter_var($data['horari'], FILTER_SANITIZE_STRING);
+            $oferta->localitat = filter_var($data['localitat'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $oferta->tipusContracte = filter_var($data['tContracte'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $oferta->horari = filter_var($data['horari'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
             $oferta->professorValidada = null;
             $oferta->validada = false;
             $oferta->Empreses_idEmpresa = filter_var($data['idEmpresa'], FILTER_SANITIZE_NUMBER_INT);

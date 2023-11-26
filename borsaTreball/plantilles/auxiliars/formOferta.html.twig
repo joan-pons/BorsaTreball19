@@ -195,7 +195,7 @@
         $('#mdEspera').modal({backdrop: 'static', keyboard: false, show: false});
         $('#mEsperaTitol').html('Realitzant les modificacions');
         $('#mdEspera').on('shown.bs.modal', function (e) {
-            var oferta = {};
+            let oferta = {};
             $.each($('#fOferta [name]'), function (i, obj) {
                 oferta[obj.name] = obj.value;
             });

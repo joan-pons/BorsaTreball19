@@ -437,10 +437,15 @@ $app->group('/empresa', function () {
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
             $menuItems = \Borsa\MenuItem::where('idMenu', 230)->orderBy('idItem', 'ASC')->get();
+            foreach ($menuItems as &$item) {
+                if($item->link[strlen($item->link)-1]=="="){
+                    $item->link=$item->link.$oferta->idOferta;
+                }
+            }
             $estudis = Estudis::where('actiu', 1)->orderBy('codi', 'ASC')->get();
             $families = Familia::orderBy('nom', 'ASC')->get();
             $tipusEstudis = TipusEstudis::orderBy('idTipus', 'ASC')->get();
-            return $this->view->render($response, 'empresa/ofertaDades.html.twig', ['menuItems' => $menuItems, 'actor' => $empresa, 'empresa' => $empresa, 'estudis'=>$estudis,  'families' => $families, 'tipusEstudis' => $tipusEstudis, 'oferta' => $oferta]);
+            return $this->view->render($response, 'empresa/ofertaDades.html.twig', ['menuItems' => $menuItems, 'actor' => $empresa, 'empresa' => $empresa, 'estudis' => $estudis, 'families' => $families, 'tipusEstudis' => $tipusEstudis, 'oferta' => $oferta]);
         } else {
             return $response->withJSON('Errada: ', 404);
         }
@@ -523,7 +528,13 @@ $app->group('/empresa', function () {
         if ($usuari != null && $oferta != null) {
             $empresa = $usuari->getEntitat();
             $etiquetes = array("nom" => $empresa->nom, "labelLlista" => "que rebran les respostes dels candidats");
-            return $this->view->render($response, 'empresa/contactesOferta.html.twig', ['actor' => $empresa, 'empresa' => $empresa, 'oferta' => $oferta, 'etiquetes' => $etiquetes]);
+            $menuItems = \Borsa\MenuItem::where('idMenu', 230)->orderBy('idItem', 'ASC')->get();
+            foreach ($menuItems as &$item) {
+                if($item->link[strlen($item->link)-1]=="="){
+                    $item->link=$item->link.$oferta->idOferta;
+                }
+            }
+            return $this->view->render($response, 'empresa/contactesOferta.html.twig', ['menuItems'=>$menuItems,'actor' => $empresa, 'empresa' => $empresa, 'oferta' => $oferta, 'etiquetes' => $etiquetes]);
             //return $response->withJSON($oferta->estatsLaborals);
         } else {
             return $response->withJSON('Errada: ', 500);
@@ -561,6 +572,20 @@ $app->group('/empresa', function () {
 
     $this->put('/publicarOferta/{idOferta}', function ($request, $response, $args) {
         return DaoEmpresa::publicarOferta($request, $response, $args, $this);
+    });
+
+    /*    $posts = Post::whereHas('categories', function($q)
+        {
+            $q->where('slug', '=', Input::get('category_slug'));
+
+        })->get();*/
+
+
+    $this->get('/recompteAlumnes/{idCicle}', function ($request, $response, $args) {
+        $idCicle = $args['idCicle'];
+        $alumnes = Alumne::whereHas('estudis', function ($q) {
+                $q->where('Estudis_codi', '=', $idCicle);
+            }) -> get();
     });
 })->add(function ($request, $response, $next) {
     if (isset($_SESSION['rols']) && (in_array(20, $_SESSION['rols']) || in_array(40, $_SESSION['rols']))) {
@@ -847,6 +872,8 @@ $app->group('/professor', function () {
             if ($usuari->teRol(40)) {
                 $companys = Professor::where('validat', 0)->orderBy('llinatges', 'ASC')->orderBy('nom', 'ASC')->get();
             }
+
+
             return $this->view->render($response, 'professor/dashBoard.html.twig', ['actor' => $professor, 'professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes' => $alumnes]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
@@ -1449,10 +1476,10 @@ $app->group('/administrador', function () {
 
 
 //Usuaris
-$app->get('/usuari/{id}', function (Request $request, Response $response, $args) {
-    $this->dbEloquent;
-    return $response->withJSON(Usuari::find($args['id'])->getEntitat());
-});
+//$app->get('/usuari/{id}', function (Request $request, Response $response, $args) {
+//    $this->dbEloquent;
+//    return $response->withJSON(Usuari::find($args['id'])->getEntitat());
+//});
 
 //Final
 
