@@ -28,7 +28,7 @@
 {% endblock %}          
 {% block contingut %}
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <h3>Dades de l'empresa</h3>
             <div class="well click" id="dEmpresa">
                 <p><label>Nom: &nbsp;</label>{{ empresa.nom }}</p>
@@ -44,23 +44,23 @@
             </div>
         </div><!--col-->
         {% if empresa.activa %}
-        <div class="col-md-4" id="contactes">
-            <h3>Contactes</h3>
-            {% if empresa.contactes is empty %}
-                <div class='well'>
-                    <p> L'empresa encara no té definida cap persona de contacte.</p>                 
-                </div>
-            {% else %}
-                {% for contacte in empresa.contactes %}
-                    <div class="well click" id="cont{{contacte.idContacte}}">
-                        <p><label>Nom: &nbsp;</label>{{contacte.nom }} {{contacte.llinatges}}</p>
-                        <p><label>Càrrec: &nbsp;</label>{{contacte.carrec }}</p>
-                        <p><label>Correu electrònic: &nbsp;</label>{{contacte.email }}</p>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div><!--col-->
-        <div class="col-md-4" id="dOfertes">
+{#        <div class="col-md-4" id="contactes">#}
+{#            <h3>Contactes</h3>#}
+{#            {% if empresa.contactes is empty %}#}
+{#                <div class='well'>#}
+{#                    <p> L'empresa encara no té definida cap persona de contacte.</p>#}
+{#                </div>#}
+{#            {% else %}#}
+{#                {% for contacte in empresa.contactes %}#}
+{#                    <div class="well click" id="cont{{contacte.idContacte}}">#}
+{#                        <p><label>Nom: &nbsp;</label>{{contacte.nom }} {{contacte.llinatges}}</p>#}
+{#                        <p><label>Càrrec: &nbsp;</label>{{contacte.carrec }}</p>#}
+{#                        <p><label>Correu electrònic: &nbsp;</label>{{contacte.email }}</p>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            {% endif %}#}
+{#        </div><!--col-->#}
+        <div class="col-md-6" id="dOfertes">
             <h3>Ofertes</h3>
             {% if empresa.ofertes is empty %}
                 <div class='well'>

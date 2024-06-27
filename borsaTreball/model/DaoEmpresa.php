@@ -309,6 +309,8 @@ class DaoEmpresa extends Dao
                     $cicles[$cicle['id']]=array('any'=>1900,'nota'=>5);
                 }
             }
+            $oferta->email=filter_var($data['email'],FILTER_SANITIZE_STRING,FILTER_VALIDATE_EMAIL);
+            $oferta->url=filter_var($data['url'],FILTER_SANITIZE_STRING,FILTER_VALIDATE_URL);
             $oferta->save();
             $oferta->estudis()->sync($cicles);
             return $response->withJson($oferta);
@@ -356,6 +358,8 @@ class DaoEmpresa extends Dao
                     $cicles[$cicle['id']]=array('any'=>1900,'nota'=>5);
                 }
             }
+            $oferta->email=filter_var($data['email'],FILTER_SANITIZE_STRING,FILTER_VALIDATE_EMAIL);
+            $oferta->url=filter_var($data['url'],FILTER_SANITIZE_STRING,FILTER_VALIDATE_URL);
             $oferta->save();
             $oferta->estudis()->sync($cicles);
             return $response->withJson($oferta);

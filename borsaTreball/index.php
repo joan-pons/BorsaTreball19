@@ -866,6 +866,7 @@ $app->group('/professor', function () {
                     }
                 }
             }
+            $menuItems = \Borsa\MenuItem::where('idMenu', 100)->orderBy('idItem', 'ASC')->get();
 
 
             $companys = null;
@@ -874,7 +875,7 @@ $app->group('/professor', function () {
             }
 
 
-            return $this->view->render($response, 'professor/dashBoard.html.twig', ['actor' => $professor, 'professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes' => $alumnes]);
+            return $this->view->render($response, 'professor/dashBoard.html.twig', ['menuItems'=>$menuItems, 'actor' => $professor, 'professor' => $professor, 'usuari' => $usuari, 'empreses' => $empreses, 'companys' => $companys, 'ofertes' => $ofertes, 'alumnes' => $alumnes]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }

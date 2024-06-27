@@ -1,12 +1,14 @@
 {# empty Twig template #}
 
 <h1>{{ oferta.titol }} <small>(Codi: {{ oferta.idOferta }})</small></h1>
-<h2>Empresa: <a
-            href="{% if not(oferta.empresa.url starts with 'http') %}{{ 'http://' }}{% endif %}{{ oferta.empresa.url }}"
-            target="_blank">{{ oferta.empresa.nom }}</a></h2>
-<div class="well">
-    {{ oferta.empresa.descripcio|raw }}
-</div>
+{% if oferta.empresa.idEmpresa !=1 %}
+    <h2>Empresa: <a
+                href="{% if not(oferta.empresa.url starts with 'http') %}{{ 'http://' }}{% endif %}{{ oferta.empresa.url }}"
+                target="_blank">{{ oferta.empresa.nom }}</a></h2>
+    <div class="well">
+        {{ oferta.empresa.descripcio|raw }}
+    </div>
+{% endif %}
 <h2>Descripció de l'oferta</h2>
 <div class="well">
     {{ oferta.descripcio|raw }}
@@ -23,7 +25,7 @@
     <p>Es seleccionaran estudiants que hagin acabat <strong>qualsevol</strong> dels estudis demanats a l'oferta.</p>
     <ul>
         {% for grau in oferta.estudis %}
-{#            <li><p>{{ grau.nom }} - {{ grau.pivot.any }}</p></li>#}
+            {# <li><p>{{ grau.nom }} - {{ grau.pivot.any }}</p></li> #}
             <li><p>{{ grau.nom }}</p></li>
         {% endfor %}
     </ul>
@@ -62,28 +64,26 @@
     </div>
 {% endif %}
 
-{% if oferta.contactes is not empty or oferta.empresa.email!="borsa.treball@paucasesnovescifp.cat" %}
-    <h2> Contacte amb l'empresa</h2>
-    <div class="well">
-        <p>Enviau les vostres
-            dades {% if oferta.contactes|length>1 %}a un dels següents correus electrònics.{% else %}al següent correu electrònic{% endif %}</p>
-        <ul>
-            {% if oferta.contactes is empty %}
-                <li>{{ oferta.empresa.nom }}: <a href="mailto:{{ oferta.empresa.email }}">{{ oferta.empresa.email }}</a>
-                </li>
-            {% else %}
-                {% for contacte in oferta.contactes %}
-                    <li><p>{{ contacte.nom }} {{ contacte.llinatges }}: <a
-                                    href="mailto:{{ contacte.email }}">{{ contacte.email }}</a></p></li>
-                {% endfor %}
-            {% endif %}
-        </ul>
-    </div>
-{% endif %}
+{# {% if oferta.contactes is not empty or oferta.empresa.email!="borsa.treball@paucasesnovescifp.cat" %} #}
+<h2> Contacte amb l'empresa</h2>
+<div class="well">
+    {% if oferta.email is not empty %}
+    <p>Enviau les vostres dades al següent correu electrònic</p>
+    <ul>
+        <li><a href="mailto:{{ oferta.email }}">{{ oferta.email }}</a></li>
+    </ul>
+    {% endif %}
+    {% if oferta.url is not empty %}
+    <p>Clicau el següent enllaç per accedir a l'oferta de feina:</p>
+    <ul>
+        <li><a href="{{ oferta.url }}">{{ oferta.url }}</a></li>
+    </ul>
+    {% endif %}
+</div>
+{# {% endif %} #}
 {% if not recompte is empty %}
     <h2> Nombre de candidats</h2>
     <div class="well">
         <p>L'oferta s'enviarà a {{ recompte }} candidats.</p>
     </div>
-
 {% endif %}
