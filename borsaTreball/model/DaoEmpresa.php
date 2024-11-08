@@ -252,11 +252,15 @@ class DaoEmpresa extends Dao
 
                 $professors = DB::select('SELECT p.* FROM borsa.Estudis_has_Responsables r inner join borsa.Estudis e on e.codi = r.Estudis_codi inner join borsa.Professors p on r.Professors_idProfessor=p.idProfessor where p.actiu=1 and e.familia=\'' . $empresa->familia . '\'');
                 if (count($professors) > 1) {
+                    $avisar = [];
                     foreach ($professors as $profe) {
-                        if ($profe->idProfessor != $professor->idProfessor)
-                            $usuari = Usuari::where('nomUsuari', $profe->email)->get();
-                        $r = Dao::generaToken(20, $usuari[0], 7, $container);
-                        Bustia::enviarUnic($profe->email, 'Empresa validada per un company', '/email/empresaValidada.html.twig', ['empresa' => $empresa->nom, 'professor' => $professor], $container);
+                        if ($profe->idProfessor != $professor->idProfessor) {
+                            array_push($avisar,$profe->email);
+//                            $usuari = Usuari::where('nomUsuari', $profe->email)->get();
+//                            $r = Dao::generaToken(20, $usuari[0], 7, $container);
+//                            Bustia::enviarUnic($profe->email, 'Empresa validada per un company', '/email/empresaValidada.html.twig', ['empresa' => $empresa->nom, 'professor' => $professor], $container);
+                        }
+                        Bustia::enviar($avisar, 'Empresa validada per un company', '/email/empresaValidada.html.twig', ['empresa' => $empresa->nom, 'professor' => $professor], $container);
                     }
                 }
 
@@ -318,7 +322,7 @@ class DaoEmpresa extends Dao
             $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per una altra empresa.", 'info' => $ex->getCode() . " " . $ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades.", 'info' => $ex->getCode() . " " . $ex->getMessage());
                     break;
                 case 'HY000':
                     $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getCode() . " " . $ex->getMessage());
@@ -653,7 +657,7 @@ class DaoEmpresa extends Dao
                 $oferta->validada = 0;
                 $oferta->rebuig = null;
                 $oferta->professorValidada = null;
-                $professors = DB::select('select p.email from borsa.Ofertes_has_Estudis o inner join borsa.Estudis_has_Responsables e on o.Estudis_codi=e.Estudis_codi inner join borsa.Professors p on e.Professors_idProfessor=p.idProfessor where p.actiu=1 and o.Ofertes_idOferta=' . $oferta->idOferta);
+                $professors = DB::select('select distinct p.email from borsa.Ofertes_has_Estudis o inner join borsa.Estudis_has_Responsables e on o.Estudis_codi=e.Estudis_codi inner join borsa.Professors p on e.Professors_idProfessor=p.idProfessor where p.actiu=1 and o.Ofertes_idOferta=' . $oferta->idOferta);
                 $oferta->save();
                 foreach ($professors as $professor) {
                     $usuari = Usuari::where('nomUsuari', $professor->email)->get();
@@ -668,7 +672,7 @@ class DaoEmpresa extends Dao
             $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
             switch ($ex->getCode()) {
                 case 23000:
-                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    $missatge = array("missatge" => "Dades duplicades.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
                     break;
                 case 'HY000':
                     $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());

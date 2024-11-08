@@ -9,6 +9,15 @@ use Borsa\Email as Email;
 
 class Bustia
 {
+    /** Envia un email a múltiples destinatais
+     * @param $emails Les adreces d'email on s'ha d'enviar
+     * @param $subject
+     * @param $plantilla
+     * @param $dades Array associatiu on cada element és una de les dades que s¡han d'utilitzar per incloure a la plantilla
+     * @param $container
+     * @param false $diferit Enviament passant per la BD (true) o directe(false).
+     * @return bool|mixed
+     */
     public static function enviar($emails, $subject, $plantilla, $dades, $container, $diferit = false)
     {
         if ($diferit) {
@@ -29,7 +38,6 @@ class Bustia
         return true;
     }
 
-//TODO: Els mètodes enviar i enviarÚnic han de insertar els missatges i els destinataris a la base de dades. Així no s'haurà de tocar més codi.
     public static function enviarUnic($destinatari, $subject, $plantilla, $dades, $container, $diferit = false)
     {
         if ($diferit) {

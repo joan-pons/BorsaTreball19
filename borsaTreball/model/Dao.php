@@ -97,6 +97,40 @@ class Dao
         try {
             $container->dbEloquent;
             $resultats = new \stdClass();
+            $enguany=date('Y');
+            $alumnes = DB::select('SELECT e.familia, count(a.idAlumne) as alumnes FROM borsa.Alumnes a inner join borsa.Estudis e on a.estudisAlta=e.codi where a.dataAlta between \''.($enguany-1).'-09-01\' and \''.$enguany.'-06-30\' group by e.familia;');
+            $empreses = DB::select('SELECT familia, count(*) as empreses FROM borsa.Empreses where dataAlta between \''.($enguany-1).'-09-01\' and \''.$enguany.'-06-30\' group by familia;');
+            $ofertes = DB::select('select w.familia, count(*) as ofertes from (SELECT distinct o.idOferta, es.familia FROM borsa.Ofertes o inner join borsa.Ofertes_has_Estudis e on o.idOferta = e.Ofertes_idOferta inner join Estudis es on es.codi=e.Estudis_codi where o.dataPublicacio between \''.($enguany-1).'-09-01\' and \''.$enguany.'-06-30\' order by o.idOferta) w group by familia;');
+            $alumnesAny = DB::select('SELECT distinct a.Estudis_codi as codi, e.nom as nom, count(*) as alumnes, a.any as year FROM borsa.Alumne_has_Estudis a inner join borsa.Estudis e on a.Estudis_codi=e.codi group by a.Estudis_codi, a.any order  by a.Estudis_codi, a.any;');
+
+            $resultats->alumnes = $alumnes;
+            $resultats->empreses = $empreses;
+            $resultats->ofertes = $ofertes;
+            $resultats->alumnesAny = $alumnesAny;
+            return $resultats;
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $container->logger->addError($ex->getcode() . ' ' . $ex->getMessage());
+
+            switch ($ex->getCode()) {
+                case 23000:
+                    $missatge = array("missatge" => "Dades duplicades. Segurament degut a que el correu electrònic ja està registrat per un altre contacte.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                case 'HY000':
+                    $missatge = array("missatge" => "Algunes de les dades obligatòries han arribat sense valor.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+                default:
+                    $missatge = array("missatge" => "El professor no s'ha pogut modificar.", 'info' => $ex->getcode() . ' ' . $ex->getMessage());
+                    break;
+            }
+            return $response->withJson($missatge, 422);
+        }
+    }
+
+    public static function estadistiquesAcumulades(Request $request, Response $response, $args, \Slim\Container $container)
+    {
+        try {
+            $container->dbEloquent;
+            $resultats = new \stdClass();
 
             $alumnes = DB::select('SELECT e.familia, count(a.idAlumne) as alumnes FROM borsa.Alumnes a inner join borsa.Estudis e on a.estudisAlta=e.codi group by e.familia;');
             $empreses = DB::select('SELECT familia, count(*) as empreses FROM borsa.Empreses group by familia;');
@@ -266,32 +300,32 @@ class Dao
             //Allumnes per estudis, nota i any
             $alumnes = DB::select('select distinct a.* from Ofertes_has_Estudis o inner join Alumne_has_Estudis e on o.Estudis_codi=e.Estudis_codi inner join Alumnes a on e.Alumnes_idAlumne=a.idAlumne where Ofertes_idOferta=' . $oferta->idOferta . ' and a.actiu=true and e.any>=IFNULL(o.any,1900) and e.nota>=IFNULL(o.nota,5)  order by a.llinatges, a.nom');
 
-            //Alumnes per Idiomes
-            if ($oferta->idiomes->count() > 0 && count($alumnes) > 0) {
-                $alumnesIdiomes = array();
-                //Dins $alumnesIdiomes guarda els que hi ha a $alumnes que tenen els idiomes demanats
-                foreach ($alumnes as $alumne) {
-                    $coincidencies = DB::select('select count(o.idiomes_idIdioma) as recompte from Ofertes_has_Idiomes o left join Alumne_has_Idiomes al  on o.idiomes_idIdioma=al.idiomes_idIdiomes where o.Ofertes_idOferta=' . $oferta->idOferta . ' and al.Alumne_idAlumne=' . $alumne->idAlumne . ' and al.NIvellsIdioma_idNivellIdioma>=o.NivellsIdioma_idNivellIdioma');
-                    if ($coincidencies[0]->recompte == $oferta->idiomes->count()) {
-                        array_push($alumnesIdiomes, $alumne);
-                    }
-                }
-                //Actualitza $alumnes amb els filtrats per idioma.
-                $alumnes = $alumnesIdiomes;
-            }
-
-            // Filtrar alumnes per estat laboral
-            if ($oferta->estatsLaborals->count() > 0 && count($alumnes) > 0) {
-                $alumnesEstats = '(';
-                $separador = '';
-                foreach ($alumnes as $alumne) {
-                    $alumnesEstats .= $separador . $alumne->idAlumne;
-                    $separador = ', ';
-                }
-                $alumnesEstats .= ')';
-
-                $alumnes = DB::select('select distinct a.* from Ofertes_has_EstatLaboral o inner join Alumne_has_EstatLaboral al on o.EstatLaboral_idEstatLaboral=al.EstatLaboral_idEstatLaboral inner join Alumnes a on idAlumne=Alumnes_idAlumne where o.Ofertes_idOferta=' . $oferta->idOferta . ' and Alumnes_idAlumne in ' . $alumnesEstats);
-            }
+//            //Alumnes per Idiomes
+//            if ($oferta->idiomes->count() > 0 && count($alumnes) > 0) {
+//                $alumnesIdiomes = array();
+//                //Dins $alumnesIdiomes guarda els que hi ha a $alumnes que tenen els idiomes demanats
+//                foreach ($alumnes as $alumne) {
+//                    $coincidencies = DB::select('select count(o.idiomes_idIdioma) as recompte from Ofertes_has_Idiomes o left join Alumne_has_Idiomes al  on o.idiomes_idIdioma=al.idiomes_idIdiomes where o.Ofertes_idOferta=' . $oferta->idOferta . ' and al.Alumne_idAlumne=' . $alumne->idAlumne . ' and al.NIvellsIdioma_idNivellIdioma>=o.NivellsIdioma_idNivellIdioma');
+//                    if ($coincidencies[0]->recompte == $oferta->idiomes->count()) {
+//                        array_push($alumnesIdiomes, $alumne);
+//                    }
+//                }
+//                //Actualitza $alumnes amb els filtrats per idioma.
+//                $alumnes = $alumnesIdiomes;
+//            }
+//
+//            // Filtrar alumnes per estat laboral
+//            if ($oferta->estatsLaborals->count() > 0 && count($alumnes) > 0) {
+//                $alumnesEstats = '(';
+//                $separador = '';
+//                foreach ($alumnes as $alumne) {
+//                    $alumnesEstats .= $separador . $alumne->idAlumne;
+//                    $separador = ', ';
+//                }
+//                $alumnesEstats .= ')';
+//
+//                $alumnes = DB::select('select distinct a.* from Ofertes_has_EstatLaboral o inner join Alumne_has_EstatLaboral al on o.EstatLaboral_idEstatLaboral=al.EstatLaboral_idEstatLaboral inner join Alumnes a on idAlumne=Alumnes_idAlumne where o.Ofertes_idOferta=' . $oferta->idOferta . ' and Alumnes_idAlumne in ' . $alumnesEstats);
+//            }
             return $alumnes;
         } catch (\Illuminate\Database\QueryException $ex) {
             switch ($ex->getCode()) {

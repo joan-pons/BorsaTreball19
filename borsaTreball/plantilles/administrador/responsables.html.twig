@@ -1,0 +1,35 @@
+{% extends "auxiliars/baseDins.html.twig" %}
+
+{% block head %}
+    <title>Borsa de treball: Responsables</title>
+
+
+{% endblock %}
+
+{% block navegacio %}
+    {% set actiu=147 %}
+    {{ parent() }}
+{% endblock %}
+
+    {% block contingut %}
+        <h2>Responsables estudis</h2>
+        {% for familia in families %}
+
+        <div class="well">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4>{{ familia.nom }}</h4>
+                    {% for estudis in familia.cicles %}
+                        <h5>{{ estudis.nom }}</h5>
+                        <ul>
+                            {% for responsable in estudis.professors%}
+                                <li>{{ responsable.nom }} {{ responsable.llinatges }} <button class="btn btn-xs btn-danger"><span class = "glyphicon glyphicon-trash"></span></button></li>
+                            {% endfor%}
+                        </ul>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+    {% endblock %}

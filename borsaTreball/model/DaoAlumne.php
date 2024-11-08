@@ -4,7 +4,6 @@ namespace Borsa;
 
 use Borsa\Alumne as Alumne;
 use Correu\Bustia;
-use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -32,7 +31,7 @@ class DaoAlumne extends Dao
             $alumne->save();
 
 //            $numAlumnes = DB::select('SELECT count(*) FROM borsa.Alumnes where estudisAlta=\'' . $alumne->estudisAlta . '\'  and validat=0 and dataAlta > date_add(NOW(), INTERVAL -7 DAY)');
-            if (true){ //TODO $numAlumnes  == 0) {
+            if (true) { //TODO $numAlumnes  == 0) {
                 $estudis = Estudis::find($alumne->estudisAlta);
                 if (count($estudis->professors) > 0) {
                     foreach ($estudis->professors as $professor) {
@@ -311,6 +310,19 @@ class DaoAlumne extends Dao
 
                     $resultat = Bustia::enviarUnic($alumne->email, 'Validació a la borsa de treball del Pau Casesnoves', "/email/resultatValidacioAlumne.html.twig", ['alumne' => $alumne, 'contrasenya' => $alumne->getUsuari()->contrasenya, 'token' => $token], $container);
                     $resultats[] = array("email" => $alumne->email, "resultat" => $resultat);
+
+                    $estudis = Estudis::find($alumne->estudisAlta);
+                    if (count($estudis->professors) > 1) {
+                        $avisar = [];
+                        foreach ($estudis->professors as $profe) {
+                            if ($profe->idProfessor != $professor->idProfessor && $profe->actiu == 1) {
+                                array_push($avisar, $profe->email);
+//                                $usuari = Usuari::where('nomUsuari', $profe->email)->get();
+//                            Bustia::enviarUnic($professor->email, "Alumne validat per un company", 'email/alumneValidat.html.twig', ['alumne' => $alumne, 'professor' => $professor], $container);
+                            }
+                        }
+                        Bustia::enviar($avisar, "Alumne validat per un company", 'email/alumneValidat.html.twig', ['alumne' => $alumne, 'professor' => $professor], $container);
+                    }
                 }
             }
             $missatge = array("missatge" => "OK");

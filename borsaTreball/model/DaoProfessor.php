@@ -467,11 +467,13 @@ class DaoProfessor extends Dao
                     $estudis = Estudis::find($alumne->estudisAlta);
                     if (count($estudis->professors) > 0) {
                         foreach ($estudis->professors as $professor) {
-                            $usuari = Usuari::where('nomUsuari', $professor->email)->get();
-                            $container->logger->addInfo($alumne->idAlumne . " " . $professor->email);
+                            if($professor->actiu==1) {
+                                $usuari = Usuari::where('nomUsuari', $professor->email)->get();
+                                $container->logger->addInfo($alumne->idAlumne . " " . $professor->email);
 
-                            $r = Dao::generaToken(20, $usuari[0], 7, $container);
-                            Bustia::enviarUnic($professor->email, "Validació d'alumnes pendent", 'email/validarAlumne.html.twig', ['token' => $r->token], $container);
+                                $r = Dao::generaToken(20, $usuari[0], 7, $container);
+                                Bustia::enviarUnic($professor->email, "Validació d'alumnes pendent", 'email/validarAlumne.html.twig', ['token' => $r->token], $container);
+                            }
                         }
 //                Bustia::enviar($estudis->professors, "Validació d'alumnes pendent", 'email/validarAlumne.html.twig', [], $container);
                     } else {

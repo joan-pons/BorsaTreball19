@@ -583,7 +583,7 @@ $app->group('/empresa', function () {
 
     $this->get('/recompteAlumnes/{idCicle}', function ($request, $response, $args) {
         $idCicle = $args['idCicle'];
-        $alumnes = Alumne::whereHas('estudis', function ($q) {
+        $alumnes = Alumne::whereHas('estudis', function ($q) use ($idCicle) {
                 $q->where('Estudis_codi', '=', $idCicle);
             }) -> get();
     });
@@ -1220,8 +1220,9 @@ $app->group('/administrador', function () {
             $prof = $usuari->getEntitat();
 //            $resultats=null;
             $resultats = Dao::estadistiques($request, $response, $args, $this);
+            $resultatsAcumulats = Dao::estadistiquesAcumulades($request, $response, $args, $this);
             $menuItems = \Borsa\MenuItem::where('idMenu', 140)->orderBy('idItem', 'ASC')->get();
-            return $this->view->render($response, 'administrador/estadistiques.html.twig', ['menuItems' => $menuItems, 'actor' => $prof, 'professor' => $prof, 'resultats' => $resultats]);
+            return $this->view->render($response, 'administrador/estadistiques.html.twig', ['menuItems' => $menuItems, 'actor' => $prof, 'professor' => $prof, 'resultats' => $resultats, 'resultatsAcumulats' => $resultatsAcumulats]);
         } else {
             return $response->withJSON('Errada: ' . $_SESSION);
         }
@@ -1460,6 +1461,21 @@ $app->group('/administrador', function () {
 //            return $response->withJSON('Errada: ' . $_SESSION);
 //        }
 //    });
+
+    $this->get('/responsables', function ($request, $response, $args) {
+        $this->dbEloquent;
+        $usuari = Usuari::find($_SESSION['idUsuari']);
+        $estudis = null;
+        $families = null;
+        if ($usuari != null) {
+            $prof = $usuari->getEntitat();
+            $families = Familia::orderBy('nom', 'ASC')->get();
+            $menuItems = MenuItem::where('idMenu', 140)->orderBy('idItem', 'ASC')->get();
+            return $this->view->render($response, 'administrador/responsables.html.twig', ['menuItems' => $menuItems, 'actor' => $prof, 'professor' => $prof, 'usuari' => $usuari,  'families' => $families]);
+        } else {
+            return $response->withJSON('Errada: ' . $_SESSION);
+        }
+    });
 
 })->add(function ($request, $response, $next) {
     if (isset($_SESSION['rols']) && (in_array(40, $_SESSION['rols']))) {

@@ -16,16 +16,16 @@
 {% endblock %}
 
     {% block contingut %}
-        <h2>Estadístiques</h2>
+        <h2>Estadístiques del curs actual</h2>
 
         <div class="well">
-            <h3>Empreses per familia</h3>
+            <h3>Empreses per família</h3>
             <div class="row">
                 <div class="col-md-12">
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Familia</th>
+                            <th>Família</th>
                             <th>Empreses</th>
                         </tr>
                         </thead>
@@ -44,13 +44,13 @@
         </div>
 
         <div class="well">
-            <h3>Ofertes per familia</h3>
+            <h3>Ofertes per família</h3>
             <div class="row">
                 <div class="col-md-12">
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Familia</th>
+                            <th>Família</th>
                             <th>Ofertes</th>
                         </tr>
                         </thead>
@@ -68,18 +68,94 @@
             </div>
         </div>
         <div class="well">
-            <h3>Alumnes per familia</h3>
+            <h3>Alumnes per família</h3>
             <div class="row">
                 <div class="col-md-12">
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Familia</th>
+                            <th>Família</th>
                             <th>Alumnes</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for registre in resultats.alumnes %}
+                            <tr>
+                                <td>{{ registre.familia }}</td>
+                                <td>{{ registre.alumnes }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <h2>Estadístiques acumulades</h2>
+
+        <div class="well">
+            <h3>Empreses per família</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Família</th>
+                            <th>Empreses</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registre in resultatsAcumulats.empreses %}
+                            <tr>
+                                <td>{{ registre.familia }}</td>
+                                <td>{{ registre.empreses }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="well">
+            <h3>Ofertes per família</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Família</th>
+                            <th>Ofertes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registre in resultatsAcumulats.ofertes %}
+                            <tr>
+                                <td>{{ registre.familia }}</td>
+                                <td>{{ registre.ofertes }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="well">
+            <h3>Alumnes per família</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Família</th>
+                            <th>Alumnes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registre in resultatsAcumulats.alumnes %}
                             <tr>
                                 <td>{{ registre.familia }}</td>
                                 <td>{{ registre.alumnes }}</td>
